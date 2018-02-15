@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataNodeServer", "DataNode\DataNodeServer.csproj", "{3698FCF3-C37F-4480-9848-3F5D5BD83B53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataNode", "DataNodeProto\DataNode.csproj", "{DC549E7C-F320-43D9-9545-CECD0B5F6D9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NameNode", "NameNode\NameNode.csproj", "{0EED24C4-A1A7-4B6B-A069-0EB398D28CA0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3698FCF3-C37F-4480-9848-3F5D5BD83B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3698FCF3-C37F-4480-9848-3F5D5BD83B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3698FCF3-C37F-4480-9848-3F5D5BD83B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3698FCF3-C37F-4480-9848-3F5D5BD83B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC549E7C-F320-43D9-9545-CECD0B5F6D9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC549E7C-F320-43D9-9545-CECD0B5F6D9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC549E7C-F320-43D9-9545-CECD0B5F6D9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC549E7C-F320-43D9-9545-CECD0B5F6D9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EED24C4-A1A7-4B6B-A069-0EB398D28CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EED24C4-A1A7-4B6B-A069-0EB398D28CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EED24C4-A1A7-4B6B-A069-0EB398D28CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EED24C4-A1A7-4B6B-A069-0EB398D28CA0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

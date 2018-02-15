@@ -1,0 +1,65 @@
+﻿syntax = "proto3";
+package DataNodeProto;
+
+service DataNodeService {
+    rpc SendHeartBeat (HeartBeatRequest) returns (HeartBeatResponse) {}
+	rpc SendBlockReport (BlockReportrequest) returns (StatusResponse) {}
+	rpc ForwardDataBlock (DataBlock) returns (StatusResponse) {}
+}
+
+message HeartBeatRequest {
+	string heartBeatString = 1;
+}
+
+message HeartBeatResponse {
+	repeated DatanodeCommands cmds = 1; // Returned commands can be null
+}
+
+message BlockReportrequest {
+	UUID nodeid = 1;
+	BlockList blocklist = 2;
+}
+
+message DataBlock {
+	UUID blockid = 1;
+	UUID nodeid = 2; // Remaining nodes to forward data to
+	bytes data = 3;
+}
+
+// Comands sent back from namenode is response to heartbeat
+message DatanodeCommands {
+  enum Type {
+    BlockCommand = 0;
+    BlockRecoveryCommand = 1;
+  }
+
+  Type cmdType = 1;    // Type of the command
+
+  BlockCommandProto blkCmd = 2;
+}
+
+message BlockCommandProto {
+  enum Action {  
+    TRANSFER = 0;   // Transfer blocks to another datanode
+    INVALIDATE = 1; // Invalidate blocks
+  }
+
+  Action action = 1;
+  BlockList blocklist = 2;
+}
+
+message BlockList {
+	repeated UUID blockid = 1; // Blocks stored on datanode
+}
+
+message StatusResponse {
+	enum StatusType {
+		Success = 0;
+		Fail = 1;
+	}
+	StatusType type = 1;
+}
+
+message UUID {
+	string value = 1;
+}

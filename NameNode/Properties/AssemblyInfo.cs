@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DataNodeProto")]
+[assembly: AssemblyTitle("NameNode")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DataNodeProto")]
+[assembly: AssemblyProduct("NameNode")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("dc549e7c-f320-43d9-9545-cecd0b5f6d9a")]
+[assembly: Guid("0eed24c4-a1a7-4b6b-a069-0eb398d28ca0")]
 
 // Version information for an assembly consists of the following four values:
 //

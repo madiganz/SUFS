@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace DataNode
+namespace DataNodeServer
 {
     class BlockStorage
     {
