@@ -1,7 +1,7 @@
 ﻿syntax = "proto3";
 package DataNodeProto;
 
-service DataNodeService {
+service DataNodeProto {
     rpc SendHeartBeat (HeartBeatRequest) returns (HeartBeatResponse) {}
 	rpc SendBlockReport (BlockReportrequest) returns (StatusResponse) {}
 	rpc ForwardDataBlock (DataBlock) returns (StatusResponse) {}
@@ -15,7 +15,7 @@ message HeartBeatResponse {
 	repeated DatanodeCommands cmds = 1; // Returned commands can be null
 }
 
-message BlockReportrequest {
+message BlockReportRequest {
 	UUID nodeid = 1;
 	BlockList blocklist = 2;
 }

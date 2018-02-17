@@ -21,6 +21,6 @@ cd /d %~dp0
 
 set TOOLS_PATH=packages\Grpc.Tools.1.9.0\tools\windows_x86
 
-%TOOLS_PATH%\protoc.exe -I./proto --csharp_out DataNode  ./proto/datanodeproto.proto --grpc_out DataNode --plugin=protoc-gen-grpc=%TOOLS_PATH%\grpc_csharp_plugin.exe
+%TOOLS_PATH%\protoc.exe -I./proto --csharp_out DataNodeProto  ./proto/datanodeproto.proto --grpc_out DataNodeProto --plugin=protoc-gen-grpc=%TOOLS_PATH%\grpc_csharp_plugin.exe
 
 endlocal

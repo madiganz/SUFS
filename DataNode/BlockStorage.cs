@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace DataNodeServer
+namespace DataNode
 {
     class BlockStorage
     {
@@ -97,7 +97,7 @@ namespace DataNodeServer
         {
             try
             {
-                FileStream fs = new FileStream(new Guid().ToString(), FileMode.OpenOrCreate, FileAccess.Write);
+                FileStream fs = new FileStream(Guid.NewGuid().ToString(), FileMode.OpenOrCreate, FileAccess.Write);
                 StreamWriter sw = new StreamWriter(fs);
                 // Write to the file using StreamWriter class 
                 sw.BaseStream.Seek(0, SeekOrigin.End);
@@ -154,7 +154,7 @@ namespace DataNodeServer
         /// <returns>Full path of directory</returns>
         private static string CreateRandomDirectory()
         {
-            Guid guid = new Guid();
+            Guid guid = Guid.NewGuid();
             string dir = guid.ToString();
             Directory.CreateDirectory(dir);
             return dir;
