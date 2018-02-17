@@ -97,12 +97,16 @@ namespace DataNode
         {
             try
             {
-                FileStream fs = new FileStream(Guid.NewGuid().ToString(), FileMode.OpenOrCreate, FileAccess.Write);
+                string filePath = Guid.NewGuid().ToString();
+                FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
                 StreamWriter sw = new StreamWriter(fs);
                 // Write to the file using StreamWriter class 
                 sw.BaseStream.Seek(0, SeekOrigin.End);
                 sw.Write(data);
                 sw.Flush();
+
+                // Add to dictionary
+                blockStorageMap.Add(blockUUID, filePath);
                 return true;
             }
             catch
@@ -126,7 +130,11 @@ namespace DataNode
             {
                 try
                 {
+                    // Delete file
                     File.Delete(sFilePath);
+
+                    // Remove from dictionary
+                    blockStorageMap.Remove(blockUUID);
                     return true;
                 }
                 catch

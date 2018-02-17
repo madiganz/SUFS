@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 using grpc = global::Grpc.Core;
 
 namespace DataNodeProto {
-  public static partial class DataNodeService
+  public static partial class DataNodeProto
   {
-    static readonly string __ServiceName = "DataNodeProto.DataNodeService";
+    static readonly string __ServiceName = "DataNodeProto.DataNodeProto";
 
     static readonly grpc::Marshaller<global::DataNodeProto.HeartBeatRequest> __Marshaller_HeartBeatRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::DataNodeProto.HeartBeatRequest.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::DataNodeProto.HeartBeatResponse> __Marshaller_HeartBeatResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::DataNodeProto.HeartBeatResponse.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::DataNodeProto.BlockReportrequest> __Marshaller_BlockReportrequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::DataNodeProto.BlockReportrequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::DataNodeProto.BlockReportRequest> __Marshaller_BlockReportRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::DataNodeProto.BlockReportRequest.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::DataNodeProto.StatusResponse> __Marshaller_StatusResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::DataNodeProto.StatusResponse.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::DataNodeProto.DataBlock> __Marshaller_DataBlock = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::DataNodeProto.DataBlock.Parser.ParseFrom);
 
@@ -28,17 +28,17 @@ namespace DataNodeProto {
         __Marshaller_HeartBeatRequest,
         __Marshaller_HeartBeatResponse);
 
-    static readonly grpc::Method<global::DataNodeProto.BlockReportrequest, global::DataNodeProto.StatusResponse> __Method_SendBlockReport = new grpc::Method<global::DataNodeProto.BlockReportrequest, global::DataNodeProto.StatusResponse>(
+    static readonly grpc::Method<global::DataNodeProto.BlockReportRequest, global::DataNodeProto.StatusResponse> __Method_SendBlockReport = new grpc::Method<global::DataNodeProto.BlockReportRequest, global::DataNodeProto.StatusResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
         "SendBlockReport",
-        __Marshaller_BlockReportrequest,
+        __Marshaller_BlockReportRequest,
         __Marshaller_StatusResponse);
 
-    static readonly grpc::Method<global::DataNodeProto.DataBlock, global::DataNodeProto.StatusResponse> __Method_ForwardDataBlock = new grpc::Method<global::DataNodeProto.DataBlock, global::DataNodeProto.StatusResponse>(
+    static readonly grpc::Method<global::DataNodeProto.DataBlock, global::DataNodeProto.StatusResponse> __Method_WriteDataBlock = new grpc::Method<global::DataNodeProto.DataBlock, global::DataNodeProto.StatusResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "ForwardDataBlock",
+        "WriteDataBlock",
         __Marshaller_DataBlock,
         __Marshaller_StatusResponse);
 
@@ -48,46 +48,46 @@ namespace DataNodeProto {
       get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Base class for server-side implementations of DataNodeService</summary>
-    public abstract partial class DataNodeServiceBase
+    /// <summary>Base class for server-side implementations of DataNodeProto</summary>
+    public abstract partial class DataNodeProtoBase
     {
       public virtual global::System.Threading.Tasks.Task<global::DataNodeProto.HeartBeatResponse> SendHeartBeat(global::DataNodeProto.HeartBeatRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::DataNodeProto.StatusResponse> SendBlockReport(global::DataNodeProto.BlockReportrequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::DataNodeProto.StatusResponse> SendBlockReport(global::DataNodeProto.BlockReportRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::DataNodeProto.StatusResponse> ForwardDataBlock(global::DataNodeProto.DataBlock request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::DataNodeProto.StatusResponse> WriteDataBlock(global::DataNodeProto.DataBlock request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
     }
 
-    /// <summary>Client for DataNodeService</summary>
-    public partial class DataNodeServiceClient : grpc::ClientBase<DataNodeServiceClient>
+    /// <summary>Client for DataNodeProto</summary>
+    public partial class DataNodeProtoClient : grpc::ClientBase<DataNodeProtoClient>
     {
-      /// <summary>Creates a new client for DataNodeService</summary>
+      /// <summary>Creates a new client for DataNodeProto</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public DataNodeServiceClient(grpc::Channel channel) : base(channel)
+      public DataNodeProtoClient(grpc::Channel channel) : base(channel)
       {
       }
-      /// <summary>Creates a new client for DataNodeService that uses a custom <c>CallInvoker</c>.</summary>
+      /// <summary>Creates a new client for DataNodeProto that uses a custom <c>CallInvoker</c>.</summary>
       /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public DataNodeServiceClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      public DataNodeProtoClient(grpc::CallInvoker callInvoker) : base(callInvoker)
       {
       }
       /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected DataNodeServiceClient() : base()
+      protected DataNodeProtoClient() : base()
       {
       }
       /// <summary>Protected constructor to allow creation of configured clients.</summary>
       /// <param name="configuration">The client configuration.</param>
-      protected DataNodeServiceClient(ClientBaseConfiguration configuration) : base(configuration)
+      protected DataNodeProtoClient(ClientBaseConfiguration configuration) : base(configuration)
       {
       }
 
@@ -107,53 +107,53 @@ namespace DataNodeProto {
       {
         return CallInvoker.AsyncUnaryCall(__Method_SendHeartBeat, null, options, request);
       }
-      public virtual global::DataNodeProto.StatusResponse SendBlockReport(global::DataNodeProto.BlockReportrequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::DataNodeProto.StatusResponse SendBlockReport(global::DataNodeProto.BlockReportRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return SendBlockReport(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::DataNodeProto.StatusResponse SendBlockReport(global::DataNodeProto.BlockReportrequest request, grpc::CallOptions options)
+      public virtual global::DataNodeProto.StatusResponse SendBlockReport(global::DataNodeProto.BlockReportRequest request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_SendBlockReport, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> SendBlockReportAsync(global::DataNodeProto.BlockReportrequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> SendBlockReportAsync(global::DataNodeProto.BlockReportRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return SendBlockReportAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> SendBlockReportAsync(global::DataNodeProto.BlockReportrequest request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> SendBlockReportAsync(global::DataNodeProto.BlockReportRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_SendBlockReport, null, options, request);
       }
-      public virtual global::DataNodeProto.StatusResponse ForwardDataBlock(global::DataNodeProto.DataBlock request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::DataNodeProto.StatusResponse WriteDataBlock(global::DataNodeProto.DataBlock request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return ForwardDataBlock(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return WriteDataBlock(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::DataNodeProto.StatusResponse ForwardDataBlock(global::DataNodeProto.DataBlock request, grpc::CallOptions options)
+      public virtual global::DataNodeProto.StatusResponse WriteDataBlock(global::DataNodeProto.DataBlock request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_ForwardDataBlock, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_WriteDataBlock, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> ForwardDataBlockAsync(global::DataNodeProto.DataBlock request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> WriteDataBlockAsync(global::DataNodeProto.DataBlock request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return ForwardDataBlockAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return WriteDataBlockAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> ForwardDataBlockAsync(global::DataNodeProto.DataBlock request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::DataNodeProto.StatusResponse> WriteDataBlockAsync(global::DataNodeProto.DataBlock request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_ForwardDataBlock, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_WriteDataBlock, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override DataNodeServiceClient NewInstance(ClientBaseConfiguration configuration)
+      protected override DataNodeProtoClient NewInstance(ClientBaseConfiguration configuration)
       {
-        return new DataNodeServiceClient(configuration);
+        return new DataNodeProtoClient(configuration);
       }
     }
 
     /// <summary>Creates service definition that can be registered with a server</summary>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(DataNodeServiceBase serviceImpl)
+    public static grpc::ServerServiceDefinition BindService(DataNodeProtoBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_SendHeartBeat, serviceImpl.SendHeartBeat)
           .AddMethod(__Method_SendBlockReport, serviceImpl.SendBlockReport)
-          .AddMethod(__Method_ForwardDataBlock, serviceImpl.ForwardDataBlock).Build();
+          .AddMethod(__Method_WriteDataBlock, serviceImpl.WriteDataBlock).Build();
     }
 
   }

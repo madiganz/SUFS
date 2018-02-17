@@ -8,66 +8,47 @@ namespace DataNode
 {
     public static class BlockReport
     {
+        /// <summary>
+        /// Sends block report
+        /// </summary>
+        /// <param name="client">Datanode grpc client</param>
         public static async void SendBlockReport(object client)
         {
-            //Task.Run(async () =>
-            //{
-                while (true)
-                {
-                    DataNodeProto.BlockReportrequest blockReport = CreateBlockReport();
-                    DataNodeProto.StatusResponse response = ((DataNodeProto.DataNodeService.DataNodeServiceClient)client).SendBlockReport(blockReport);
-                    Console.WriteLine(response.Type.ToString());
-                    await Task.Delay(20000);
-                }
-            //});
+            DataNodeProto.DataNodeProto.DataNodeProtoClient tClient = ((DataNodeProto.DataNodeProto.DataNodeProtoClient)client);
+
+            while (true)
+            {
+                DataNodeProto.BlockReportRequest blockReport = CreateBlockReport();
+                DataNodeProto.StatusResponse response = tClient.SendBlockReport(blockReport);
+                Console.WriteLine(response.Type.ToString());
+                await Task.Delay(20000);
+            }
         }
 
         /// <summary>
         /// Block report is the list of block ids contained in blockstorage
         /// </summary>
-        public static DataNodeProto.BlockReportrequest CreateBlockReport()
+        public static DataNodeProto.BlockReportRequest CreateBlockReport()
         {
-            //DataNodeProto.BlockReportrequest blockReportRequest = new DataNodeProto.BlockReportrequest();
             Guid[] blockList = BlockStorage.GetBlocks();
-            //blockReportRequest.Nodeid = new DataNodeProto.UUID { Value = Program.mNodeID.ToString() };
             List<DataNodeProto.UUID> blockIdList = new List<DataNodeProto.UUID>();
             for (int i = 0; i < blockList.Length; i++)
             {
                 blockIdList.Add(new DataNodeProto.UUID { Value = blockList[i].ToString() });
             }
-            //blockReportRequest.Blocklist = new DataBlock { Blockid = blockIdList.Where()};
-            DataNodeProto.BlockReportrequest blockReportRequest = new DataNodeProto.BlockReportrequest
+
+            DataNodeProto.BlockReportRequest BlockReportRequest = new DataNodeProto.BlockReportRequest
             {
-                Nodeid = new DataNodeProto.UUID
+                NodeId = new DataNodeProto.UUID
                 {
                     Value = Program.mNodeID.ToString()
                 },
-                Blocklist = new DataNodeProto.BlockList
+                BlockList = new DataNodeProto.BlockList
                 {
-                    Blockid = { blockIdList }
+                    BlockId = { blockIdList }
                 }
             };
-            return blockReportRequest;
+            return BlockReportRequest;
         }
     }
-
-    /// <summary>
-    /// Structure of the block report to be sent
-    /// </summary>
-    //public class BlockReportStructure
-    //{
-    //    private int nodeid { get; set; }
-    //    private Guid[] blocks { get; set; }
-
-    //    public BlockReportStructure(int id, Guid[] blockList)
-    //    {
-    //        nodeid = id;
-    //        blocks = blockList;
-    //    }
-
-    //    public override string ToString()
-    //    {
-    //        return "node id = " + nodeid + ", number of blocks = " + blocks.Length;
-    //    }
-    //}
 }

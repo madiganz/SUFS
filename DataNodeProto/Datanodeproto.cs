@@ -25,39 +25,43 @@ namespace DataNodeProto {
             "ChNkYXRhbm9kZXByb3RvLnByb3RvEg1EYXRhTm9kZVByb3RvIisKEEhlYXJ0",
             "QmVhdFJlcXVlc3QSFwoPaGVhcnRCZWF0U3RyaW5nGAEgASgJIkIKEUhlYXJ0",
             "QmVhdFJlc3BvbnNlEi0KBGNtZHMYASADKAsyHy5EYXRhTm9kZVByb3RvLkRh",
-            "dGFub2RlQ29tbWFuZHMiZgoSQmxvY2tSZXBvcnRyZXF1ZXN0EiMKBm5vZGVp",
-            "ZBgBIAEoCzITLkRhdGFOb2RlUHJvdG8uVVVJRBIrCglibG9ja2xpc3QYAiAB",
-            "KAsyGC5EYXRhTm9kZVByb3RvLkJsb2NrTGlzdCJkCglEYXRhQmxvY2sSJAoH",
-            "YmxvY2tpZBgBIAEoCzITLkRhdGFOb2RlUHJvdG8uVVVJRBIjCgZub2RlaWQY",
-            "AiABKAsyEy5EYXRhTm9kZVByb3RvLlVVSUQSDAoEZGF0YRgDIAEoDCKvAQoQ",
-            "RGF0YW5vZGVDb21tYW5kcxI1CgdjbWRUeXBlGAEgASgOMiQuRGF0YU5vZGVQ",
-            "cm90by5EYXRhbm9kZUNvbW1hbmRzLlR5cGUSMAoGYmxrQ21kGAIgASgLMiAu",
-            "RGF0YU5vZGVQcm90by5CbG9ja0NvbW1hbmRQcm90byIyCgRUeXBlEhAKDEJs",
-            "b2NrQ29tbWFuZBAAEhgKFEJsb2NrUmVjb3ZlcnlDb21tYW5kEAEioQEKEUJs",
-            "b2NrQ29tbWFuZFByb3RvEjcKBmFjdGlvbhgBIAEoDjInLkRhdGFOb2RlUHJv",
-            "dG8uQmxvY2tDb21tYW5kUHJvdG8uQWN0aW9uEisKCWJsb2NrbGlzdBgCIAEo",
-            "CzIYLkRhdGFOb2RlUHJvdG8uQmxvY2tMaXN0IiYKBkFjdGlvbhIMCghUUkFO",
-            "U0ZFUhAAEg4KCklOVkFMSURBVEUQASIxCglCbG9ja0xpc3QSJAoHYmxvY2tp",
-            "ZBgBIAMoCzITLkRhdGFOb2RlUHJvdG8uVVVJRCJtCg5TdGF0dXNSZXNwb25z",
-            "ZRI2CgR0eXBlGAEgASgOMiguRGF0YU5vZGVQcm90by5TdGF0dXNSZXNwb25z",
-            "ZS5TdGF0dXNUeXBlIiMKClN0YXR1c1R5cGUSCwoHU3VjY2VzcxAAEggKBEZh",
-            "aWwQASIVCgRVVUlEEg0KBXZhbHVlGAEgASgJMo0CCg9EYXRhTm9kZVNlcnZp",
-            "Y2USVAoNU2VuZEhlYXJ0QmVhdBIfLkRhdGFOb2RlUHJvdG8uSGVhcnRCZWF0",
-            "UmVxdWVzdBogLkRhdGFOb2RlUHJvdG8uSGVhcnRCZWF0UmVzcG9uc2UiABJV",
-            "Cg9TZW5kQmxvY2tSZXBvcnQSIS5EYXRhTm9kZVByb3RvLkJsb2NrUmVwb3J0",
-            "cmVxdWVzdBodLkRhdGFOb2RlUHJvdG8uU3RhdHVzUmVzcG9uc2UiABJNChBG",
-            "b3J3YXJkRGF0YUJsb2NrEhguRGF0YU5vZGVQcm90by5EYXRhQmxvY2saHS5E",
-            "YXRhTm9kZVByb3RvLlN0YXR1c1Jlc3BvbnNlIgBiBnByb3RvMw=="));
+            "dGFOb2RlQ29tbWFuZHMiZgoSQmxvY2tSZXBvcnRSZXF1ZXN0EiMKBm5vZGVJ",
+            "ZBgBIAEoCzITLkRhdGFOb2RlUHJvdG8uVVVJRBIrCglibG9ja0xpc3QYAiAB",
+            "KAsyGC5EYXRhTm9kZVByb3RvLkJsb2NrTGlzdCJrCglEYXRhQmxvY2sSJAoH",
+            "YmxvY2tJZBgBIAEoCzITLkRhdGFOb2RlUHJvdG8uVVVJRBIMCgRkYXRhGAIg",
+            "ASgMEioKCWRhdGFOb2RlcxgDIAMoCzIXLkRhdGFOb2RlUHJvdG8uRGF0YU5v",
+            "ZGUiPgoIRGF0YU5vZGUSHwoCaWQYASABKAsyEy5EYXRhTm9kZVByb3RvLlVV",
+            "SUQSEQoJaXBBZGRyZXNzGAIgASgJIq8BChBEYXRhTm9kZUNvbW1hbmRzEjUK",
+            "B2NtZFR5cGUYASABKA4yJC5EYXRhTm9kZVByb3RvLkRhdGFOb2RlQ29tbWFu",
+            "ZHMuVHlwZRIwCgZibGtDbWQYAiABKAsyIC5EYXRhTm9kZVByb3RvLkJsb2Nr",
+            "Q29tbWFuZFByb3RvIjIKBFR5cGUSEAoMQmxvY2tDb21tYW5kEAASGAoUQmxv",
+            "Y2tSZWNvdmVyeUNvbW1hbmQQASLOAQoRQmxvY2tDb21tYW5kUHJvdG8SNwoG",
+            "YWN0aW9uGAEgASgOMicuRGF0YU5vZGVQcm90by5CbG9ja0NvbW1hbmRQcm90",
+            "by5BY3Rpb24SKwoJYmxvY2tMaXN0GAIgASgLMhguRGF0YU5vZGVQcm90by5C",
+            "bG9ja0xpc3QSKwoJZGF0YUJsb2NrGAMgASgLMhguRGF0YU5vZGVQcm90by5E",
+            "YXRhQmxvY2siJgoGQWN0aW9uEgwKCFRSQU5TRkVSEAASDgoKSU5WQUxJREFU",
+            "RRABIjEKCUJsb2NrTGlzdBIkCgdibG9ja0lkGAEgAygLMhMuRGF0YU5vZGVQ",
+            "cm90by5VVUlEIm0KDlN0YXR1c1Jlc3BvbnNlEjYKBHR5cGUYASABKA4yKC5E",
+            "YXRhTm9kZVByb3RvLlN0YXR1c1Jlc3BvbnNlLlN0YXR1c1R5cGUiIwoKU3Rh",
+            "dHVzVHlwZRILCgdTdWNjZXNzEAASCAoERmFpbBABIhUKBFVVSUQSDQoFdmFs",
+            "dWUYASABKAkyiQIKDURhdGFOb2RlUHJvdG8SVAoNU2VuZEhlYXJ0QmVhdBIf",
+            "LkRhdGFOb2RlUHJvdG8uSGVhcnRCZWF0UmVxdWVzdBogLkRhdGFOb2RlUHJv",
+            "dG8uSGVhcnRCZWF0UmVzcG9uc2UiABJVCg9TZW5kQmxvY2tSZXBvcnQSIS5E",
+            "YXRhTm9kZVByb3RvLkJsb2NrUmVwb3J0UmVxdWVzdBodLkRhdGFOb2RlUHJv",
+            "dG8uU3RhdHVzUmVzcG9uc2UiABJLCg5Xcml0ZURhdGFCbG9jaxIYLkRhdGFO",
+            "b2RlUHJvdG8uRGF0YUJsb2NrGh0uRGF0YU5vZGVQcm90by5TdGF0dXNSZXNw",
+            "b25zZSIAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.HeartBeatRequest), global::DataNodeProto.HeartBeatRequest.Parser, new[]{ "HeartBeatString" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.HeartBeatResponse), global::DataNodeProto.HeartBeatResponse.Parser, new[]{ "Cmds" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.BlockReportrequest), global::DataNodeProto.BlockReportrequest.Parser, new[]{ "Nodeid", "Blocklist" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.DataBlock), global::DataNodeProto.DataBlock.Parser, new[]{ "Blockid", "Nodeid", "Data" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.DatanodeCommands), global::DataNodeProto.DatanodeCommands.Parser, new[]{ "CmdType", "BlkCmd" }, null, new[]{ typeof(global::DataNodeProto.DatanodeCommands.Types.Type) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.BlockCommandProto), global::DataNodeProto.BlockCommandProto.Parser, new[]{ "Action", "Blocklist" }, null, new[]{ typeof(global::DataNodeProto.BlockCommandProto.Types.Action) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.BlockList), global::DataNodeProto.BlockList.Parser, new[]{ "Blockid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.BlockReportRequest), global::DataNodeProto.BlockReportRequest.Parser, new[]{ "NodeId", "BlockList" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.DataBlock), global::DataNodeProto.DataBlock.Parser, new[]{ "BlockId", "Data", "DataNodes" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.DataNode), global::DataNodeProto.DataNode.Parser, new[]{ "Id", "IpAddress" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.DataNodeCommands), global::DataNodeProto.DataNodeCommands.Parser, new[]{ "CmdType", "BlkCmd" }, null, new[]{ typeof(global::DataNodeProto.DataNodeCommands.Types.Type) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.BlockCommandProto), global::DataNodeProto.BlockCommandProto.Parser, new[]{ "Action", "BlockList", "DataBlock" }, null, new[]{ typeof(global::DataNodeProto.BlockCommandProto.Types.Action) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.BlockList), global::DataNodeProto.BlockList.Parser, new[]{ "BlockId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.StatusResponse), global::DataNodeProto.StatusResponse.Parser, new[]{ "Type" }, null, new[]{ typeof(global::DataNodeProto.StatusResponse.Types.StatusType) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::DataNodeProto.UUID), global::DataNodeProto.UUID.Parser, new[]{ "Value" }, null, null, null)
           }));
@@ -217,14 +221,14 @@ namespace DataNodeProto {
 
     /// <summary>Field number for the "cmds" field.</summary>
     public const int CmdsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::DataNodeProto.DatanodeCommands> _repeated_cmds_codec
-        = pb::FieldCodec.ForMessage(10, global::DataNodeProto.DatanodeCommands.Parser);
-    private readonly pbc::RepeatedField<global::DataNodeProto.DatanodeCommands> cmds_ = new pbc::RepeatedField<global::DataNodeProto.DatanodeCommands>();
+    private static readonly pb::FieldCodec<global::DataNodeProto.DataNodeCommands> _repeated_cmds_codec
+        = pb::FieldCodec.ForMessage(10, global::DataNodeProto.DataNodeCommands.Parser);
+    private readonly pbc::RepeatedField<global::DataNodeProto.DataNodeCommands> cmds_ = new pbc::RepeatedField<global::DataNodeProto.DataNodeCommands>();
     /// <summary>
     /// Returned commands can be null
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::DataNodeProto.DatanodeCommands> Cmds {
+    public pbc::RepeatedField<global::DataNodeProto.DataNodeCommands> Cmds {
       get { return cmds_; }
     }
 
@@ -295,10 +299,10 @@ namespace DataNodeProto {
 
   }
 
-  public sealed partial class BlockReportrequest : pb::IMessage<BlockReportrequest> {
-    private static readonly pb::MessageParser<BlockReportrequest> _parser = new pb::MessageParser<BlockReportrequest>(() => new BlockReportrequest());
+  public sealed partial class BlockReportRequest : pb::IMessage<BlockReportRequest> {
+    private static readonly pb::MessageParser<BlockReportRequest> _parser = new pb::MessageParser<BlockReportRequest>(() => new BlockReportRequest());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<BlockReportrequest> Parser { get { return _parser; } }
+    public static pb::MessageParser<BlockReportRequest> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -311,68 +315,68 @@ namespace DataNodeProto {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public BlockReportrequest() {
+    public BlockReportRequest() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public BlockReportrequest(BlockReportrequest other) : this() {
-      Nodeid = other.nodeid_ != null ? other.Nodeid.Clone() : null;
-      Blocklist = other.blocklist_ != null ? other.Blocklist.Clone() : null;
+    public BlockReportRequest(BlockReportRequest other) : this() {
+      NodeId = other.nodeId_ != null ? other.NodeId.Clone() : null;
+      BlockList = other.blockList_ != null ? other.BlockList.Clone() : null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public BlockReportrequest Clone() {
-      return new BlockReportrequest(this);
+    public BlockReportRequest Clone() {
+      return new BlockReportRequest(this);
     }
 
-    /// <summary>Field number for the "nodeid" field.</summary>
-    public const int NodeidFieldNumber = 1;
-    private global::DataNodeProto.UUID nodeid_;
+    /// <summary>Field number for the "nodeId" field.</summary>
+    public const int NodeIdFieldNumber = 1;
+    private global::DataNodeProto.UUID nodeId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::DataNodeProto.UUID Nodeid {
-      get { return nodeid_; }
+    public global::DataNodeProto.UUID NodeId {
+      get { return nodeId_; }
       set {
-        nodeid_ = value;
+        nodeId_ = value;
       }
     }
 
-    /// <summary>Field number for the "blocklist" field.</summary>
-    public const int BlocklistFieldNumber = 2;
-    private global::DataNodeProto.BlockList blocklist_;
+    /// <summary>Field number for the "blockList" field.</summary>
+    public const int BlockListFieldNumber = 2;
+    private global::DataNodeProto.BlockList blockList_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::DataNodeProto.BlockList Blocklist {
-      get { return blocklist_; }
+    public global::DataNodeProto.BlockList BlockList {
+      get { return blockList_; }
       set {
-        blocklist_ = value;
+        blockList_ = value;
       }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as BlockReportrequest);
+      return Equals(other as BlockReportRequest);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(BlockReportrequest other) {
+    public bool Equals(BlockReportRequest other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(Nodeid, other.Nodeid)) return false;
-      if (!object.Equals(Blocklist, other.Blocklist)) return false;
+      if (!object.Equals(NodeId, other.NodeId)) return false;
+      if (!object.Equals(BlockList, other.BlockList)) return false;
       return true;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (nodeid_ != null) hash ^= Nodeid.GetHashCode();
-      if (blocklist_ != null) hash ^= Blocklist.GetHashCode();
+      if (nodeId_ != null) hash ^= NodeId.GetHashCode();
+      if (blockList_ != null) hash ^= BlockList.GetHashCode();
       return hash;
     }
 
@@ -383,44 +387,44 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (nodeid_ != null) {
+      if (nodeId_ != null) {
         output.WriteRawTag(10);
-        output.WriteMessage(Nodeid);
+        output.WriteMessage(NodeId);
       }
-      if (blocklist_ != null) {
+      if (blockList_ != null) {
         output.WriteRawTag(18);
-        output.WriteMessage(Blocklist);
+        output.WriteMessage(BlockList);
       }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (nodeid_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Nodeid);
+      if (nodeId_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NodeId);
       }
-      if (blocklist_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Blocklist);
+      if (blockList_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(BlockList);
       }
       return size;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(BlockReportrequest other) {
+    public void MergeFrom(BlockReportRequest other) {
       if (other == null) {
         return;
       }
-      if (other.nodeid_ != null) {
-        if (nodeid_ == null) {
-          nodeid_ = new global::DataNodeProto.UUID();
+      if (other.nodeId_ != null) {
+        if (nodeId_ == null) {
+          nodeId_ = new global::DataNodeProto.UUID();
         }
-        Nodeid.MergeFrom(other.Nodeid);
+        NodeId.MergeFrom(other.NodeId);
       }
-      if (other.blocklist_ != null) {
-        if (blocklist_ == null) {
-          blocklist_ = new global::DataNodeProto.BlockList();
+      if (other.blockList_ != null) {
+        if (blockList_ == null) {
+          blockList_ = new global::DataNodeProto.BlockList();
         }
-        Blocklist.MergeFrom(other.Blocklist);
+        BlockList.MergeFrom(other.BlockList);
       }
     }
 
@@ -433,17 +437,17 @@ namespace DataNodeProto {
             input.SkipLastField();
             break;
           case 10: {
-            if (nodeid_ == null) {
-              nodeid_ = new global::DataNodeProto.UUID();
+            if (nodeId_ == null) {
+              nodeId_ = new global::DataNodeProto.UUID();
             }
-            input.ReadMessage(nodeid_);
+            input.ReadMessage(nodeId_);
             break;
           }
           case 18: {
-            if (blocklist_ == null) {
-              blocklist_ = new global::DataNodeProto.BlockList();
+            if (blockList_ == null) {
+              blockList_ = new global::DataNodeProto.BlockList();
             }
-            input.ReadMessage(blocklist_);
+            input.ReadMessage(blockList_);
             break;
           }
         }
@@ -476,9 +480,9 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public DataBlock(DataBlock other) : this() {
-      Blockid = other.blockid_ != null ? other.Blockid.Clone() : null;
-      Nodeid = other.nodeid_ != null ? other.Nodeid.Clone() : null;
+      BlockId = other.blockId_ != null ? other.BlockId.Clone() : null;
       data_ = other.data_;
+      dataNodes_ = other.dataNodes_.Clone();
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -486,33 +490,19 @@ namespace DataNodeProto {
       return new DataBlock(this);
     }
 
-    /// <summary>Field number for the "blockid" field.</summary>
-    public const int BlockidFieldNumber = 1;
-    private global::DataNodeProto.UUID blockid_;
+    /// <summary>Field number for the "blockId" field.</summary>
+    public const int BlockIdFieldNumber = 1;
+    private global::DataNodeProto.UUID blockId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::DataNodeProto.UUID Blockid {
-      get { return blockid_; }
+    public global::DataNodeProto.UUID BlockId {
+      get { return blockId_; }
       set {
-        blockid_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "nodeid" field.</summary>
-    public const int NodeidFieldNumber = 2;
-    private global::DataNodeProto.UUID nodeid_;
-    /// <summary>
-    /// Remaining nodes to forward data to
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::DataNodeProto.UUID Nodeid {
-      get { return nodeid_; }
-      set {
-        nodeid_ = value;
+        blockId_ = value;
       }
     }
 
     /// <summary>Field number for the "data" field.</summary>
-    public const int DataFieldNumber = 3;
+    public const int DataFieldNumber = 2;
     private pb::ByteString data_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pb::ByteString Data {
@@ -520,6 +510,19 @@ namespace DataNodeProto {
       set {
         data_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
+    }
+
+    /// <summary>Field number for the "dataNodes" field.</summary>
+    public const int DataNodesFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::DataNodeProto.DataNode> _repeated_dataNodes_codec
+        = pb::FieldCodec.ForMessage(26, global::DataNodeProto.DataNode.Parser);
+    private readonly pbc::RepeatedField<global::DataNodeProto.DataNode> dataNodes_ = new pbc::RepeatedField<global::DataNodeProto.DataNode>();
+    /// <summary>
+    /// Remaining nodes to forward data to
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::DataNodeProto.DataNode> DataNodes {
+      get { return dataNodes_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -535,18 +538,18 @@ namespace DataNodeProto {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(Blockid, other.Blockid)) return false;
-      if (!object.Equals(Nodeid, other.Nodeid)) return false;
+      if (!object.Equals(BlockId, other.BlockId)) return false;
       if (Data != other.Data) return false;
+      if(!dataNodes_.Equals(other.dataNodes_)) return false;
       return true;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (blockid_ != null) hash ^= Blockid.GetHashCode();
-      if (nodeid_ != null) hash ^= Nodeid.GetHashCode();
+      if (blockId_ != null) hash ^= BlockId.GetHashCode();
       if (Data.Length != 0) hash ^= Data.GetHashCode();
+      hash ^= dataNodes_.GetHashCode();
       return hash;
     }
 
@@ -557,32 +560,27 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (blockid_ != null) {
+      if (blockId_ != null) {
         output.WriteRawTag(10);
-        output.WriteMessage(Blockid);
-      }
-      if (nodeid_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Nodeid);
+        output.WriteMessage(BlockId);
       }
       if (Data.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(18);
         output.WriteBytes(Data);
       }
+      dataNodes_.WriteTo(output, _repeated_dataNodes_codec);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (blockid_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Blockid);
-      }
-      if (nodeid_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Nodeid);
+      if (blockId_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(BlockId);
       }
       if (Data.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
       }
+      size += dataNodes_.CalculateSize(_repeated_dataNodes_codec);
       return size;
     }
 
@@ -591,21 +589,16 @@ namespace DataNodeProto {
       if (other == null) {
         return;
       }
-      if (other.blockid_ != null) {
-        if (blockid_ == null) {
-          blockid_ = new global::DataNodeProto.UUID();
+      if (other.blockId_ != null) {
+        if (blockId_ == null) {
+          blockId_ = new global::DataNodeProto.UUID();
         }
-        Blockid.MergeFrom(other.Blockid);
-      }
-      if (other.nodeid_ != null) {
-        if (nodeid_ == null) {
-          nodeid_ = new global::DataNodeProto.UUID();
-        }
-        Nodeid.MergeFrom(other.Nodeid);
+        BlockId.MergeFrom(other.BlockId);
       }
       if (other.Data.Length != 0) {
         Data = other.Data;
       }
+      dataNodes_.Add(other.dataNodes_);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -617,21 +610,18 @@ namespace DataNodeProto {
             input.SkipLastField();
             break;
           case 10: {
-            if (blockid_ == null) {
-              blockid_ = new global::DataNodeProto.UUID();
+            if (blockId_ == null) {
+              blockId_ = new global::DataNodeProto.UUID();
             }
-            input.ReadMessage(blockid_);
+            input.ReadMessage(blockId_);
             break;
           }
           case 18: {
-            if (nodeid_ == null) {
-              nodeid_ = new global::DataNodeProto.UUID();
-            }
-            input.ReadMessage(nodeid_);
+            Data = input.ReadBytes();
             break;
           }
           case 26: {
-            Data = input.ReadBytes();
+            dataNodes_.AddEntriesFrom(input, _repeated_dataNodes_codec);
             break;
           }
         }
@@ -640,13 +630,10 @@ namespace DataNodeProto {
 
   }
 
-  /// <summary>
-  /// Comands sent back from namenode is response to heartbeat
-  /// </summary>
-  public sealed partial class DatanodeCommands : pb::IMessage<DatanodeCommands> {
-    private static readonly pb::MessageParser<DatanodeCommands> _parser = new pb::MessageParser<DatanodeCommands>(() => new DatanodeCommands());
+  public sealed partial class DataNode : pb::IMessage<DataNode> {
+    private static readonly pb::MessageParser<DataNode> _parser = new pb::MessageParser<DataNode>(() => new DataNode());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<DatanodeCommands> Parser { get { return _parser; } }
+    public static pb::MessageParser<DataNode> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -659,31 +646,185 @@ namespace DataNodeProto {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DatanodeCommands() {
+    public DataNode() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DatanodeCommands(DatanodeCommands other) : this() {
+    public DataNode(DataNode other) : this() {
+      Id = other.id_ != null ? other.Id.Clone() : null;
+      ipAddress_ = other.ipAddress_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataNode Clone() {
+      return new DataNode(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private global::DataNodeProto.UUID id_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::DataNodeProto.UUID Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ipAddress" field.</summary>
+    public const int IpAddressFieldNumber = 2;
+    private string ipAddress_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string IpAddress {
+      get { return ipAddress_; }
+      set {
+        ipAddress_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DataNode);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DataNode other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Id, other.Id)) return false;
+      if (IpAddress != other.IpAddress) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (id_ != null) hash ^= Id.GetHashCode();
+      if (IpAddress.Length != 0) hash ^= IpAddress.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (id_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Id);
+      }
+      if (IpAddress.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(IpAddress);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (id_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Id);
+      }
+      if (IpAddress.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(IpAddress);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DataNode other) {
+      if (other == null) {
+        return;
+      }
+      if (other.id_ != null) {
+        if (id_ == null) {
+          id_ = new global::DataNodeProto.UUID();
+        }
+        Id.MergeFrom(other.Id);
+      }
+      if (other.IpAddress.Length != 0) {
+        IpAddress = other.IpAddress;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            if (id_ == null) {
+              id_ = new global::DataNodeProto.UUID();
+            }
+            input.ReadMessage(id_);
+            break;
+          }
+          case 18: {
+            IpAddress = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// Comands sent back from namenode is response to heartbeat
+  /// </summary>
+  public sealed partial class DataNodeCommands : pb::IMessage<DataNodeCommands> {
+    private static readonly pb::MessageParser<DataNodeCommands> _parser = new pb::MessageParser<DataNodeCommands>(() => new DataNodeCommands());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DataNodeCommands> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataNodeCommands() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataNodeCommands(DataNodeCommands other) : this() {
       cmdType_ = other.cmdType_;
       BlkCmd = other.blkCmd_ != null ? other.BlkCmd.Clone() : null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DatanodeCommands Clone() {
-      return new DatanodeCommands(this);
+    public DataNodeCommands Clone() {
+      return new DataNodeCommands(this);
     }
 
     /// <summary>Field number for the "cmdType" field.</summary>
     public const int CmdTypeFieldNumber = 1;
-    private global::DataNodeProto.DatanodeCommands.Types.Type cmdType_ = 0;
+    private global::DataNodeProto.DataNodeCommands.Types.Type cmdType_ = 0;
     /// <summary>
     /// Type of the command
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::DataNodeProto.DatanodeCommands.Types.Type CmdType {
+    public global::DataNodeProto.DataNodeCommands.Types.Type CmdType {
       get { return cmdType_; }
       set {
         cmdType_ = value;
@@ -703,11 +844,11 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as DatanodeCommands);
+      return Equals(other as DataNodeCommands);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(DatanodeCommands other) {
+    public bool Equals(DataNodeCommands other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -757,7 +898,7 @@ namespace DataNodeProto {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(DatanodeCommands other) {
+    public void MergeFrom(DataNodeCommands other) {
       if (other == null) {
         return;
       }
@@ -781,7 +922,7 @@ namespace DataNodeProto {
             input.SkipLastField();
             break;
           case 8: {
-            cmdType_ = (global::DataNodeProto.DatanodeCommands.Types.Type) input.ReadEnum();
+            cmdType_ = (global::DataNodeProto.DataNodeCommands.Types.Type) input.ReadEnum();
             break;
           }
           case 18: {
@@ -796,7 +937,7 @@ namespace DataNodeProto {
     }
 
     #region Nested types
-    /// <summary>Container for nested types declared in the DatanodeCommands message type.</summary>
+    /// <summary>Container for nested types declared in the DataNodeCommands message type.</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static partial class Types {
       public enum Type {
@@ -816,7 +957,7 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[5]; }
+      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -834,7 +975,8 @@ namespace DataNodeProto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public BlockCommandProto(BlockCommandProto other) : this() {
       action_ = other.action_;
-      Blocklist = other.blocklist_ != null ? other.Blocklist.Clone() : null;
+      BlockList = other.blockList_ != null ? other.BlockList.Clone() : null;
+      DataBlock = other.dataBlock_ != null ? other.DataBlock.Clone() : null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -853,14 +995,25 @@ namespace DataNodeProto {
       }
     }
 
-    /// <summary>Field number for the "blocklist" field.</summary>
-    public const int BlocklistFieldNumber = 2;
-    private global::DataNodeProto.BlockList blocklist_;
+    /// <summary>Field number for the "blockList" field.</summary>
+    public const int BlockListFieldNumber = 2;
+    private global::DataNodeProto.BlockList blockList_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::DataNodeProto.BlockList Blocklist {
-      get { return blocklist_; }
+    public global::DataNodeProto.BlockList BlockList {
+      get { return blockList_; }
       set {
-        blocklist_ = value;
+        blockList_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dataBlock" field.</summary>
+    public const int DataBlockFieldNumber = 3;
+    private global::DataNodeProto.DataBlock dataBlock_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::DataNodeProto.DataBlock DataBlock {
+      get { return dataBlock_; }
+      set {
+        dataBlock_ = value;
       }
     }
 
@@ -878,7 +1031,8 @@ namespace DataNodeProto {
         return true;
       }
       if (Action != other.Action) return false;
-      if (!object.Equals(Blocklist, other.Blocklist)) return false;
+      if (!object.Equals(BlockList, other.BlockList)) return false;
+      if (!object.Equals(DataBlock, other.DataBlock)) return false;
       return true;
     }
 
@@ -886,7 +1040,8 @@ namespace DataNodeProto {
     public override int GetHashCode() {
       int hash = 1;
       if (Action != 0) hash ^= Action.GetHashCode();
-      if (blocklist_ != null) hash ^= Blocklist.GetHashCode();
+      if (blockList_ != null) hash ^= BlockList.GetHashCode();
+      if (dataBlock_ != null) hash ^= DataBlock.GetHashCode();
       return hash;
     }
 
@@ -901,9 +1056,13 @@ namespace DataNodeProto {
         output.WriteRawTag(8);
         output.WriteEnum((int) Action);
       }
-      if (blocklist_ != null) {
+      if (blockList_ != null) {
         output.WriteRawTag(18);
-        output.WriteMessage(Blocklist);
+        output.WriteMessage(BlockList);
+      }
+      if (dataBlock_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(DataBlock);
       }
     }
 
@@ -913,8 +1072,11 @@ namespace DataNodeProto {
       if (Action != 0) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Action);
       }
-      if (blocklist_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Blocklist);
+      if (blockList_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(BlockList);
+      }
+      if (dataBlock_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DataBlock);
       }
       return size;
     }
@@ -927,11 +1089,17 @@ namespace DataNodeProto {
       if (other.Action != 0) {
         Action = other.Action;
       }
-      if (other.blocklist_ != null) {
-        if (blocklist_ == null) {
-          blocklist_ = new global::DataNodeProto.BlockList();
+      if (other.blockList_ != null) {
+        if (blockList_ == null) {
+          blockList_ = new global::DataNodeProto.BlockList();
         }
-        Blocklist.MergeFrom(other.Blocklist);
+        BlockList.MergeFrom(other.BlockList);
+      }
+      if (other.dataBlock_ != null) {
+        if (dataBlock_ == null) {
+          dataBlock_ = new global::DataNodeProto.DataBlock();
+        }
+        DataBlock.MergeFrom(other.DataBlock);
       }
     }
 
@@ -948,10 +1116,17 @@ namespace DataNodeProto {
             break;
           }
           case 18: {
-            if (blocklist_ == null) {
-              blocklist_ = new global::DataNodeProto.BlockList();
+            if (blockList_ == null) {
+              blockList_ = new global::DataNodeProto.BlockList();
             }
-            input.ReadMessage(blocklist_);
+            input.ReadMessage(blockList_);
+            break;
+          }
+          case 26: {
+            if (dataBlock_ == null) {
+              dataBlock_ = new global::DataNodeProto.DataBlock();
+            }
+            input.ReadMessage(dataBlock_);
             break;
           }
         }
@@ -985,7 +1160,7 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[6]; }
+      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1002,7 +1177,7 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public BlockList(BlockList other) : this() {
-      blockid_ = other.blockid_.Clone();
+      blockId_ = other.blockId_.Clone();
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1010,17 +1185,17 @@ namespace DataNodeProto {
       return new BlockList(this);
     }
 
-    /// <summary>Field number for the "blockid" field.</summary>
-    public const int BlockidFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::DataNodeProto.UUID> _repeated_blockid_codec
+    /// <summary>Field number for the "blockId" field.</summary>
+    public const int BlockIdFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::DataNodeProto.UUID> _repeated_blockId_codec
         = pb::FieldCodec.ForMessage(10, global::DataNodeProto.UUID.Parser);
-    private readonly pbc::RepeatedField<global::DataNodeProto.UUID> blockid_ = new pbc::RepeatedField<global::DataNodeProto.UUID>();
+    private readonly pbc::RepeatedField<global::DataNodeProto.UUID> blockId_ = new pbc::RepeatedField<global::DataNodeProto.UUID>();
     /// <summary>
     /// Blocks stored on datanode
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::DataNodeProto.UUID> Blockid {
-      get { return blockid_; }
+    public pbc::RepeatedField<global::DataNodeProto.UUID> BlockId {
+      get { return blockId_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1036,14 +1211,14 @@ namespace DataNodeProto {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if(!blockid_.Equals(other.blockid_)) return false;
+      if(!blockId_.Equals(other.blockId_)) return false;
       return true;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      hash ^= blockid_.GetHashCode();
+      hash ^= blockId_.GetHashCode();
       return hash;
     }
 
@@ -1054,13 +1229,13 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      blockid_.WriteTo(output, _repeated_blockid_codec);
+      blockId_.WriteTo(output, _repeated_blockId_codec);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      size += blockid_.CalculateSize(_repeated_blockid_codec);
+      size += blockId_.CalculateSize(_repeated_blockId_codec);
       return size;
     }
 
@@ -1069,7 +1244,7 @@ namespace DataNodeProto {
       if (other == null) {
         return;
       }
-      blockid_.Add(other.blockid_);
+      blockId_.Add(other.blockId_);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1081,7 +1256,7 @@ namespace DataNodeProto {
             input.SkipLastField();
             break;
           case 10: {
-            blockid_.AddEntriesFrom(input, _repeated_blockid_codec);
+            blockId_.AddEntriesFrom(input, _repeated_blockId_codec);
             break;
           }
         }
@@ -1097,7 +1272,7 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[7]; }
+      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1226,7 +1401,7 @@ namespace DataNodeProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[8]; }
+      get { return global::DataNodeProto.DatanodeprotoReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
