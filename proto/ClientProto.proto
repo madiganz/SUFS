@@ -1,0 +1,18 @@
+syntax = "proto3";
+package ClientProto;
+
+service ClientProto {
+    rpc DeleteDirectory (Path) returns (StatusResponse) {}
+}
+
+message Path {
+	string fullpath = 1;
+}
+
+message StatusResponse {
+	enum StatusType {
+		Success = 0;
+		Fail = 1;
+	}
+	StatusType type = 1;
+}

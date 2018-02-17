@@ -13,7 +13,7 @@ namespace DataNode
         public static Guid mNodeID = Guid.NewGuid();
         static void Main(string[] args)
         {
-            GetEC2IpAddress();
+            //GetEC2IpAddress();
 
             Server server = new Server
             {
@@ -41,15 +41,22 @@ namespace DataNode
         /// </summary>
         public static void GetEC2IpAddress()
         {
-            Amazon.Util.EC2InstanceMetadata.InstanceId.ToString();
-            AmazonEC2Client myInstance = new AmazonEC2Client();
-            Amazon.EC2.Model.DescribeInstancesRequest request = new Amazon.EC2.Model.DescribeInstancesRequest();
-            request.InstanceIds.Add(Amazon.Util.EC2InstanceMetadata.InstanceId);
-            Amazon.EC2.Model.DescribeInstancesResponse response = myInstance.DescribeInstances(request);
-            bool success = response.ResponseMetadata.Metadata.TryGetValue("public-ipv4", out ipAddress);
+            try
+            {
+                Amazon.Util.EC2InstanceMetadata.InstanceId.ToString();
+                AmazonEC2Client myInstance = new AmazonEC2Client();
+                Amazon.EC2.Model.DescribeInstancesRequest request = new Amazon.EC2.Model.DescribeInstancesRequest();
+                request.InstanceIds.Add(Amazon.Util.EC2InstanceMetadata.InstanceId);
+                Amazon.EC2.Model.DescribeInstancesResponse response = myInstance.DescribeInstances(request);
+                bool success = response.ResponseMetadata.Metadata.TryGetValue("public-ipv4", out ipAddress);
 
-            // Hopefully only for debugging purposes!!!!
-            if (!success)
+                // Hopefully only for debugging purposes!!!!
+                if (!success)
+                {
+                    ipAddress = "localhost";
+                }
+            }
+            catch
             {
                 ipAddress = "localhost";
             }

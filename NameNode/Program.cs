@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace NameNode
 {
-    class NameNodeImpl : DataNodeProto.DataNodeService.DataNodeServiceBase
+    class NameNodeImpl : DataNodeProto.DataNodeProto.DataNodeProtoBase
     {
         // Server side handler of the SendBlockReportRequest RPC
-        public override Task<DataNodeProto.StatusResponse> SendBlockReport(DataNodeProto.BlockReportrequest request, ServerCallContext context)
+        public override Task<DataNodeProto.StatusResponse> SendBlockReport(DataNodeProto.BlockReportRequest request, ServerCallContext context)
         {
             Console.WriteLine(request);
             return Task.FromResult(new DataNodeProto.StatusResponse { Type = DataNodeProto.StatusResponse.Types.StatusType.Success });
         }
 
+        // Server side handler of the SendHeartBeat RPC
         public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
         {
             Console.WriteLine(request.HeartBeatString);
@@ -28,14 +29,14 @@ namespace NameNode
             }
 
             // Create command
-            DataNodeProto.DatanodeCommands commands = new DataNodeProto.DatanodeCommands
+            DataNodeProto.DataNodeCommands commands = new DataNodeProto.DataNodeCommands
             {
-                CmdType = DataNodeProto.DatanodeCommands.Types.Type.BlockCommand,
+                CmdType = DataNodeProto.DataNodeCommands.Types.Type.BlockCommand,
                 BlkCmd = new DataNodeProto.BlockCommandProto {
                     Action = DataNodeProto.BlockCommandProto.Types.Action.Invalidate,
-                    Blocklist = new DataNodeProto.BlockList
+                    BlockList = new DataNodeProto.BlockList
                     {
-                        Blockid = { blocks }
+                        BlockId = { blocks }
                     }
                 }
 
@@ -58,7 +59,7 @@ namespace NameNode
         {
             Server server = new Server
             {
-                Services = { DataNodeProto.DataNodeService.BindService(new NameNodeImpl()) },
+                Services = { DataNodeProto.DataNodeProto.BindService(new NameNodeImpl()) },
                 Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
             };
             server.Start();
