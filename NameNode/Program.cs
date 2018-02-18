@@ -7,6 +7,16 @@ using System.Threading.Tasks;
 
 namespace NameNode
 {
+	class ClientImpl : ClientProto.ClientProto.ClientProtoBase
+	{
+
+		public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+	}
+
     class NameNodeImpl : DataNodeProto.DataNodeProto.DataNodeProtoBase
     {
         // Server side handler of the SendBlockReportRequest RPC
@@ -16,8 +26,12 @@ namespace NameNode
             return Task.FromResult(new DataNodeProto.StatusResponse { Type = DataNodeProto.StatusResponse.Types.StatusType.Success });
         }
 
-        // Server side handler of the SendHeartBeat RPC
-        public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
+
+
+
+
+		// Server side handler of the SendHeartBeat RPC
+		public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
         {
             Console.WriteLine(request.HeartBeatString);
 
@@ -59,7 +73,8 @@ namespace NameNode
         {
             Server server = new Server
             {
-                Services = { DataNodeProto.DataNodeProto.BindService(new NameNodeImpl()) },
+                Services = { DataNodeProto.DataNodeProto.BindService(new NameNodeImpl()),
+				ClientProto.ClientProto.BindService(new ClientImpl())},
                 Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
             };
             server.Start();
