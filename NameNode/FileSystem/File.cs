@@ -4,18 +4,19 @@ namespace NameNode.FileSystem
 {
     public class File
     {
-        public Dictionary<Guid, BlockNode> data { get; set; }
+        public List<Guid> data { get; set; }
         public DateTime modifiedTime { get; set; }
         public string name { get; set; }
+        public int fileSize { get; set; }
         public File()
         {
-            data = new Dictionary<Guid, BlockNode>();
+            data = new List<Guid>();
             modifiedTime = DateTime.UtcNow;
         }
         public File(string name)
         {
             this.name = name;
-            data = new Dictionary<Guid, BlockNode>();
+            data = new List<Guid>();
             modifiedTime = DateTime.UtcNow;
         }
     }

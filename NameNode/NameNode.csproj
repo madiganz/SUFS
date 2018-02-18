@@ -61,7 +61,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FileSystem\File.cs" />
     <Compile Include="FileSystem\Folder.cs" />
-    <Compile Include="FileSystem\BlockNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

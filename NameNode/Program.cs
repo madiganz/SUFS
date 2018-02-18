@@ -89,15 +89,12 @@ namespace NameNode
             FileSystem.File selectedFile = currentLocation.files["File"];
 
             var guid = Guid.NewGuid();
+            selectedFile.fileSize = 88;
             List<string> ips = new List<string>();
-            ips.Add("1.1.1.1");
-            ips.Add("2.2.2.2");
-            selectedFile.data.Add(guid, new BlockNode(guid,64,ips));
+            selectedFile.data.Add(guid);
+
             guid = Guid.NewGuid();
-            ips.Clear();
-            ips.Add("3.3.3.3");
-            ips.Add("4.4.4.4");
-            selectedFile.data.Add(guid, new BlockNode(guid, 24, ips));
+            selectedFile.data.Add(guid);
 
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
