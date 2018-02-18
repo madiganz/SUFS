@@ -15,8 +15,7 @@ namespace DataNode
         public static Guid mNodeID = Guid.NewGuid();
         static void Main(string[] args)
         {
-            //GetEC2IpAddress();
-            ipAddress = "localhost";
+            GetEC2IpAddress();
 
             Server server = new Server
             {
@@ -46,21 +45,24 @@ namespace DataNode
         {
             try
             {
-                Amazon.Util.EC2InstanceMetadata.InstanceId.ToString();
+
+                // Use the .NET sdk meta-data ap to retrieve the public ip address
                 AmazonEC2Client myInstance = new AmazonEC2Client();
                 Amazon.EC2.Model.DescribeInstancesRequest request = new Amazon.EC2.Model.DescribeInstancesRequest();
                 request.InstanceIds.Add(Amazon.Util.EC2InstanceMetadata.InstanceId);
                 Amazon.EC2.Model.DescribeInstancesResponse response = myInstance.DescribeInstances(request);
-                bool success = response.ResponseMetadata.Metadata.TryGetValue("public-ipv4", out ipAddress);
+
+                ipAddress = response.Reservations[0].Instances[0].PublicIpAddress;
 
                 // Hopefully only for debugging purposes!!!!
-                if (!success)
+                if (ipAddress == null || ipAddress == "")
                 {
                     ipAddress = "localhost";
                 }
             }
-            catch
+            catch (AmazonEC2Exception e)
             {
+                Console.WriteLine(e);
                 ipAddress = "localhost";
             }
         }

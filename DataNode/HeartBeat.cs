@@ -32,7 +32,7 @@ namespace DataNode
                     }
                 };
 
-                DataNodeProto.HeartBeatResponse response = tClient.SendHeartBeat(heartBeatRequest);
+                DataNodeProto.HeartBeatResponse response = tClient.SendHeartBeat(heartBeatRequest, new CallOptions().WithWaitForReady(true));
                 Console.WriteLine(response);
 
                 List<DataNodeProto.DataNodeCommands> nameNodeCommands = response.Commands.ToList();

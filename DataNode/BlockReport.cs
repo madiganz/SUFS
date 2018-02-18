@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Grpc.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace DataNode
             while (true)
             {
                 DataNodeProto.BlockReportRequest blockReport = CreateBlockReport();
-                DataNodeProto.StatusResponse response = tClient.SendBlockReport(blockReport);
+                DataNodeProto.StatusResponse response = tClient.SendBlockReport(blockReport, new CallOptions().WithWaitForReady(true));
                 Console.WriteLine(response.Type.ToString());
                 await Task.Delay(20000);
             }
