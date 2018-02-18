@@ -19,5 +19,6 @@ namespace NameNode.FileSystem
             data = new List<Guid>();
             modifiedTime = DateTime.UtcNow;
         }
+
     }
 }
