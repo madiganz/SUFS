@@ -31,13 +31,12 @@ message DataNode {
 	string ipAddress = 2;
 }
 
-// Comands sent back from namenode is response to heartbeat
 message DataNodeInfo {
 	DataNode dataNode = 1;
 	int64 diskSpace = 2;
 }
 
-// Comands sent back from namenode is response to heartbeat
+// Commands sent back from namenode is response to heartbeat
 message DataNodeCommands {
   BlockCommand command = 1;
 }
