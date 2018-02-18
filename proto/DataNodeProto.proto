@@ -4,15 +4,15 @@ package DataNodeProto;
 service DataNodeProto {
     rpc SendHeartBeat (HeartBeatRequest) returns (HeartBeatResponse) {}
 	rpc SendBlockReport (BlockReportRequest) returns (StatusResponse) {}
-	rpc WriteDataBlock (DataBlock) returns (StatusResponse) {}
+	rpc ForwardDataBlock (DataBlock) returns (StatusResponse) {}
 }
 
 message HeartBeatRequest {
-	string heartBeatString = 1;
+	DataNodeInfo nodeInfo = 1;
 }
 
 message HeartBeatResponse {
-	repeated DataNodeCommands cmds = 1; // Returned commands can be null
+	repeated DataNodeCommands commands = 1; // Returned commands can be null
 }
 
 message BlockReportRequest {
@@ -31,27 +31,25 @@ message DataNode {
 	string ipAddress = 2;
 }
 
-// Comands sent back from namenode is response to heartbeat
-message DataNodeCommands {
-  enum Type {
-    BlockCommand = 0;
-    BlockRecoveryCommand = 1;
-  }
-
-  Type cmdType = 1;    // Type of the command
-
-  BlockCommandProto blkCmd = 2;
+message DataNodeInfo {
+	DataNode dataNode = 1;
+	int64 diskSpace = 2;
 }
 
-message BlockCommandProto {
+// Comands sent back from namenode is response to heartbeat
+message DataNodeCommands {
+  BlockCommand command = 1;
+}
+
+message BlockCommand {
   enum Action {  
     TRANSFER = 0;   // Transfer blocks to another datanode
-    INVALIDATE = 1; // Invalidate blocks
+    DELETE = 1; // DELETE blocks
   }
 
   Action action = 1;
-  BlockList blockList = 2;
-  DataBlock dataBlock = 3;
+  BlockList blockList = 2; // For Delete
+  repeated DataBlock dataBlock = 3; // For Transfer
 }
 
 message BlockList {

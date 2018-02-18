@@ -14,6 +14,7 @@ namespace DataNode
         static void Main(string[] args)
         {
             //GetEC2IpAddress();
+            ipAddress = "localhost";
 
             Server server = new Server
             {

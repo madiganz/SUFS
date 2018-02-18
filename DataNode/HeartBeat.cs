@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Grpc.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,30 +19,58 @@ namespace DataNode
 
             while (true)
             {
-                DataNodeProto.HeartBeatRequest heartBeatRequest = new DataNodeProto.HeartBeatRequest { HeartBeatString = "I AM A HEARTBEAT" };
+                DataNodeProto.HeartBeatRequest heartBeatRequest = new DataNodeProto.HeartBeatRequest
+                {
+                    NodeInfo = new DataNodeProto.DataNodeInfo
+                    {
+                        DataNode = new DataNodeProto.DataNode
+                        {
+                            Id = new DataNodeProto.UUID { Value = Program.mNodeID.ToString() },
+                            IpAddress = Program.ipAddress
+                        },
+                        DiskSpace = BlockStorage.Instance.GetFreeDiskSpace()
+                    }
+                };
+
                 DataNodeProto.HeartBeatResponse response = tClient.SendHeartBeat(heartBeatRequest);
                 Console.WriteLine(response);
 
-                List<DataNodeProto.DataNodeCommands> nameNodeCommands = response.Cmds.ToList();
+                List<DataNodeProto.DataNodeCommands> nameNodeCommands = response.Commands.ToList();
 
-                foreach(var command in nameNodeCommands)
+                foreach (var command in nameNodeCommands)
                 {
                     // TODO: DEAL WITH THIS?
-                    switch(command.CmdType)
-                    {
-                        case DataNodeProto.DataNodeCommands.Types.Type.BlockCommand:
-                            break;
-                        case DataNodeProto.DataNodeCommands.Types.Type.BlockRecoveryCommand:
-                            break;
-                    }
+                    //switch(command.)
+                    //{
+                    //    case DataNodeProto.DataNodeCommands.Types.Type.BlockCommand:
+                    //        break;
+                    //    case DataNodeProto.DataNodeCommands.Types.Type.BlockRecoveryCommand:
+                    //        break;
+                    //}
 
-                    switch(command.BlkCmd.Action)
+                    switch (command.Command.Action)
                     {
-                        case DataNodeProto.BlockCommandProto.Types.Action.Transfer:
-                            tClient.WriteDataBlockAsync(command.BlkCmd.DataBlock); // TODO: Need to wait????
+                        case DataNodeProto.BlockCommand.Types.Action.Transfer:
+                            foreach (var block in command.Command.DataBlock.ToList())
+                            {   
+                                // Get block data
+                                byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(block.BlockId.Value));
+
+                                // Convert byte[] to ByteString
+                                block.Data = Google.Protobuf.ByteString.CopyFrom(blockData);
+
+                                // Send data to each block
+                                foreach( var dataNode in block.DataNodes)
+                                {
+                                    Channel channel = new Channel(dataNode.IpAddress + ":" + Program.Port, ChannelCredentials.Insecure);
+                                    var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
+                                    nodeClient.ForwardDataBlockAsync(block); // TODO: Need to wait????
+                                    //channel.ShutdownAsync(); // NEED THIS?
+                                }
+                            }
                             break;
-                        case DataNodeProto.BlockCommandProto.Types.Action.Invalidate:
-                            InvalidateBlocks(command.BlkCmd.BlockList);
+                        case DataNodeProto.BlockCommand.Types.Action.Delete:
+                            InvalidateBlocks(command.Command.BlockList);
                             break;
                     }
                 }
@@ -56,7 +85,7 @@ namespace DataNode
         public static void InvalidateBlocks(DataNodeProto.BlockList blockList)
         {
             List<DataNodeProto.UUID> blockIds = blockList.BlockId.ToList();
-            foreach(var id in blockIds)
+            foreach (var id in blockIds)
             {
                 BlockStorage.Instance.DeleteBlock(Guid.Parse(id.Value));
             }

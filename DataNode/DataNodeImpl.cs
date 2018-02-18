@@ -16,7 +16,7 @@ namespace DataNode
         /// <param name="blockContainer">Containing holding blockid, data, and nodes to forward to</param>
         /// <param name="context">Call Context</param>
         /// <returns></returns>
-        public override Task<DataNodeProto.StatusResponse> WriteDataBlock(DataNodeProto.DataBlock blockContainer, ServerCallContext context)
+        public override Task<DataNodeProto.StatusResponse> ForwardDataBlock(DataNodeProto.DataBlock blockContainer, ServerCallContext context)
         {
             Console.WriteLine(blockContainer);
 
@@ -36,7 +36,7 @@ namespace DataNode
             //Channel channel = new Channel(nodeToFoward.Ipaddress + ":" + Program.Port, ChannelCredentials.Insecure);
 
             var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
-            DataNodeProto.StatusResponse nodeResponse = client.WriteDataBlock(blockContainer);
+            DataNodeProto.StatusResponse nodeResponse = client.ForwardDataBlock(blockContainer);
 
             bool forwardSuccess = nodeResponse.Type == DataNodeProto.StatusResponse.Types.StatusType.Success ? true : false;
 

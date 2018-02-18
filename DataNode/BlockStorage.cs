@@ -251,5 +251,21 @@ namespace DataNode
             baseDirectoryInfo = Directory.CreateDirectory("data");
             return baseDirectoryInfo.ToString();
         }
+
+        public long GetFreeDiskSpace()
+        {
+            DriveInfo[] drives = DriveInfo.GetDrives();
+
+            foreach (var drive in drives)
+            {
+                // Only care about c drive
+                if (drive.Name == "Drive C:\\")
+                {
+                    return drive.AvailableFreeSpace;
+                }
+            }
+
+            return 0;
+        }
     }
 }

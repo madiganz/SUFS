@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="DataBlock.cs" />
     <Compile Include="DataFile.cs" />
+    <Compile Include="DataNode.cs" />
     <Compile Include="NameNode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
