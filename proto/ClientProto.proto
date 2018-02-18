@@ -3,7 +3,20 @@ package ClientProto;
 
 service ClientProto {
     rpc DeleteDirectory (Path) returns (StatusResponse) {}
+
+	rpc AddDirectory(Path) returns (StatusResponse) {}
+
+	// link to read stream data
+
+	// bideectional streaming
+
+	// write streaming 
+
+
 }
+
+
+
 
 message Path {
 	string fullpath = 1;

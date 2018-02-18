@@ -25,6 +25,13 @@ namespace ClientProto {
         __Marshaller_Path,
         __Marshaller_StatusResponse);
 
+    static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse> __Method_AddDirectory = new grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "AddDirectory",
+        __Marshaller_Path,
+        __Marshaller_StatusResponse);
+
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
@@ -35,6 +42,11 @@ namespace ClientProto {
     public abstract partial class ClientProtoBase
     {
       public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> DeleteDirectory(global::ClientProto.Path request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> AddDirectory(global::ClientProto.Path request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -80,6 +92,22 @@ namespace ClientProto {
       {
         return CallInvoker.AsyncUnaryCall(__Method_DeleteDirectory, null, options, request);
       }
+      public virtual global::ClientProto.StatusResponse AddDirectory(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return AddDirectory(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual global::ClientProto.StatusResponse AddDirectory(global::ClientProto.Path request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_AddDirectory, null, options, request);
+      }
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> AddDirectoryAsync(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return AddDirectoryAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> AddDirectoryAsync(global::ClientProto.Path request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_AddDirectory, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override ClientProtoClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -92,7 +120,8 @@ namespace ClientProto {
     public static grpc::ServerServiceDefinition BindService(ClientProtoBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_DeleteDirectory, serviceImpl.DeleteDirectory).Build();
+          .AddMethod(__Method_DeleteDirectory, serviceImpl.DeleteDirectory)
+          .AddMethod(__Method_AddDirectory, serviceImpl.AddDirectory).Build();
     }
 
   }
