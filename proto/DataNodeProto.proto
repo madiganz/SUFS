@@ -1,4 +1,4 @@
-﻿syntax = "proto3";
+syntax = "proto3";
 package DataNodeProto;
 
 service DataNodeProto {
@@ -31,7 +31,7 @@ message DataNode {
 	string ipAddress = 2;
 }
 
-// Comands sent back from namenode is response to heartbeat
+// Commands sent back from namenode is response to heartbeat
 message DataNodeCommands {
   enum Type {
     BlockCommand = 0;
