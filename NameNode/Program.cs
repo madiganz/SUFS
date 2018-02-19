@@ -91,9 +91,11 @@ namespace NameNode
         static void Main(string[] args)
         {
 
+            Console.WriteLine("Initializing NameNode");
             // Use ec2 instance manager to get the private ip address of this name node
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
             string ipAddress = instanceManager.GetPrivateIpAddress();
+            instanceManager.OpenFirewallPort("50051"); // Need to open port on windows firewalls
 
 # if DEBUG
             if (ipAddress == null)
@@ -108,6 +110,9 @@ namespace NameNode
                 ClientProto.ClientProto.BindService(new ClientImpl())},
                 Ports = { new ServerPort(ipAddress, Port, ServerCredentials.Insecure) }
             };
+
+            Console.WriteLine("Done initializing");
+
             server.Start();
 
             //Check for dead datanodes

@@ -1,4 +1,5 @@
 ﻿using Amazon.EC2;
+using NetFwTypeLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,6 +69,45 @@ namespace EC2InstanceManager
             }
 
             return instance.ipAddress;
+        }
+
+        /// <summary>
+        /// Opens a port on the firewall for both inbound and outbound traffic
+        /// </summary>
+        /// <param name="port">Port for rule</param>
+        public void OpenFirewallPort(string port)
+        {
+            CreateFirewallRule(port, "inbound");
+            CreateFirewallRule(port, "outbound");
+        }
+        
+        /// <summary>
+        /// Creates a firewall rule for a port
+        /// </summary>
+        /// <param name="port">Port for rule</param>
+        /// <param name="direction">inbound or outbound</param>
+        public void CreateFirewallRule(string port, string direction)
+        {
+            // Create inbound and output rule
+            INetFwRule firewallRule = (INetFwRule)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
+            firewallRule.Action = NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
+            firewallRule.Description = "Allows Grpc over ec2 instances";
+            if (direction == "inbound")
+            {
+                firewallRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
+            }
+            else if(direction == "outbound")
+            {
+                firewallRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
+            }
+            firewallRule.Enabled = true;
+            firewallRule.InterfaceTypes = "All";
+            firewallRule.Name = "GRPC";
+            firewallRule.Protocol = (int)NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP;
+            firewallRule.LocalPorts = port;
+            INetFwPolicy2 firewallPolicy = (INetFwPolicy2)Activator.CreateInstance(
+                Type.GetTypeFromProgID("HNetCfg.FwPolicy2"));
+            firewallPolicy.Rules.Add(firewallRule);
         }
     }
 }

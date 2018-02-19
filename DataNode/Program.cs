@@ -13,11 +13,13 @@ namespace DataNode
         public static Guid mNodeID = Guid.NewGuid();
         static void Main(string[] args)
         {
+            Console.WriteLine("Initializing DataNode");
             string nameNodeIp = args[0];
 
             // Use ec2 instance manager to get the private ip address of this data node
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
             ipAddress = instanceManager.GetPrivateIpAddress();
+            instanceManager.OpenFirewallPort("50051"); // Need to open port on windows firewalls
 
 #if DEBUG
             if (ipAddress == null)
@@ -31,6 +33,9 @@ namespace DataNode
                 Services = { DataNodeProto.DataNodeProto.BindService(new DataNodeImpl()) },
                 Ports = { new ServerPort(ipAddress, Port, ServerCredentials.Insecure) }
             };
+
+            Console.WriteLine("Done initializing");
+
             server.Start();
 
             Console.WriteLine("Trying to connect to: " + nameNodeIp);
