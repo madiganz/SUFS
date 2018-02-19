@@ -12,15 +12,15 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace NameNode
 {
-	class ClientImpl : ClientProto.ClientProto.ClientProtoBase
-	{
+    class ClientImpl : ClientProto.ClientProto.ClientProtoBase
+    {
 
-		public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
-		{
-			Console.WriteLine(path);
-			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
-		}
-	}
+        public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
+        {
+            Console.WriteLine(path);
+            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+        }
+    }
 
     class NameNodeImpl : DataNodeProto.DataNodeProto.DataNodeProtoBase
     {
@@ -35,8 +35,8 @@ namespace NameNode
 
 
 
-		// Server side handler of the SendHeartBeat RPC
-		public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
+        // Server side handler of the SendHeartBeat RPC
+        public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
         {
             Console.WriteLine(request);
 
@@ -90,18 +90,30 @@ namespace NameNode
         public static List<DataNode> nodeList = new List<DataNode>();
         static void Main(string[] args)
         {
+
+            // Use ec2 instance manager to get the private ip address of this name node
+            EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
+            string ipAddress = instanceManager.GetPrivateIpAddress();
+
+# if DEBUG
+            if (ipAddress == null)
+            {
+                ipAddress = "localhost";
+            }
+#endif
+
             Server server = new Server
             {
                 Services = { DataNodeProto.DataNodeProto.BindService(new NameNodeImpl()),
-				ClientProto.ClientProto.BindService(new ClientImpl())},
-                Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
+                ClientProto.ClientProto.BindService(new ClientImpl())},
+                Ports = { new ServerPort(ipAddress, Port, ServerCredentials.Insecure) }
             };
             server.Start();
 
             //Check for dead datanodes
             Task nodeCheckTask = RunNodeCheck();
 
-            Console.WriteLine("Greeter server listening on port " + Port);
+            Console.WriteLine("Greeter server listening on ip address " + ipAddress + ", port " + Port);
             Console.WriteLine("Press any key to stop the server...");
             Console.ReadKey();
 

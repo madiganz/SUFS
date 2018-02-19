@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using System;
 using System.Threading;
-using Amazon.EC2;
 
 
 
@@ -10,21 +9,32 @@ namespace DataNode
     class Program
     {
         public static string ipAddress;
-        public const int Port = 50052;
-        public const int Port2 = 50051; // TODO: Ports should be fixed better
+        public const int Port = 50051;
         public static Guid mNodeID = Guid.NewGuid();
         static void Main(string[] args)
         {
-            GetEC2IpAddress();
+            string nameNodeIp = args[0];
+
+            // Use ec2 instance manager to get the private ip address of this data node
+            EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
+            ipAddress = instanceManager.GetPrivateIpAddress();
+
+#if DEBUG
+            if (ipAddress == null)
+            {
+                ipAddress = "localhost";
+            }
+#endif
 
             Server server = new Server
             {
                 Services = { DataNodeProto.DataNodeProto.BindService(new DataNodeImpl()) },
-                Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
+                Ports = { new ServerPort(ipAddress, Port, ServerCredentials.Insecure) }
             };
             server.Start();
 
-            Channel channel = new Channel("127.0.0.1:" + Port2, ChannelCredentials.Insecure);
+            Console.WriteLine("Trying to connect to: " + nameNodeIp);
+            Channel channel = new Channel(nameNodeIp + ":" + Port, ChannelCredentials.Insecure);
             var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
 
             //Initialize blockstorage
@@ -35,35 +45,6 @@ namespace DataNode
             blockReportThread.Start(client);
             while (true)
             {
-            }
-        }
-
-        /// <summary>
-        /// Gets the the EC2 instances ip address so it can correctly bind to the host and port
-        /// </summary>
-        public static void GetEC2IpAddress()
-        {
-            try
-            {
-
-                // Use the .NET sdk meta-data ap to retrieve the public ip address
-                AmazonEC2Client myInstance = new AmazonEC2Client();
-                Amazon.EC2.Model.DescribeInstancesRequest request = new Amazon.EC2.Model.DescribeInstancesRequest();
-                request.InstanceIds.Add(Amazon.Util.EC2InstanceMetadata.InstanceId);
-                Amazon.EC2.Model.DescribeInstancesResponse response = myInstance.DescribeInstances(request);
-
-                ipAddress = response.Reservations[0].Instances[0].PublicIpAddress;
-
-                // Hopefully only for debugging purposes!!!!
-                if (ipAddress == null || ipAddress == "")
-                {
-                    ipAddress = "localhost";
-                }
-            }
-            catch (AmazonEC2Exception e)
-            {
-                Console.WriteLine(e);
-                ipAddress = "localhost";
             }
         }
     }
