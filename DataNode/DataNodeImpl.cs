@@ -31,7 +31,7 @@ namespace DataNode
 
             // Once write is done, we can forward to next node
             // Need to connect to the nodes ip address
-            Channel channel = new Channel("127.0.0.1:" + Program.Port, ChannelCredentials.Insecure);
+            Channel channel = new Channel("127.0.0.1:" + Constants.Port, ChannelCredentials.Insecure);
             // TODO: Replace above call with actual IP
             //Channel channel = new Channel(nodeToFoward.Ipaddress + ":" + Program.Port, ChannelCredentials.Insecure);
 

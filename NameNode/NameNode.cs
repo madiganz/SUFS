@@ -9,7 +9,6 @@ namespace NameNode
     
     public class NameNode
     {
-        public const int _maxBlockSize = 128;
         public NameNode()
         {
             initializeFileDirectory();
@@ -39,7 +38,7 @@ namespace NameNode
             FileSystem.File file = new FileSystem.File();
             file.name = "";
             file.fileSize = 0;
-            for (int i = 0; i < file.fileSize % _maxBlockSize; i++)
+            for (int i = 0; i < file.fileSize % Constants.MaxBlockSize; i++)
             {
                 Guid id = Guid.NewGuid();
                 file.data.Add(id);

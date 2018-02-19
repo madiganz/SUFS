@@ -9,7 +9,6 @@ namespace DataNode
     class Program
     {
         public static string ipAddress;
-        public const int Port = 50051;
         public static Guid mNodeID = Guid.NewGuid();
         static void Main(string[] args)
         {
@@ -31,7 +30,7 @@ namespace DataNode
             Server server = new Server
             {
                 Services = { DataNodeProto.DataNodeProto.BindService(new DataNodeImpl()) },
-                Ports = { new ServerPort(ipAddress, Port, ServerCredentials.Insecure) }
+                Ports = { new ServerPort(ipAddress, Constants.Port, ServerCredentials.Insecure) }
             };
 
             Console.WriteLine("Done initializing");
@@ -39,7 +38,7 @@ namespace DataNode
             server.Start();
 
             Console.WriteLine("Trying to connect to: " + nameNodeIp);
-            Channel channel = new Channel(nameNodeIp + ":" + Port, ChannelCredentials.Insecure);
+            Channel channel = new Channel(nameNodeIp + ":" + Constants.Port, ChannelCredentials.Insecure);
             var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
 
             //Initialize blockstorage

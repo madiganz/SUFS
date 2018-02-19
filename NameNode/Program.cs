@@ -46,11 +46,12 @@ namespace NameNode
             // Not found -> add to list
             if (index < 0)
             {
-                DataNode node = new DataNode(request.NodeInfo.DataNode.Id.Value, request.NodeInfo.DataNode.IpAddress, DateTime.UtcNow);
+                DataNode node = new DataNode(request.NodeInfo.DataNode.Id.Value, request.NodeInfo.DataNode.IpAddress, request.NodeInfo.DiskSpace, DateTime.UtcNow);
                 Program.nodeList.Add(node);
             }
             else // Found, update lastHeartBeat timestamp
             {
+                Program.nodeList[index].diskSpace = request.NodeInfo.DiskSpace;
                 Program.nodeList[index].lastHeartBeat = DateTime.UtcNow;
             }
 
@@ -86,7 +87,6 @@ namespace NameNode
 
     class Program
     {
-        const int Port = 50051;
         public static List<DataNode> nodeList = new List<DataNode>();
         static void Main(string[] args)
         {
@@ -108,7 +108,7 @@ namespace NameNode
             {
                 Services = { DataNodeProto.DataNodeProto.BindService(new NameNodeImpl()),
                 ClientProto.ClientProto.BindService(new ClientImpl())},
-                Ports = { new ServerPort(ipAddress, Port, ServerCredentials.Insecure) }
+                Ports = { new ServerPort(ipAddress, Constants.Port, ServerCredentials.Insecure) }
             };
 
             Console.WriteLine("Done initializing");
@@ -118,7 +118,7 @@ namespace NameNode
             //Check for dead datanodes
             Task nodeCheckTask = RunNodeCheck();
 
-            Console.WriteLine("Greeter server listening on ip address " + ipAddress + ", port " + Port);
+            Console.WriteLine("Greeter server listening on ip address " + ipAddress + ", port " + Constants.Port);
             Console.WriteLine("Press any key to stop the server...");
             Console.ReadKey();
 

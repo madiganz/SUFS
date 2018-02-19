@@ -62,7 +62,7 @@ namespace DataNode
                                 // Send data to each block
                                 foreach( var dataNode in block.DataNodes)
                                 {
-                                    Channel channel = new Channel(dataNode.IpAddress + ":" + Program.Port, ChannelCredentials.Insecure);
+                                    Channel channel = new Channel(dataNode.IpAddress + ":" + Constants.Port, ChannelCredentials.Insecure);
                                     var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
                                     nodeClient.ForwardDataBlockAsync(block); // TODO: Need to wait????
                                     //channel.ShutdownAsync(); // NEED THIS?
@@ -74,7 +74,7 @@ namespace DataNode
                             break;
                     }
                 }
-                await Task.Delay(3000); // This is an HDFS default
+                await Task.Delay(Constants.HeartBeatInterval); // This is an HDFS default
             }
         }
 

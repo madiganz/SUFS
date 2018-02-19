@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="BlockReport.cs" />
     <Compile Include="BlockStorage.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DataNodeImpl.cs" />
     <Compile Include="HeartBeat.cs" />
     <Compile Include="Program.cs" />
