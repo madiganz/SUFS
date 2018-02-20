@@ -22,7 +22,13 @@ namespace DataNode
                 DataNodeProto.BlockReportRequest blockReport = CreateBlockReport();
                 DataNodeProto.StatusResponse response = tClient.SendBlockReport(blockReport, new CallOptions().WithWaitForReady(true));
                 Console.WriteLine(response.Type.ToString());
+#if (!DEBUG)
+                await Task.Delay(Constants.BlockReportInterval);
+#endif
+
+#if DEBUG
                 await Task.Delay(20000);
+#endif
             }
         }
 

@@ -2,21 +2,44 @@ syntax = "proto3";
 package ClientProto;
 
 service ClientProto {
+	// To NameNode
     rpc DeleteDirectory (Path) returns (StatusResponse) {}
-
 	rpc AddDirectory(Path) returns (StatusResponse) {}
-
+	rpc CreateFile(Path) returns (StatusResponse) {}
+	rpc ReadFile(Path) returns (StatusResponse) {}
+	rpc DeleteFile(Path) returns (StatusResponse) {}
+	rpc ListDirectoryContents(Path) returns (StatusResponse) {}
+	rpc ListMetaData(StatusResponse) returns (StatusResponse) {}
 	// link to read stream data
 
 	// bideectional streaming
 
-	// write streaming 
-
-
+	// write streaming
+	
+	// To DataNode
+	rpc ReadBlock(UUID) returns (stream BlockData) {}
+	rpc WriteBlock(stream BlockData) returns (StatusResponse) {}
 }
 
 
+message DataBlock {
+	UUID blockId = 1;
+	bytes data = 2;
+	repeated DataNode dataNodes = 3; // Remaining nodes to forward data to
+}
 
+message DataNode {
+	UUID id = 1;
+	string ipAddress = 2;
+}
+
+message BlockData {
+	bytes data = 1;
+}
+
+message UUID {
+	string value = 1;
+}
 
 message Path {
 	string fullpath = 1;

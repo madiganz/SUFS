@@ -9,7 +9,7 @@ namespace DataNode
     static class Constants
     {
         public const int Port = 50051;
-        public const int BlockInterval = 21600000; // Default hdfs
+        public const int BlockReportInterval = 21600000; // Default hdfs
         public const int HeartBeatInterval = 3000; // Default hdfs
     }
 }

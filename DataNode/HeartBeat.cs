@@ -64,7 +64,7 @@ namespace DataNode
                                 {
                                     Channel channel = new Channel(dataNode.IpAddress + ":" + Constants.Port, ChannelCredentials.Insecure);
                                     var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
-                                    nodeClient.ForwardDataBlockAsync(block); // TODO: Need to wait????
+                                    nodeClient.WriteDataBlockAsync(block); // TODO: Need to wait????
                                     //channel.ShutdownAsync(); // NEED THIS?
                                 }
                             }
