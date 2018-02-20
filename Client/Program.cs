@@ -8,11 +8,11 @@ namespace Client
 	{
 		public static void Main(string[] args)
 		{
-			Channel channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
+            //// Assume passed in parameters:
+            //// NameNodeIP:Port => args[0],
+			Channel channel = new Channel(args[0], ChannelCredentials.Insecure);
 
 			var client = new ClientProto.ClientProto.ClientProtoClient(channel);
-
-			//String user = "Tong";
 
 			var reply = client.DeleteDirectory( new ClientProto.Path { Fullpath = "Path" } );
 
