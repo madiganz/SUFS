@@ -939,7 +939,7 @@ namespace DataNodeProto {
   }
 
   /// <summary>
-  /// Comands sent back from namenode is response to heartbeat
+  /// Commands sent back from namenode is response to heartbeat
   /// </summary>
   public sealed partial class DataNodeCommands : pb::IMessage<DataNodeCommands> {
     private static readonly pb::MessageParser<DataNodeCommands> _parser = new pb::MessageParser<DataNodeCommands>(() => new DataNodeCommands());

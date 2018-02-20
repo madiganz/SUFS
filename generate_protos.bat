@@ -19,10 +19,8 @@ setlocal
 @rem enter this directory
 cd /d %~dp0
 
-set TOOLS_PATH=packages\Grpc.Tools.1.9.0\tools\windows_x86
+gRPCTools\protoc.exe -I proto --csharp_out DataNodeProto  proto\datanodeproto.proto --grpc_out DataNodeProto --plugin=protoc-gen-grpc=gRPCTools\grpc_csharp_plugin.exe
 
-%TOOLS_PATH%\protoc.exe -I./proto --csharp_out DataNodeProto  ./proto/datanodeproto.proto --grpc_out DataNodeProto --plugin=protoc-gen-grpc=%TOOLS_PATH%\grpc_csharp_plugin.exe
-
-%TOOLS_PATH%\protoc.exe -I./proto --csharp_out ClientProto  ./proto/clientproto.proto --grpc_out ClientProto --plugin=protoc-gen-grpc=%TOOLS_PATH%\grpc_csharp_plugin.exe
+gRPCTools\protoc.exe -I proto --csharp_out ClientProto  proto\clientproto.proto --grpc_out ClientProto --plugin=protoc-gen-grpc=gRPCTools\grpc_csharp_plugin.exe
 
 endlocal

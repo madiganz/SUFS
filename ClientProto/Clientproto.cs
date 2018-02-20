@@ -25,16 +25,27 @@ namespace ClientProto {
             "ChFjbGllbnRwcm90by5wcm90bxILQ2xpZW50UHJvdG8iGAoEUGF0aBIQCghm",
             "dWxscGF0aBgBIAEoCSJrCg5TdGF0dXNSZXNwb25zZRI0CgR0eXBlGAEgASgO",
             "MiYuQ2xpZW50UHJvdG8uU3RhdHVzUmVzcG9uc2UuU3RhdHVzVHlwZSIjCgpT",
-            "dGF0dXNUeXBlEgsKB1N1Y2Nlc3MQABIICgRGYWlsEAEylAEKC0NsaWVudFBy",
-            "b3RvEkMKD0RlbGV0ZURpcmVjdG9yeRIRLkNsaWVudFByb3RvLlBhdGgaGy5D",
-            "bGllbnRQcm90by5TdGF0dXNSZXNwb25zZSIAEkAKDEFkZERpcmVjdG9yeRIR",
-            "LkNsaWVudFByb3RvLlBhdGgaGy5DbGllbnRQcm90by5TdGF0dXNSZXNwb25z",
-            "ZSIAYgZwcm90bzM="));
+            "dGF0dXNUeXBlEgsKB1N1Y2Nlc3MQABIICgRGYWlsEAEiLgoLTGlzdE9mTm9k",
+            "ZXMSDwoHYmxvY2tJZBgBIAEoCRIOCgZub2RlSWQYAiADKAkiIgoOTGlzdE9m",
+            "Q29udGVudHMSEAoIZmlsZU5hbWUYASADKAkiLAoHTmV3RmlsZRIQCghmdWxs",
+            "cGF0aBgBIAEoCRIPCgdhZGRyZXNzGAIgASgJMpIDCgtDbGllbnRQcm90bxJD",
+            "Cg9EZWxldGVEaXJlY3RvcnkSES5DbGllbnRQcm90by5QYXRoGhsuQ2xpZW50",
+            "UHJvdG8uU3RhdHVzUmVzcG9uc2UiABJACgxBZGREaXJlY3RvcnkSES5DbGll",
+            "bnRQcm90by5QYXRoGhsuQ2xpZW50UHJvdG8uU3RhdHVzUmVzcG9uc2UiABI6",
+            "CglMaXN0Tm9kZXMSES5DbGllbnRQcm90by5QYXRoGhguQ2xpZW50UHJvdG8u",
+            "TGlzdE9mTm9kZXMiABI+CgdBZGRGaWxlEhQuQ2xpZW50UHJvdG8uTmV3Rmls",
+            "ZRobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgASPgoKRGVsZXRlRmls",
+            "ZRIRLkNsaWVudFByb3RvLlBhdGgaGy5DbGllbnRQcm90by5TdGF0dXNSZXNw",
+            "b25zZSIAEkAKDExpc3RDb250ZW50cxIRLkNsaWVudFByb3RvLlBhdGgaGy5D",
+            "bGllbnRQcm90by5MaXN0T2ZDb250ZW50cyIAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.Path), global::ClientProto.Path.Parser, new[]{ "Fullpath" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.StatusResponse), global::ClientProto.StatusResponse.Parser, new[]{ "Type" }, null, new[]{ typeof(global::ClientProto.StatusResponse.Types.StatusType) }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.StatusResponse), global::ClientProto.StatusResponse.Parser, new[]{ "Type" }, null, new[]{ typeof(global::ClientProto.StatusResponse.Types.StatusType) }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.ListOfNodes), global::ClientProto.ListOfNodes.Parser, new[]{ "BlockId", "NodeId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.ListOfContents), global::ClientProto.ListOfContents.Parser, new[]{ "FileName" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.NewFile), global::ClientProto.NewFile.Parser, new[]{ "Fullpath", "Address" }, null, null, null)
           }));
     }
     #endregion
@@ -284,6 +295,400 @@ namespace ClientProto {
 
     }
     #endregion
+
+  }
+
+  public sealed partial class ListOfNodes : pb::IMessage<ListOfNodes> {
+    private static readonly pb::MessageParser<ListOfNodes> _parser = new pb::MessageParser<ListOfNodes>(() => new ListOfNodes());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ListOfNodes> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ListOfNodes() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ListOfNodes(ListOfNodes other) : this() {
+      blockId_ = other.blockId_;
+      nodeId_ = other.nodeId_.Clone();
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ListOfNodes Clone() {
+      return new ListOfNodes(this);
+    }
+
+    /// <summary>Field number for the "blockId" field.</summary>
+    public const int BlockIdFieldNumber = 1;
+    private string blockId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string BlockId {
+      get { return blockId_; }
+      set {
+        blockId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "nodeId" field.</summary>
+    public const int NodeIdFieldNumber = 2;
+    private static readonly pb::FieldCodec<string> _repeated_nodeId_codec
+        = pb::FieldCodec.ForString(18);
+    private readonly pbc::RepeatedField<string> nodeId_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> NodeId {
+      get { return nodeId_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ListOfNodes);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ListOfNodes other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (BlockId != other.BlockId) return false;
+      if(!nodeId_.Equals(other.nodeId_)) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (BlockId.Length != 0) hash ^= BlockId.GetHashCode();
+      hash ^= nodeId_.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (BlockId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(BlockId);
+      }
+      nodeId_.WriteTo(output, _repeated_nodeId_codec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (BlockId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BlockId);
+      }
+      size += nodeId_.CalculateSize(_repeated_nodeId_codec);
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ListOfNodes other) {
+      if (other == null) {
+        return;
+      }
+      if (other.BlockId.Length != 0) {
+        BlockId = other.BlockId;
+      }
+      nodeId_.Add(other.nodeId_);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            BlockId = input.ReadString();
+            break;
+          }
+          case 18: {
+            nodeId_.AddEntriesFrom(input, _repeated_nodeId_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class ListOfContents : pb::IMessage<ListOfContents> {
+    private static readonly pb::MessageParser<ListOfContents> _parser = new pb::MessageParser<ListOfContents>(() => new ListOfContents());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ListOfContents> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ListOfContents() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ListOfContents(ListOfContents other) : this() {
+      fileName_ = other.fileName_.Clone();
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ListOfContents Clone() {
+      return new ListOfContents(this);
+    }
+
+    /// <summary>Field number for the "fileName" field.</summary>
+    public const int FileNameFieldNumber = 1;
+    private static readonly pb::FieldCodec<string> _repeated_fileName_codec
+        = pb::FieldCodec.ForString(10);
+    private readonly pbc::RepeatedField<string> fileName_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> FileName {
+      get { return fileName_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ListOfContents);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ListOfContents other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!fileName_.Equals(other.fileName_)) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= fileName_.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      fileName_.WriteTo(output, _repeated_fileName_codec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += fileName_.CalculateSize(_repeated_fileName_codec);
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ListOfContents other) {
+      if (other == null) {
+        return;
+      }
+      fileName_.Add(other.fileName_);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            fileName_.AddEntriesFrom(input, _repeated_fileName_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class NewFile : pb::IMessage<NewFile> {
+    private static readonly pb::MessageParser<NewFile> _parser = new pb::MessageParser<NewFile>(() => new NewFile());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<NewFile> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public NewFile() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public NewFile(NewFile other) : this() {
+      fullpath_ = other.fullpath_;
+      address_ = other.address_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public NewFile Clone() {
+      return new NewFile(this);
+    }
+
+    /// <summary>Field number for the "fullpath" field.</summary>
+    public const int FullpathFieldNumber = 1;
+    private string fullpath_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Fullpath {
+      get { return fullpath_; }
+      set {
+        fullpath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "address" field.</summary>
+    public const int AddressFieldNumber = 2;
+    private string address_ = "";
+    /// <summary>
+    /// s3 object
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Address {
+      get { return address_; }
+      set {
+        address_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as NewFile);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(NewFile other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Fullpath != other.Fullpath) return false;
+      if (Address != other.Address) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Fullpath.Length != 0) hash ^= Fullpath.GetHashCode();
+      if (Address.Length != 0) hash ^= Address.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Fullpath.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Fullpath);
+      }
+      if (Address.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Address);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Fullpath.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Fullpath);
+      }
+      if (Address.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Address);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(NewFile other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Fullpath.Length != 0) {
+        Fullpath = other.Fullpath;
+      }
+      if (other.Address.Length != 0) {
+        Address = other.Address;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            Fullpath = input.ReadString();
+            break;
+          }
+          case 18: {
+            Address = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
 
   }
 

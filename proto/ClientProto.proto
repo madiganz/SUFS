@@ -2,12 +2,26 @@ syntax = "proto3";
 package ClientProto;
 
 service ClientProto {
+	//Delete a directory 
     rpc DeleteDirectory (Path) returns (StatusResponse) {}
 
+	//Create a directory
 	rpc AddDirectory(Path) returns (StatusResponse) {}
 
-	// link to read stream data
-
+	// List the DataNodes that store replicas of each block of a file
+    rpc ListNodes(Path) returns (ListOfNodes) {}
+	
+	//Create a new file in SUFS
+	rpc AddFile(NewFile) returns (StatusResponse){}
+	
+	//Read a file
+	
+	//Delete a file
+	rpc DeleteFile(Path) returns (StatusResponse) {}
+	
+	//List the contents of a directory
+	rpc ListContents (Path) returns (ListOfContents){}
+	
 	// bideectional streaming
 
 	// write streaming 
@@ -28,4 +42,18 @@ message StatusResponse {
 		Fail = 1;
 	}
 	StatusType type = 1;
+}
+
+message ListOfNodes  {
+	string blockId = 1;
+	repeated string nodeId = 2;
+}
+
+message ListOfContents {
+	repeated string fileName = 1;
+}
+
+message NewFile {
+	string fullpath = 1;
+	string address = 2; // s3 object
 }
