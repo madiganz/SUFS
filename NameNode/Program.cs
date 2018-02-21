@@ -41,12 +41,12 @@ namespace NameNode
             Console.WriteLine(request);
 
             // Update list of datanodes
-            int index = Program.nodeList.FindIndex(node => node.nodeId == Guid.Parse(request.NodeInfo.DataNode.Id.Value));
+            int index = Program.nodeList.FindIndex(node => node.ipAddress == request.NodeInfo.DataNode.IpAddress);
 
             // Not found -> add to list
             if (index < 0)
             {
-                DataNode node = new DataNode(request.NodeInfo.DataNode.Id.Value, request.NodeInfo.DataNode.IpAddress, request.NodeInfo.DiskSpace, DateTime.UtcNow);
+                DataNode node = new DataNode(request.NodeInfo.DataNode.IpAddress, request.NodeInfo.DiskSpace, DateTime.UtcNow);
                 Program.nodeList.Add(node);
             }
             else // Found, update lastHeartBeat timestamp
@@ -122,8 +122,8 @@ namespace NameNode
             Console.WriteLine("Press any key to stop the server...");
             Console.ReadKey();
 
-            TestSavingFileSystem();
-            TestLoadingFileSystem();
+            //TestSavingFileSystem();
+            //TestLoadingFileSystem();
 
             server.ShutdownAsync().Wait();
         }
@@ -147,7 +147,7 @@ namespace NameNode
 
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
-            System.IO.File.WriteAllText(@"/Users/BryanHerr/Documents/College/CPSC4910-02/SUFS/testDirecotry.yml", yaml);
+            System.IO.File.WriteAllText(@"./testDirecotry.yml", yaml);
             Console.WriteLine(yaml);
         }
 
