@@ -8,6 +8,7 @@ namespace NameNode.FileSystem
         public Dictionary<string, File> files { get; set; }
         public Folder parent { get; set; }
         public string name { get; set; }
+        public string path { get; set; }
         public Folder()
         {
             subfolders = new Dictionary<string, Folder>(); 
@@ -16,7 +17,8 @@ namespace NameNode.FileSystem
         public Folder(string name, Folder parent)
         {
             subfolders = new Dictionary<string, Folder>(); 
-            files = new Dictionary<string, File>(); 
+            files = new Dictionary<string, File>();
+            this.path = parent.path + "/" + name;
             this.name = name;
             this.parent = parent;
         }

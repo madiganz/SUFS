@@ -88,6 +88,7 @@ namespace NameNode
     class Program
     {
         public static List<DataNode> nodeList = new List<DataNode>();
+        public static NameNode Database = new NameNode();
         static void Main(string[] args)
         {
 
@@ -134,7 +135,7 @@ namespace NameNode
             Root.subfolders.Add("user", new Folder("user", Root));
             Folder currentLocation = Root.subfolders["user"];
             currentLocation.subfolders.Add("other folder", new Folder("other folder", currentLocation));
-            currentLocation.files.Add("File", new FileSystem.File("File"));
+            currentLocation.files.Add("File",  new FileSystem.File("File", currentLocation.path));
             FileSystem.File selectedFile = currentLocation.files["File"];
 
             var guid = Guid.NewGuid();
@@ -147,13 +148,13 @@ namespace NameNode
 
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
-            System.IO.File.WriteAllText(@"./testDirecotry.yml", yaml);
+            System.IO.File.WriteAllText(@"C:/data/testDirecotry.yml", yaml);
             Console.WriteLine(yaml);
         }
 
         private static void TestLoadingFileSystem()
         {
-            string yaml = System.IO.File.ReadAllText(@"/Users/BryanHerr/Documents/College/CPSC4910-02/SUFS/testDirecotry.yml");
+            string yaml = System.IO.File.ReadAllText(@"C:/data/testDirecotry.yml");
             var input = new StringReader(yaml);
 
             var deserializer = new DeserializerBuilder()
