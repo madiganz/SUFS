@@ -15,6 +15,9 @@ namespace ClientProto {
 
     static readonly grpc::Marshaller<global::ClientProto.Path> __Marshaller_Path = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.Path.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::ClientProto.StatusResponse> __Marshaller_StatusResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.StatusResponse.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::ClientProto.ListOfNodes> __Marshaller_ListOfNodes = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.ListOfNodes.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::ClientProto.NewFile> __Marshaller_NewFile = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.NewFile.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::ClientProto.ListOfContents> __Marshaller_ListOfContents = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.ListOfContents.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::ClientProto.UUID> __Marshaller_UUID = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.UUID.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::ClientProto.BlockData> __Marshaller_BlockData = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.BlockData.Parser.ParseFrom);
 
@@ -32,18 +35,18 @@ namespace ClientProto {
         __Marshaller_Path,
         __Marshaller_StatusResponse);
 
-    static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse> __Method_CreateFile = new grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse>(
+    static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.ListOfNodes> __Method_ListNodes = new grpc::Method<global::ClientProto.Path, global::ClientProto.ListOfNodes>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "CreateFile",
+        "ListNodes",
         __Marshaller_Path,
-        __Marshaller_StatusResponse);
+        __Marshaller_ListOfNodes);
 
-    static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse> __Method_ReadFile = new grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse>(
+    static readonly grpc::Method<global::ClientProto.NewFile, global::ClientProto.StatusResponse> __Method_AddFile = new grpc::Method<global::ClientProto.NewFile, global::ClientProto.StatusResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "ReadFile",
-        __Marshaller_Path,
+        "AddFile",
+        __Marshaller_NewFile,
         __Marshaller_StatusResponse);
 
     static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse> __Method_DeleteFile = new grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse>(
@@ -53,19 +56,12 @@ namespace ClientProto {
         __Marshaller_Path,
         __Marshaller_StatusResponse);
 
-    static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse> __Method_ListDirectoryContents = new grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse>(
+    static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.ListOfContents> __Method_ListContents = new grpc::Method<global::ClientProto.Path, global::ClientProto.ListOfContents>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "ListDirectoryContents",
+        "ListContents",
         __Marshaller_Path,
-        __Marshaller_StatusResponse);
-
-    static readonly grpc::Method<global::ClientProto.StatusResponse, global::ClientProto.StatusResponse> __Method_ListMetaData = new grpc::Method<global::ClientProto.StatusResponse, global::ClientProto.StatusResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "ListMetaData",
-        __Marshaller_StatusResponse,
-        __Marshaller_StatusResponse);
+        __Marshaller_ListOfContents);
 
     static readonly grpc::Method<global::ClientProto.UUID, global::ClientProto.BlockData> __Method_ReadBlock = new grpc::Method<global::ClientProto.UUID, global::ClientProto.BlockData>(
         grpc::MethodType.ServerStreaming,
@@ -91,7 +87,7 @@ namespace ClientProto {
     public abstract partial class ClientProtoBase
     {
       /// <summary>
-      /// To NameNode
+      ///Delete a directory 
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
@@ -112,33 +108,52 @@ namespace ClientProto {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> CreateFile(global::ClientProto.Path request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> ReadFile(global::ClientProto.Path request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> DeleteFile(global::ClientProto.Path request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> ListDirectoryContents(global::ClientProto.Path request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> ListMetaData(global::ClientProto.StatusResponse request, grpc::ServerCallContext context)
+      /// <summary>
+      /// List the DataNodes that store replicas of each block of a file
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::ClientProto.ListOfNodes> ListNodes(global::ClientProto.Path request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
       /// <summary>
-      /// To DataNode
+      ///Create a new file in SUFS
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> AddFile(global::ClientProto.NewFile request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///Delete a file
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> DeleteFile(global::ClientProto.Path request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///List the contents of a directory
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::ClientProto.ListOfContents> ListContents(global::ClientProto.Path request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Reads block from datanode
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="responseStream">Used for sending responses back to the client.</param>
@@ -149,6 +164,12 @@ namespace ClientProto {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
+      /// <summary>
+      /// Creates a pipeline to stream bytes to datanodes
+      /// </summary>
+      /// <param name="requestStream">Used for reading requests from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> WriteBlock(grpc::IAsyncStreamReader<global::ClientProto.BlockData> requestStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
@@ -180,7 +201,7 @@ namespace ClientProto {
       }
 
       /// <summary>
-      /// To NameNode
+      ///Delete a directory 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -192,7 +213,7 @@ namespace ClientProto {
         return DeleteDirectory(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// To NameNode
+      ///Delete a directory 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -202,7 +223,7 @@ namespace ClientProto {
         return CallInvoker.BlockingUnaryCall(__Method_DeleteDirectory, null, options, request);
       }
       /// <summary>
-      /// To NameNode
+      ///Delete a directory 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -214,7 +235,7 @@ namespace ClientProto {
         return DeleteDirectoryAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// To NameNode
+      ///Delete a directory 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -267,88 +288,138 @@ namespace ClientProto {
       {
         return CallInvoker.AsyncUnaryCall(__Method_AddDirectory, null, options, request);
       }
-      public virtual global::ClientProto.StatusResponse CreateFile(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      /// <summary>
+      /// List the DataNodes that store replicas of each block of a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::ClientProto.ListOfNodes ListNodes(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return CreateFile(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return ListNodes(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::ClientProto.StatusResponse CreateFile(global::ClientProto.Path request, grpc::CallOptions options)
+      /// <summary>
+      /// List the DataNodes that store replicas of each block of a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::ClientProto.ListOfNodes ListNodes(global::ClientProto.Path request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_CreateFile, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_ListNodes, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> CreateFileAsync(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      /// <summary>
+      /// List the DataNodes that store replicas of each block of a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.ListOfNodes> ListNodesAsync(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return CreateFileAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return ListNodesAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> CreateFileAsync(global::ClientProto.Path request, grpc::CallOptions options)
+      /// <summary>
+      /// List the DataNodes that store replicas of each block of a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.ListOfNodes> ListNodesAsync(global::ClientProto.Path request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_CreateFile, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_ListNodes, null, options, request);
       }
-      public virtual global::ClientProto.StatusResponse ReadFile(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      /// <summary>
+      ///Create a new file in SUFS
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::ClientProto.StatusResponse AddFile(global::ClientProto.NewFile request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return ReadFile(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return AddFile(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::ClientProto.StatusResponse ReadFile(global::ClientProto.Path request, grpc::CallOptions options)
+      /// <summary>
+      ///Create a new file in SUFS
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::ClientProto.StatusResponse AddFile(global::ClientProto.NewFile request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_ReadFile, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_AddFile, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> ReadFileAsync(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      /// <summary>
+      ///Create a new file in SUFS
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> AddFileAsync(global::ClientProto.NewFile request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return ReadFileAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return AddFileAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> ReadFileAsync(global::ClientProto.Path request, grpc::CallOptions options)
+      /// <summary>
+      ///Create a new file in SUFS
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> AddFileAsync(global::ClientProto.NewFile request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_ReadFile, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_AddFile, null, options, request);
       }
+      /// <summary>
+      ///Delete a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
       public virtual global::ClientProto.StatusResponse DeleteFile(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return DeleteFile(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
+      /// <summary>
+      ///Delete a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
       public virtual global::ClientProto.StatusResponse DeleteFile(global::ClientProto.Path request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_DeleteFile, null, options, request);
       }
+      /// <summary>
+      ///Delete a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
       public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> DeleteFileAsync(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return DeleteFileAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
+      /// <summary>
+      ///Delete a file
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
       public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> DeleteFileAsync(global::ClientProto.Path request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_DeleteFile, null, options, request);
       }
-      public virtual global::ClientProto.StatusResponse ListDirectoryContents(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
-      {
-        return ListDirectoryContents(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual global::ClientProto.StatusResponse ListDirectoryContents(global::ClientProto.Path request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_ListDirectoryContents, null, options, request);
-      }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> ListDirectoryContentsAsync(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
-      {
-        return ListDirectoryContentsAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> ListDirectoryContentsAsync(global::ClientProto.Path request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_ListDirectoryContents, null, options, request);
-      }
-      public virtual global::ClientProto.StatusResponse ListMetaData(global::ClientProto.StatusResponse request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
-      {
-        return ListMetaData(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual global::ClientProto.StatusResponse ListMetaData(global::ClientProto.StatusResponse request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_ListMetaData, null, options, request);
-      }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> ListMetaDataAsync(global::ClientProto.StatusResponse request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
-      {
-        return ListMetaDataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> ListMetaDataAsync(global::ClientProto.StatusResponse request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_ListMetaData, null, options, request);
-      }
-      /// <summary>
-      /// To DataNode
       /// <summary>
       ///List the contents of a directory
       /// </summary>
@@ -379,12 +450,34 @@ namespace ClientProto {
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.ListOfContents> ListContentsAsync(global::ClientProto.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return ListContentsAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///List the contents of a directory
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.ListOfContents> ListContentsAsync(global::ClientProto.Path request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_ListContents, null, options, request);
+      }
+      /// <summary>
+      /// Reads block from datanode
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
       public virtual grpc::AsyncServerStreamingCall<global::ClientProto.BlockData> ReadBlock(global::ClientProto.UUID request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return ReadBlock(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// To DataNode
+      /// Reads block from datanode
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -393,10 +486,22 @@ namespace ClientProto {
       {
         return CallInvoker.AsyncServerStreamingCall(__Method_ReadBlock, null, options, request);
       }
+      /// <summary>
+      /// Creates a pipeline to stream bytes to datanodes
+      /// </summary>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
       public virtual grpc::AsyncClientStreamingCall<global::ClientProto.BlockData, global::ClientProto.StatusResponse> WriteBlock(grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return WriteBlock(new grpc::CallOptions(headers, deadline, cancellationToken));
       }
+      /// <summary>
+      /// Creates a pipeline to stream bytes to datanodes
+      /// </summary>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
       public virtual grpc::AsyncClientStreamingCall<global::ClientProto.BlockData, global::ClientProto.StatusResponse> WriteBlock(grpc::CallOptions options)
       {
         return CallInvoker.AsyncClientStreamingCall(__Method_WriteBlock, null, options);
@@ -415,11 +520,10 @@ namespace ClientProto {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_DeleteDirectory, serviceImpl.DeleteDirectory)
           .AddMethod(__Method_AddDirectory, serviceImpl.AddDirectory)
-          .AddMethod(__Method_CreateFile, serviceImpl.CreateFile)
-          .AddMethod(__Method_ReadFile, serviceImpl.ReadFile)
+          .AddMethod(__Method_ListNodes, serviceImpl.ListNodes)
+          .AddMethod(__Method_AddFile, serviceImpl.AddFile)
           .AddMethod(__Method_DeleteFile, serviceImpl.DeleteFile)
-          .AddMethod(__Method_ListDirectoryContents, serviceImpl.ListDirectoryContents)
-          .AddMethod(__Method_ListMetaData, serviceImpl.ListMetaData)
+          .AddMethod(__Method_ListContents, serviceImpl.ListContents)
           .AddMethod(__Method_ReadBlock, serviceImpl.ReadBlock)
           .AddMethod(__Method_WriteBlock, serviceImpl.WriteBlock).Build();
     }

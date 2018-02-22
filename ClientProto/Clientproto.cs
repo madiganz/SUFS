@@ -30,21 +30,22 @@ namespace ClientProto {
             "DCIVCgRVVUlEEg0KBXZhbHVlGAEgASgJIhgKBFBhdGgSEAoIZnVsbHBhdGgY",
             "ASABKAkiawoOU3RhdHVzUmVzcG9uc2USNAoEdHlwZRgBIAEoDjImLkNsaWVu",
             "dFByb3RvLlN0YXR1c1Jlc3BvbnNlLlN0YXR1c1R5cGUiIwoKU3RhdHVzVHlw",
-            "ZRILCgdTdWNjZXNzEAASCAoERmFpbBABMuwECgtDbGllbnRQcm90bxJDCg9E",
-            "ZWxldGVEaXJlY3RvcnkSES5DbGllbnRQcm90by5QYXRoGhsuQ2xpZW50UHJv",
-            "dG8uU3RhdHVzUmVzcG9uc2UiABJACgxBZGREaXJlY3RvcnkSES5DbGllbnRQ",
-            "cm90by5QYXRoGhsuQ2xpZW50UHJvdG8uU3RhdHVzUmVzcG9uc2UiABI+CgpD",
-            "cmVhdGVGaWxlEhEuQ2xpZW50UHJvdG8uUGF0aBobLkNsaWVudFByb3RvLlN0",
-            "YXR1c1Jlc3BvbnNlIgASPAoIUmVhZEZpbGUSES5DbGllbnRQcm90by5QYXRo",
-            "GhsuQ2xpZW50UHJvdG8uU3RhdHVzUmVzcG9uc2UiABI+CgpEZWxldGVGaWxl",
-            "EhEuQ2xpZW50UHJvdG8uUGF0aBobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3Bv",
-            "bnNlIgASSQoVTGlzdERpcmVjdG9yeUNvbnRlbnRzEhEuQ2xpZW50UHJvdG8u",
-            "UGF0aBobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgASSgoMTGlzdE1l",
-            "dGFEYXRhEhsuQ2xpZW50UHJvdG8uU3RhdHVzUmVzcG9uc2UaGy5DbGllbnRQ",
-            "cm90by5TdGF0dXNSZXNwb25zZSIAEjoKCVJlYWRCbG9jaxIRLkNsaWVudFBy",
-            "b3RvLlVVSUQaFi5DbGllbnRQcm90by5CbG9ja0RhdGEiADABEkUKCldyaXRl",
-            "QmxvY2sSFi5DbGllbnRQcm90by5CbG9ja0RhdGEaGy5DbGllbnRQcm90by5T",
-            "dGF0dXNSZXNwb25zZSIAKAFiBnByb3RvMw=="));
+            "ZRILCgdTdWNjZXNzEAASCAoERmFpbBABIi4KC0xpc3RPZk5vZGVzEg8KB2Js",
+            "b2NrSWQYASABKAkSDgoGbm9kZUlkGAIgAygJIiIKDkxpc3RPZkNvbnRlbnRz",
+            "EhAKCGZpbGVOYW1lGAEgAygJIiwKB05ld0ZpbGUSEAoIZnVsbHBhdGgYASAB",
+            "KAkSDwoHYWRkcmVzcxgCIAEoCTKVBAoLQ2xpZW50UHJvdG8SQwoPRGVsZXRl",
+            "RGlyZWN0b3J5EhEuQ2xpZW50UHJvdG8uUGF0aBobLkNsaWVudFByb3RvLlN0",
+            "YXR1c1Jlc3BvbnNlIgASQAoMQWRkRGlyZWN0b3J5EhEuQ2xpZW50UHJvdG8u",
+            "UGF0aBobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgASOgoJTGlzdE5v",
+            "ZGVzEhEuQ2xpZW50UHJvdG8uUGF0aBoYLkNsaWVudFByb3RvLkxpc3RPZk5v",
+            "ZGVzIgASPgoHQWRkRmlsZRIULkNsaWVudFByb3RvLk5ld0ZpbGUaGy5DbGll",
+            "bnRQcm90by5TdGF0dXNSZXNwb25zZSIAEj4KCkRlbGV0ZUZpbGUSES5DbGll",
+            "bnRQcm90by5QYXRoGhsuQ2xpZW50UHJvdG8uU3RhdHVzUmVzcG9uc2UiABJA",
+            "CgxMaXN0Q29udGVudHMSES5DbGllbnRQcm90by5QYXRoGhsuQ2xpZW50UHJv",
+            "dG8uTGlzdE9mQ29udGVudHMiABI6CglSZWFkQmxvY2sSES5DbGllbnRQcm90",
+            "by5VVUlEGhYuQ2xpZW50UHJvdG8uQmxvY2tEYXRhIgAwARJFCgpXcml0ZUJs",
+            "b2NrEhYuQ2xpZW50UHJvdG8uQmxvY2tEYXRhGhsuQ2xpZW50UHJvdG8uU3Rh",
+            "dHVzUmVzcG9uc2UiACgBYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -875,7 +876,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[2]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1012,7 +1013,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[3]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1121,7 +1122,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[4]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
