@@ -65,10 +65,11 @@ namespace DataNode
             List<Metadata.Entry> metaData = context.RequestHeaders.ToList();
             Metadata.Entry ipAddress = null;
             bool forward = true;
+            bool success = true;
             try
             {
                 ipAddress = metaData.Find(m => { return m.Key == "ipaddresses"; });
-                if(ipAddress == null)
+                if (ipAddress == null)
                 {
                     forward = false;
                 }
@@ -78,17 +79,18 @@ namespace DataNode
                 forward = false;
             }
             Metadata.Entry blockId = metaData.Find(m => { return m.Key == "blockid"; });
-            string filePath = BlockStorage.Instance.CreateFile(Guid.Parse(blockId.Value));
+            //string filePath = BlockStorage.Instance.CreateFile(Guid.Parse(blockId.Value));
+            string filePath = BlockStorage.Instance.CreateFile(Guid.NewGuid());
             Console.WriteLine("Just created file: " + filePath);
 
             // Forward to next datanode
             if (forward)
             {
-                Console.WriteLine("INSIDE OF FORWARD");
                 List<string> addresses = ipAddress.Value.Split(',').ToList();
                 var ip = addresses[0];
                 addresses.RemoveAt(0);
-                Channel channel = new Channel(ip + ":" + Constants.Port, ChannelCredentials.Insecure);
+                //Channel channel = new Channel(ip + ":" + Constants.Port, ChannelCredentials.Insecure);
+                Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
                 var client = new ClientProto.ClientProto.ClientProtoClient(channel);
                 string nodeAddresses = "";
                 Metadata newMetaData = new Metadata
@@ -116,34 +118,31 @@ namespace DataNode
                                 byte[] data = blockData.Data.ToByteArray();
                                 stream.Write(data, 0, data.Length);
                                 await call.RequestStream.WriteAsync(blockData);
-                                //await call.RequestStream.CompleteAsync();
-
-                                //ClientProto.StatusResponse resp = await call.ResponseAsync;
-                                //if (resp.Type == ClientProto.StatusResponse.Types.StatusType.Fail)
-                                //{
-                                //    return resp;
-                                //}
                             }
                             catch (IOException e)
                             {
                                 Console.WriteLine(e);
-                                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                                success = false;
                             }
                         }
-
-                        await call.RequestStream.CompleteAsync();
-
-                        ClientProto.StatusResponse resp = await call.ResponseAsync;
-                        if (resp.Type == ClientProto.StatusResponse.Types.StatusType.Fail)
-                        {
-                            return resp;
-                        }
-
-                        watch.Stop();
-                        Console.WriteLine("Total time to write: " + watch.Elapsed);
                     }
 
-                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
+                    await call.RequestStream.CompleteAsync();
+
+                    ClientProto.StatusResponse resp = await call.ResponseAsync;
+                    watch.Stop();
+                    Console.WriteLine("Total time to write: " + watch.Elapsed);
+                    channel.ShutdownAsync().Wait();
+
+                    // Return success if any writes were successful
+                    if (success || (resp.Type == ClientProto.StatusResponse.Types.StatusType.Success))
+                    {
+                        return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
+                    }
+                    else
+                    {
+                        return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                    }
                 }
             }
             else // Just write to file
@@ -174,6 +173,8 @@ namespace DataNode
 
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             }
+
+
         }
     }
 }

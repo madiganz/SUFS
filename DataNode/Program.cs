@@ -11,12 +11,14 @@ namespace DataNode
         static void Main(string[] args)
         {
             Console.WriteLine("Initializing DataNode");
-            string nameNodeIp = args[0];
+            //string nameNodeIp = args[0];
+            string sport = args[0];
+            int port = Convert.ToInt32(sport);
 
             // Use ec2 instance manager to get the private ip address of this data node
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
-            ipAddress = instanceManager.GetPrivateIpAddress();
-            instanceManager.OpenFirewallPort(Constants.Port.ToString()); // Need to open port on windows firewalls
+            //ipAddress = instanceManager.GetPrivateIpAddress();
+            //instanceManager.OpenFirewallPort(Constants.Port.ToString()); // Need to open port on windows firewalls
 
 #if DEBUG
             if (ipAddress == null)
@@ -29,24 +31,25 @@ namespace DataNode
             {
                 Services = { DataNodeProto.DataNodeProto.BindService(new DataNodeHandler()),
                    ClientProto.ClientProto.BindService(new ClientHandler())},
-                Ports = { new ServerPort(ipAddress, Constants.Port, ServerCredentials.Insecure) }
+                //Ports = { new ServerPort(ipAddress, Constants.Port, ServerCredentials.Insecure) }
+                Ports = { new ServerPort(ipAddress, port, ServerCredentials.Insecure) }
             };
 
             Console.WriteLine("Done initializing");
 
             server.Start();
 
-            Console.WriteLine("Trying to connect to: " + nameNodeIp);
-            Channel channel = new Channel(nameNodeIp + ":" + Constants.Port, ChannelCredentials.Insecure);
-            var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
+            //Console.WriteLine("Trying to connect to: " + nameNodeIp);
+            //Channel channel = new Channel(nameNodeIp + ":" + Constants.Port, ChannelCredentials.Insecure);
+            //var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
 
-            // Initialize blockstorage
-            BlockStorage mBlockStorage = BlockStorage.Instance;
+            //// Initialize blockstorage
+            //BlockStorage mBlockStorage = BlockStorage.Instance;
 
-            Thread heartBeatThread = new Thread(new ParameterizedThreadStart(HeartBeat.SendHeartBeat));
-            Thread blockReportThread = new Thread(new ParameterizedThreadStart(BlockReport.SendBlockReport));
-            heartBeatThread.Start(client);
-            blockReportThread.Start(client);
+            //Thread heartBeatThread = new Thread(new ParameterizedThreadStart(HeartBeat.SendHeartBeat));
+            //Thread blockReportThread = new Thread(new ParameterizedThreadStart(BlockReport.SendBlockReport));
+            //heartBeatThread.Start(client);
+            //blockReportThread.Start(client);
             while (true)
             {
             }

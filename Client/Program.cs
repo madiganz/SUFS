@@ -14,8 +14,10 @@ namespace Client
         public static void Main(string[] args)
         {
             // FOr testing
-            string IpAddress = args[0];
-            Channel channel = new Channel(IpAddress + ":50051", ChannelCredentials.Insecure);
+            //string IpAddress = args[0];
+            //Channel channel = new Channel(IpAddress + ":50051", ChannelCredentials.Insecure);
+
+            Channel channel = new Channel("127.0.0.1" + ":50051", ChannelCredentials.Insecure);
 
             var client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
@@ -99,86 +101,87 @@ namespace Client
         public static async Task WriteBlock(ClientProto.ClientProto.ClientProtoClient client)
         {
             Console.WriteLine("in WriteBLock call");
-            IAmazonS3 s3Cient;
-            using (s3Cient = new AmazonS3Client(Amazon.RegionEndpoint.USWest2))
-            {
-                //GetObjectRequest request = new GetObjectRequest
-                //{
-                //    BucketName = "seattleu-cloud-computing",
-                //    Key = "common-crawl",
-                //    ByteRange = new ByteRange(0, 128)
-                //};
-                GetObjectRequest request = new GetObjectRequest
-                {
-                    BucketName = "wordcount-madiganz",
-                    Key = "CC-MAIN-20180116070444-20180116090444-00000.warc",
-                    ByteRange = new ByteRange(0, 134217727) // 128 MB
-                };
+            //IAmazonS3 s3Cient;
+            //using (s3Cient = new AmazonS3Client(Amazon.RegionEndpoint.USWest2))
+            //{
+            //GetObjectRequest request = new GetObjectRequest
+            //{
+            //    BucketName = "wordcount-madiganz",
+            //    Key = "CC-MAIN-20180116070444-20180116090444-00000.warc",
+            //    ByteRange = new ByteRange(0, 134217727) // 128 MB
+            //};
 
-                //List<string> addresses = new List<string>();
-                List<string> addresses = new List<string>
+            //List<string> addresses = new List<string>();
+            List<string> addresses = new List<string>
                 {
                     "172.31.44.5"
                 };
 
-                Metadata metaData = new Metadata
+            Metadata metaData = new Metadata
                     {
                         new Metadata.Entry("blockid", Guid.NewGuid().ToString()),
                         new Metadata.Entry("ipaddresses", String.Join(",", addresses.ToArray()))
                     };
-                byte[] block = new byte[4096];
-                long totalBytesRead = 0;
+            //4096
+            byte[] block = new byte[2097152];
+            long totalBytesRead = 0;
 
-                using (var call = client.WriteBlock(metaData))
+            using (var call = client.WriteBlock(metaData))
+            {
+                //Console.WriteLine("call initialized");
+                using (Stream responseStream = new FileStream(@"C:\Users\Zach Madigan\Documents\Cloud Computing\CC-MAIN-20180116070444-20180116090444-00000.warc", FileMode.Open, FileAccess.Read))
+                //using (GetObjectResponse response = s3Cient.GetObject(request))
+                //using (Stream responseStream = response.ResponseStream)
                 {
-                    //Console.WriteLine("call initialized");
-
-                    using (GetObjectResponse response = s3Cient.GetObject(request))
-                    using (Stream responseStream = response.ResponseStream)
+                    //long totalBytesToRead = response.ContentLength;
+                    //while (totalBytesRead < response.ContentLength)
+                    long totalBytesToRead = 134217727;
+                    while (totalBytesRead < 134217727)
                     {
-                        long totalBytesToRead = response.ContentLength;
-                        while (totalBytesRead < response.ContentLength)
+                        int numBytesRead = 0;
+                        if (totalBytesToRead < 2097152)
                         {
-                            int numBytesRead = 0;
-                            if (totalBytesToRead < 4096)
+                            int numBytesToRead = (int)totalBytesToRead;
+                            do
                             {
-                                int numBytesToRead = (int)totalBytesToRead;
-                                do
-                                {
-                                    int n = responseStream.Read(block, numBytesRead, numBytesToRead);
-                                    numBytesRead += n;
-                                    numBytesToRead -= n;
-                                    totalBytesRead += n;
-                                } while (numBytesToRead > 0);
-                            }
-                            else
-                            {
-                                int numBytesToRead = 4096;
-                                do
-                                {
-                                    int n = responseStream.Read(block, numBytesRead, numBytesToRead);
-                                    numBytesRead += n;
-                                    numBytesToRead -= n;
-                                    totalBytesRead += n;
-                                } while (numBytesToRead > 0);
-                            }
+                                int n = responseStream.Read(block, numBytesRead, numBytesToRead);
 
-                            Console.WriteLine("writing block, size: " + numBytesRead + ", remaining: " + (response.ContentLength - totalBytesRead));
-
-                            await call.RequestStream.WriteAsync(new ClientProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(block) });
-
-                            await call.RequestStream.CompleteAsync();
-
-                            ClientProto.StatusResponse resp = await call.ResponseAsync;
-                            Console.WriteLine(resp.Type.ToString());
+                                numBytesRead += n;
+                                numBytesToRead -= n;
+                                totalBytesRead += n;
+                            } while (numBytesToRead > 0);
                         }
-                        //var reply = await client.WriteBlock(dataBlock, metaData);
-                        //Console.WriteLine(resp.Type.ToString());
-                    };
+                        else
+                        {
+                            int numBytesToRead = 2097152;
+                            do
+                            {
+                                int n = responseStream.Read(block, numBytesRead, numBytesToRead);
+                                numBytesRead += n;
+                                numBytesToRead -= n;
+                                totalBytesRead += n;
+                            } while (numBytesToRead > 0);
+                        }
 
-                }
+                        Console.WriteLine("writing block, size: " + numBytesRead + ", remaining: " + (134217727 - totalBytesRead));
+
+                        await call.RequestStream.WriteAsync(new ClientProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(block) });
+
+                        //await call.RequestStream.CompleteAsync();
+
+                        //ClientProto.StatusResponse resp = await call.ResponseAsync;
+                        //Console.WriteLine(resp.Type.ToString());
+                    }
+
+                    await call.RequestStream.CompleteAsync();
+
+                    ClientProto.StatusResponse resp = await call.ResponseAsync;
+                    Console.WriteLine(resp.Type.ToString());
+                    //var reply = await client.WriteBlock(dataBlock, metaData);
+                    //Console.WriteLine(resp.Type.ToString());
+                };
+
             }
         }
     }
 }
-
