@@ -41,12 +41,12 @@ namespace NameNode
             Console.WriteLine(request);
 
             // Update list of datanodes
-            int index = Program.nodeList.FindIndex(node => node.nodeId == Guid.Parse(request.NodeInfo.DataNode.Id.Value));
+            int index = Program.nodeList.FindIndex(node => node.ipAddress == request.NodeInfo.DataNode.IpAddress);
 
             // Not found -> add to list
             if (index < 0)
             {
-                DataNode node = new DataNode(request.NodeInfo.DataNode.Id.Value, request.NodeInfo.DataNode.IpAddress, request.NodeInfo.DiskSpace, DateTime.UtcNow);
+                DataNode node = new DataNode(request.NodeInfo.DataNode.IpAddress, request.NodeInfo.DiskSpace, DateTime.UtcNow);
                 Program.nodeList.Add(node);
             }
             else // Found, update lastHeartBeat timestamp
@@ -88,6 +88,7 @@ namespace NameNode
     class Program
     {
         public static List<DataNode> nodeList = new List<DataNode>();
+        public static NameNode Database = new NameNode();
         static void Main(string[] args)
         {
 
@@ -122,8 +123,8 @@ namespace NameNode
             Console.WriteLine("Press any key to stop the server...");
             Console.ReadKey();
 
-            TestSavingFileSystem();
-            TestLoadingFileSystem();
+            //TestSavingFileSystem();
+            //TestLoadingFileSystem();
 
             server.ShutdownAsync().Wait();
         }
@@ -134,7 +135,7 @@ namespace NameNode
             Root.subfolders.Add("user", new Folder("user", Root));
             Folder currentLocation = Root.subfolders["user"];
             currentLocation.subfolders.Add("other folder", new Folder("other folder", currentLocation));
-            currentLocation.files.Add("File", new FileSystem.File("File"));
+            currentLocation.files.Add("File",  new FileSystem.File("File", currentLocation.path));
             FileSystem.File selectedFile = currentLocation.files["File"];
 
             var guid = Guid.NewGuid();
@@ -147,13 +148,13 @@ namespace NameNode
 
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
-            System.IO.File.WriteAllText(@"/Users/BryanHerr/Documents/College/CPSC4910-02/SUFS/testDirecotry.yml", yaml);
+            System.IO.File.WriteAllText(@"C:/data/testDirecotry.yml", yaml);
             Console.WriteLine(yaml);
         }
 
         private static void TestLoadingFileSystem()
         {
-            string yaml = System.IO.File.ReadAllText(@"/Users/BryanHerr/Documents/College/CPSC4910-02/SUFS/testDirecotry.yml");
+            string yaml = System.IO.File.ReadAllText(@"C:/data/testDirecotry.yml");
             var input = new StringReader(yaml);
 
             var deserializer = new DeserializerBuilder()

@@ -9,19 +9,22 @@ using System.Threading.Tasks;
 
 namespace Client
 {
-    class Program
-    {
-        public static void Main(string[] args)
-        {
-            // FOr testing
-            string IpAddress = args[0];
+	  class Program
+	  {
+		    public static void Main(string[] args)
+		    {
+            //// Assume passed in parameters:
+            //// NameNodeIP:Port => args[0],
+			      Channel channel = new Channel(args[0], ChannelCredentials.Insecure);
+            
+            // Use "write" to write blocks to nodes. WriteBlock function takes some manual config
             string task = args[1];
-
-            Channel channel = new Channel(IpAddress + ":50051", ChannelCredentials.Insecure);
-
+            //Channel channel = new Channel(IpAddress + ":50051", ChannelCredentials.Insecure);
             //Channel channel = new Channel("127.0.0.1" + ":50051", ChannelCredentials.Insecure);
 
             var client = new ClientProto.ClientProto.ClientProtoClient(channel);
+
+			      var reply = client.DeleteDirectory( new ClientProto.Path { Fullpath = "Path" } );
 
             if (task == "write")
             {

@@ -56,8 +56,14 @@ namespace NameNode
             //send back to client the ips and what to search for on the datanode
         }
 
-        public void DeleteFile()
+        public void DeleteFile(string path)
         {
+            string[] paths = path.Split('/');
+            Folder currentPath = Root;
+            for (int i = 0; i < paths.Length - 1; i++)
+            {
+                currentPath = currentPath.subfolders[paths[i]];
+            }
             //queue up requests for each of the datanodes that have blocks
             //      to delete as soon as they send in heartbeat/block report
             //remove file from directory system
@@ -122,7 +128,7 @@ namespace NameNode
         {
             try
             {
-                string yaml = System.IO.File.ReadAllText(@"/Users/BryanHerr/Documents/College/CPSC4910-02/SUFS/testDirecotry.yml");
+                string yaml = System.IO.File.ReadAllText(@"C:/data/testDirecotry.yml");
                 var input = new StringReader(yaml);
 
                 var deserializer = new DeserializerBuilder()
