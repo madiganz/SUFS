@@ -4,7 +4,7 @@ package DataNodeProto;
 service DataNodeProto {
     rpc SendHeartBeat (HeartBeatRequest) returns (HeartBeatResponse) {}
 	rpc SendBlockReport (BlockReportRequest) returns (StatusResponse) {}
-	rpc ForwardDataBlock (DataBlock) returns (StatusResponse) {}
+	rpc WriteDataBlock (DataBlock) returns (StatusResponse) {}
 }
 
 message HeartBeatRequest {
@@ -23,7 +23,7 @@ message BlockReportRequest {
 message DataBlock {
 	UUID blockId = 1;
 	bytes data = 2;
-	repeated DataNode dataNodes = 3; // Remaining nodes to forward data to
+	repeated DataNode dataNodes = 3; // DataNodes to forward data to
 }
 
 message DataNode {

@@ -2,8 +2,6 @@
 using System;
 using System.Threading;
 
-
-
 namespace DataNode
 {
     class Program
@@ -18,7 +16,10 @@ namespace DataNode
             // Use ec2 instance manager to get the private ip address of this data node
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
             ipAddress = instanceManager.GetPrivateIpAddress();
-            instanceManager.OpenFirewallPort("50051"); // Need to open port on windows firewalls
+
+#if !DEBUG
+            instanceManager.OpenFirewallPort(Constants.Port.ToString()); // Need to open port on windows firewalls
+#endif
 
 #if DEBUG
             if (ipAddress == null)
@@ -29,7 +30,8 @@ namespace DataNode
 
             Server server = new Server
             {
-                Services = { DataNodeProto.DataNodeProto.BindService(new DataNodeImpl()) },
+                Services = { DataNodeProto.DataNodeProto.BindService(new DataNodeHandler()),
+                   ClientProto.ClientProto.BindService(new ClientHandler())},
                 Ports = { new ServerPort(ipAddress, Constants.Port, ServerCredentials.Insecure) }
             };
 
@@ -41,8 +43,9 @@ namespace DataNode
             Channel channel = new Channel(nameNodeIp + ":" + Constants.Port, ChannelCredentials.Insecure);
             var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
 
-            //Initialize blockstorage
+            // Initialize blockstorage
             BlockStorage mBlockStorage = BlockStorage.Instance;
+
             Thread heartBeatThread = new Thread(new ParameterizedThreadStart(HeartBeat.SendHeartBeat));
             Thread blockReportThread = new Thread(new ParameterizedThreadStart(BlockReport.SendBlockReport));
             heartBeatThread.Start(client);

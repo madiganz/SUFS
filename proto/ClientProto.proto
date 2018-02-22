@@ -3,13 +3,13 @@ package ClientProto;
 
 service ClientProto {
 	//Delete a directory 
-    rpc DeleteDirectory (Path) returns (StatusResponse) {}
+	rpc DeleteDirectory (Path) returns (StatusResponse) {}
 
 	//Create a directory
 	rpc AddDirectory(Path) returns (StatusResponse) {}
 
 	// List the DataNodes that store replicas of each block of a file
-    rpc ListNodes(Path) returns (ListOfNodes) {}
+	rpc ListNodes(Path) returns (ListOfNodes) {}
 	
 	//Create a new file in SUFS
 	rpc AddFile(NewFile) returns (StatusResponse){}
@@ -24,13 +24,34 @@ service ClientProto {
 	
 	// bideectional streaming
 
-	// write streaming 
-
-
+	// write streaming
+	
+	// Reads block from datanode
+	rpc ReadBlock(UUID) returns (stream BlockData) {}
+  
+	// Creates a pipeline to stream bytes to datanodes
+	rpc WriteBlock(stream BlockData) returns (StatusResponse) {}
 }
 
 
+message DataBlock {
+	UUID blockId = 1;
+	bytes data = 2;
+	repeated DataNode dataNodes = 3; // Remaining nodes to forward data to
+}
 
+message DataNode {
+	UUID id = 1;
+	string ipAddress = 2;
+}
+
+message BlockData {
+	bytes data = 1;
+}
+
+message UUID {
+	string value = 1;
+}
 
 message Path {
 	string fullpath = 1;

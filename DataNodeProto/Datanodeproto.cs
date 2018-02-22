@@ -43,13 +43,13 @@ namespace DataNodeProto {
             "b2NrSWQYASADKAsyEy5EYXRhTm9kZVByb3RvLlVVSUQibQoOU3RhdHVzUmVz",
             "cG9uc2USNgoEdHlwZRgBIAEoDjIoLkRhdGFOb2RlUHJvdG8uU3RhdHVzUmVz",
             "cG9uc2UuU3RhdHVzVHlwZSIjCgpTdGF0dXNUeXBlEgsKB1N1Y2Nlc3MQABII",
-            "CgRGYWlsEAEiFQoEVVVJRBINCgV2YWx1ZRgBIAEoCTKLAgoNRGF0YU5vZGVQ",
+            "CgRGYWlsEAEiFQoEVVVJRBINCgV2YWx1ZRgBIAEoCTKJAgoNRGF0YU5vZGVQ",
             "cm90bxJUCg1TZW5kSGVhcnRCZWF0Eh8uRGF0YU5vZGVQcm90by5IZWFydEJl",
             "YXRSZXF1ZXN0GiAuRGF0YU5vZGVQcm90by5IZWFydEJlYXRSZXNwb25zZSIA",
             "ElUKD1NlbmRCbG9ja1JlcG9ydBIhLkRhdGFOb2RlUHJvdG8uQmxvY2tSZXBv",
-            "cnRSZXF1ZXN0Gh0uRGF0YU5vZGVQcm90by5TdGF0dXNSZXNwb25zZSIAEk0K",
-            "EEZvcndhcmREYXRhQmxvY2sSGC5EYXRhTm9kZVByb3RvLkRhdGFCbG9jaxod",
-            "LkRhdGFOb2RlUHJvdG8uU3RhdHVzUmVzcG9uc2UiAGIGcHJvdG8z"));
+            "cnRSZXF1ZXN0Gh0uRGF0YU5vZGVQcm90by5TdGF0dXNSZXNwb25zZSIAEksK",
+            "DldyaXRlRGF0YUJsb2NrEhguRGF0YU5vZGVQcm90by5EYXRhQmxvY2saHS5E",
+            "YXRhTm9kZVByb3RvLlN0YXR1c1Jlc3BvbnNlIgBiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -524,7 +524,7 @@ namespace DataNodeProto {
         = pb::FieldCodec.ForMessage(26, global::DataNodeProto.DataNode.Parser);
     private readonly pbc::RepeatedField<global::DataNodeProto.DataNode> dataNodes_ = new pbc::RepeatedField<global::DataNodeProto.DataNode>();
     /// <summary>
-    /// Remaining nodes to forward data to
+    /// DataNodes to forward data to
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pbc::RepeatedField<global::DataNodeProto.DataNode> DataNodes {

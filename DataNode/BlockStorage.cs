@@ -11,6 +11,8 @@ namespace DataNode
         // Structure to keep track of block data
         private static Dictionary<Guid, string> blockStorageMap;
 
+        private static string root;
+
         // Initial directory to store blocks in
         private static DirectoryInfo baseDirectoryInfo;
 
@@ -20,7 +22,11 @@ namespace DataNode
         private BlockStorage()
         {
             blockStorageMap = new Dictionary<Guid, string>();
-            baseDirectoryInfo = Directory.CreateDirectory("data");
+            baseDirectoryInfo = Directory.CreateDirectory(@"C:\data");
+            root = @"C:\data";
+
+            // Looks at file system to add any files to memory
+            AddFilesToMemory(root);
         }
 
         /// <summary>
@@ -60,11 +66,10 @@ namespace DataNode
         public byte[] ReadBlock(Guid blockUUID)
         {
             byte[] blockData = null;
-            string sFilePath = null;
-            blockStorageMap.TryGetValue(blockUUID, out sFilePath);
+            blockStorageMap.TryGetValue(blockUUID, out string sFilePath);
 
             // Path found for uuid
-            if(sFilePath != null)
+            if (sFilePath != null)
             {
                 FileStream fs = new FileStream(sFilePath, FileMode.Open, FileAccess.Read);
                 try
@@ -91,28 +96,40 @@ namespace DataNode
         /// Writes block data to local disk.
         /// </summary>
         /// <param name="blockUUID">Unique identifier of block</param>
+        /// <param path="path">Full path of file</param>
         /// <param name="data">block data</param>
         /// <returns>Boolean indicating operator success</returns>
-        public bool WriteBlock(Guid blockUUID, byte[] data)
+        public bool WriteBlock(Guid blockUUID, string path, byte[] data)
         {
             try
             {
-                string filePath = Guid.NewGuid().ToString();
-                FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(fs);
-                // Write to the file using StreamWriter class 
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                sw.Write(data);
-                sw.Flush();
+                Console.WriteLine("Writing Block to " + path);
+                using (var stream = new FileStream(path, FileMode.Append))
+                {
+                    stream.Write(data, 0, data.Length);
+                }
 
-                // Add to dictionary
-                blockStorageMap.Add(blockUUID, filePath);
+                //// Add to dictionary
+                blockStorageMap.Add(blockUUID, path);
                 return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Creates a file given a blockid
+        /// </summary>
+        /// <param name="blockUUID">Unique identifier of block</param>
+        /// <returns>Full path of created file</returns>
+        public string CreateFile(Guid blockUUID)
+        {
+            string filePath = ChooseRandomDirectory();
+            filePath += @"\" + blockUUID.ToString() + "."; // Extensionless file
+            blockStorageMap.Add(blockUUID, filePath);
+            return filePath;
         }
 
         /// <summary>
@@ -153,7 +170,7 @@ namespace DataNode
         /// <returns>Full path of file</returns>
         private string ChooseRandomDirectory()
         {
-            return TraverseDirectoryStructure(baseDirectoryInfo.ToString());
+            return TraverseDirectoryStructure(root);
         }
 
         /// <summary>
@@ -172,7 +189,7 @@ namespace DataNode
         /// Walks through the root directory structure. Creates file if there are less than 40 files.
         /// Creates sub directory if there are less than 20 sub directories.
         /// </summary>
-        /// <param name="root"></param>
+        /// <param name="root">Root directory</param>
         /// <returns>Directory path that meets criteria</returns>
         private static string TraverseDirectoryStructure(string root)
         {
@@ -229,7 +246,7 @@ namespace DataNode
                 // Just create a file
                 if (files.Length < 40)
                 {
-                    return root.ToString();
+                    return currentDir.ToString();
                 }
                 else if (subDirs.Length < 20) // Just create a directory
                 {
@@ -247,9 +264,16 @@ namespace DataNode
                 }
             }
 
-            // If for some reason root does not exist, we will create it
-            baseDirectoryInfo = Directory.CreateDirectory("data");
-            return baseDirectoryInfo.ToString();
+            return root;
+        }
+
+        private void AddFilesToMemory(string root)
+        {
+            string[] paths = Directory.GetFiles(root, "*", SearchOption.AllDirectories);
+            foreach(var p in paths)
+            {
+                blockStorageMap.Add(Guid.Parse(Path.GetFileNameWithoutExtension(p)), p);
+            }
         }
 
         public long GetFreeDiskSpace()
