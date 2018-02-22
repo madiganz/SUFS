@@ -66,11 +66,10 @@ namespace DataNode
         public byte[] ReadBlock(Guid blockUUID)
         {
             byte[] blockData = null;
-            string sFilePath = null;
-            blockStorageMap.TryGetValue(blockUUID, out sFilePath);
+            blockStorageMap.TryGetValue(blockUUID, out string sFilePath);
 
             // Path found for uuid
-            if(sFilePath != null)
+            if (sFilePath != null)
             {
                 FileStream fs = new FileStream(sFilePath, FileMode.Open, FileAccess.Read);
                 try
@@ -97,33 +96,13 @@ namespace DataNode
         /// Writes block data to local disk.
         /// </summary>
         /// <param name="blockUUID">Unique identifier of block</param>
+        /// <param path="path">Full path of file</param>
         /// <param name="data">block data</param>
         /// <returns>Boolean indicating operator success</returns>
-        //public bool WriteBlock(Guid blockUUID, byte[] data)
-        //{
-        //    try
-        //    {
-        //        //string filePath = ChooseRandomDirectory();
-        //        //filePath += @"\" + blockUUID.ToString() + "."; // Extensionless file
-        //        Console.WriteLine("Writing Block to " + filePath);
-        //        File.WriteAllBytes(filePath, data);
-
-        //        // Add to dictionary
-        //        blockStorageMap.Add(blockUUID, filePath);
-        //        return true;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
-
-        public bool WriteBlock(string path, byte[] data)
+        public bool WriteBlock(Guid blockUUID, string path, byte[] data)
         {
             try
             {
-                //string filePath = ChooseRandomDirectory();
-                //filePath += @"\" + blockUUID.ToString() + "."; // Extensionless file
                 Console.WriteLine("Writing Block to " + path);
                 using (var stream = new FileStream(path, FileMode.Append))
                 {
@@ -131,7 +110,7 @@ namespace DataNode
                 }
 
                 //// Add to dictionary
-                //blockStorageMap.Add(blockUUID, filePath);
+                blockStorageMap.Add(blockUUID, path);
                 return true;
             }
             catch
@@ -140,6 +119,11 @@ namespace DataNode
             }
         }
 
+        /// <summary>
+        /// Creates a file given a blockid
+        /// </summary>
+        /// <param name="blockUUID">Unique identifier of block</param>
+        /// <returns>Full path of created file</returns>
         public string CreateFile(Guid blockUUID)
         {
             string filePath = ChooseRandomDirectory();

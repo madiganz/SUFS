@@ -41,7 +41,15 @@ namespace EC2InstanceManager
         /// <returns></returns>
         public string GetPrivateIpAddress()
         {
-            return Amazon.Util.EC2InstanceMetadata.PrivateIpAddress;
+            try
+            {
+                return Amazon.Util.EC2InstanceMetadata.PrivateIpAddress;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Failed to get privateIpAddress, " + e);
+                return "localhost";
+            }
         }
 
         /// <summary>
@@ -91,26 +99,33 @@ namespace EC2InstanceManager
         /// <param name="direction">inbound or outbound</param>
         private void CreateFirewallRule(string port, string direction)
         {
-            // Create inbound and output rule
-            INetFwRule firewallRule = (INetFwRule)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
-            firewallRule.Action = NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
-            firewallRule.Description = "Allows Grpc over ec2 instances";
-            if (direction == "inbound")
+            try
             {
-                firewallRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
+                // Create inbound and output rule
+                INetFwRule firewallRule = (INetFwRule)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
+                firewallRule.Action = NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
+                firewallRule.Description = "Allows Grpc over ec2 instances";
+                if (direction == "inbound")
+                {
+                    firewallRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
+                }
+                else if (direction == "outbound")
+                {
+                    firewallRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
+                }
+                firewallRule.Enabled = true;
+                firewallRule.InterfaceTypes = "All";
+                firewallRule.Name = "GRPC";
+                firewallRule.Protocol = (int)NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP;
+                firewallRule.LocalPorts = port;
+                INetFwPolicy2 firewallPolicy = (INetFwPolicy2)Activator.CreateInstance(
+                    Type.GetTypeFromProgID("HNetCfg.FwPolicy2"));
+                firewallPolicy.Rules.Add(firewallRule);
             }
-            else if (direction == "outbound")
+            catch(Exception e)
             {
-                firewallRule.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
+                Console.WriteLine("Creating firewall rule failed, " + e);
             }
-            firewallRule.Enabled = true;
-            firewallRule.InterfaceTypes = "All";
-            firewallRule.Name = "GRPC";
-            firewallRule.Protocol = (int)NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP;
-            firewallRule.LocalPorts = port;
-            INetFwPolicy2 firewallPolicy = (INetFwPolicy2)Activator.CreateInstance(
-                Type.GetTypeFromProgID("HNetCfg.FwPolicy2"));
-            firewallPolicy.Rules.Add(firewallRule);
         }
 
         /// <summary>
@@ -139,7 +154,7 @@ namespace EC2InstanceManager
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error checking if firewall rule exists");
+                Console.WriteLine("Error checking if firewall rule exists, " + e);
             }
 
             return false;
