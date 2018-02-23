@@ -88,7 +88,7 @@ namespace NameNode
     class Program
     {
         public static List<DataNode> nodeList = new List<DataNode>();
-        public static NameNode Database = new NameNode();
+        public static Database Database = new Database();
         static void Main(string[] args)
         {
 

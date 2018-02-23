@@ -7,9 +7,9 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace NameNode
 {
     
-    public class NameNode
+    public class Database
     {
-        public NameNode()
+        public Database()
         {
             initializeFileDirectory();
         }
@@ -59,10 +59,10 @@ namespace NameNode
         public void DeleteFile(string path)
         {
             string[] paths = path.Split('/');
-            Folder currentPath = Root;
+            Folder currentFolder = Root;
             for (int i = 0; i < paths.Length - 1; i++)
             {
-                currentPath = currentPath.subfolders[paths[i]];
+                currentFolder = currentFolder.subfolders[paths[i]];
             }
             //queue up requests for each of the datanodes that have blocks
             //      to delete as soon as they send in heartbeat/block report
