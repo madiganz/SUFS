@@ -11,6 +11,38 @@ namespace DataNode
 {
     class ClientHandler : ClientProto.ClientProto.ClientProtoBase
     {
+
+        public override Task<ClientProto.StatusResponse> GetReady(ClientProto.DataNodeAddresses addresses, ServerCallContext context)
+        {
+            ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+            if (addresses.IpAddress.Count() == 0)
+            {
+                response.Type = ClientProto.StatusResponse.Types.StatusType.Ready;
+                return Task.FromResult(response);
+            }
+            else
+            {
+                try
+                {
+                    string address = addresses.IpAddress[0];
+                    addresses.IpAddress.RemoveAt(0);
+                    Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
+                    Console.WriteLine(channel.State.ToString());
+                    var client = new ClientProto.ClientProto.ClientProtoClient(channel);
+                    //return client.GetReady(new ClientProto.DataNodeAddresses { IpAddress = { addresses } });
+
+                    response = client.GetReady(addresses);
+                }
+                catch (RpcException e)
+                {
+                    //Console.WriteLine(e);
+                    Console.WriteLine("failed");
+                }
+
+                return Task.FromResult(response);
+            }
+        }
+
         /// <summary>
         /// Server side handler of the WriteDataBlock RPC. DataNode writes block to a file and then returns success status of write.
         /// </summary>
@@ -20,51 +52,46 @@ namespace DataNode
         public override async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context)
         {
             List<Metadata.Entry> metaData = context.RequestHeaders.ToList();
-            Metadata.Entry ipAddress = null;
             bool forward = true;
             bool success = true;
-            try
-            {
-                ipAddress = metaData.Find(m => { return m.Key == "ipaddresses"; });
-                if (ipAddress == null)
-                {
-                    forward = false;
-                }
-            }
-            catch (ArgumentNullException)
+
+            // Get blockID
+            Guid blockId = GetBlockID(metaData);
+
+            // Get IpAddresses
+            Metadata.Entry ipAddresses = GetIpAddresses(metaData);
+
+            // If no addresses -> last DataNode
+            if (ipAddresses == null)
             {
                 forward = false;
             }
-            Metadata.Entry blockId = metaData.Find(m => { return m.Key == "blockid"; });
-            string filePath = BlockStorage.Instance.CreateFile(Guid.Parse(blockId.Value));
-            //string filePath = BlockStorage.Instance.CreateFile(Guid.NewGuid());
-            Console.WriteLine("Just created file: " + filePath);
+
+            //string filePath = BlockStorage.Instance.CreateFile(blockId);
+            string filePath = BlockStorage.Instance.CreateFile(Guid.NewGuid());
+            Console.WriteLine("Created file: " + filePath);
 
             // Forward to next datanode
             if (forward)
             {
-                List<string> addresses = ipAddress.Value.Split(',').ToList();
-                var ip = addresses[0];
-                addresses.RemoveAt(0);
-                Channel channel = new Channel(ip + ":" + Constants.Port, ChannelCredentials.Insecure);
-                //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
-                var client = new ClientProto.ClientProto.ClientProtoClient(channel);
-                string nodeAddresses = "";
-                Metadata newMetaData = new Metadata
-                    {
-                        new Metadata.Entry("blockid", blockId.Value)
-                    };
+                List<string> addresses = ipAddresses.Value.Split(',').ToList();
 
-                if (addresses.Count > 0)
+                // Get next address and remove from list
+                string ip = GetNextIpAddress(addresses);
+
+                // Modify metadata using modified list of addresses
+                Metadata modifiedMetaData = ModifyMetaData(addresses, blockId);
+
+                //Channel channel = new Channel(ip + ":" + Constants.Port, ChannelCredentials.Insecure);
+                Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
+                var client = new ClientProto.ClientProto.ClientProtoClient(channel);
+
+                using (var call = client.WriteBlock(modifiedMetaData))
                 {
-                    nodeAddresses = String.Join(",", addresses.ToArray());
-                    newMetaData.Add(new Metadata.Entry("ipaddresses", nodeAddresses));
-                }
-                using (var call = client.WriteBlock(newMetaData))
-                {
+                    bool dataNodeFailed = false;
                     Stopwatch watch = new Stopwatch();
                     watch.Start();
-                    Console.WriteLine("Writing Block to " + filePath);
+
                     using (var stream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 131072, FileOptions.WriteThrough)) // 128KB
                     {
                         while (await requestStream.MoveNext())
@@ -73,8 +100,24 @@ namespace DataNode
                             {
                                 var blockData = requestStream.Current;
                                 byte[] data = blockData.Data.ToByteArray();
+
+                                // Write to file
                                 stream.Write(data, 0, data.Length);
-                                await call.RequestStream.WriteAsync(blockData);
+
+                                // Don't need to forward data in pipe if datanode failed
+                                if (!dataNodeFailed)
+                                {
+                                    try
+                                    {
+                                        // Send data through pipe
+                                        await call.RequestStream.WriteAsync(blockData);
+                                    }
+                                    catch
+                                    {
+                                        dataNodeFailed = true;
+                                        Console.WriteLine("Writing block failed");
+                                    }
+                                }
                             }
                             catch (IOException e)
                             {
@@ -84,29 +127,37 @@ namespace DataNode
                         }
                     }
 
-                    await call.RequestStream.CompleteAsync();
+                    ClientProto.StatusResponse resp = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
 
-                    ClientProto.StatusResponse resp = await call.ResponseAsync;
+                    // If DataNode did not fail, get response and shut down
+                    if (!dataNodeFailed)
+                    {
+                        await call.RequestStream.CompleteAsync();
+
+                        resp = await call.ResponseAsync;
+
+                        channel.ShutdownAsync().Wait();
+                    }
+
                     watch.Stop();
                     Console.WriteLine("Total time to write: " + watch.Elapsed);
-                    channel.ShutdownAsync().Wait();
 
-                    // Return success if any writes were successful
-                    if (success || (resp.Type == ClientProto.StatusResponse.Types.StatusType.Success))
+                    // If write was successful and block size is correct, return success
+                    if (success && BlockStorage.Instance.ValidateBlock(blockId, filePath))
                     {
                         return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
                     }
-                    else
+                    else // If not successful, return the response sent down through pipe
                     {
-                        return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                        return resp;
                     }
+                    
                 }
             }
             else // Just write to file
             {
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
-                Console.WriteLine("Writing Block to " + filePath);
                 using (var stream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 131072, FileOptions.WriteThrough)) // 128KB
                 {
                     while (await requestStream.MoveNext())
@@ -115,6 +166,8 @@ namespace DataNode
                         {
                             var blockData = requestStream.Current;
                             byte[] data = blockData.Data.ToByteArray();
+
+                            // Write to file
                             stream.Write(data, 0, data.Length);
                         }
                         catch (IOException e)
@@ -128,10 +181,75 @@ namespace DataNode
                     Console.WriteLine("Total time to write: " + watch.Elapsed);
                 }
 
+                // If write was successful, make sure block size is correct
+                if (!BlockStorage.Instance.ValidateBlock(blockId, filePath))
+                {
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                }
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             }
+        }
 
+        /// <summary>
+        /// Gets ip address of next DataNode
+        /// </summary>
+        /// <param name="addresses">List of ip addresses</param>
+        /// <returns>Next DataNode's ip address</returns>
+        public static string GetNextIpAddress(List<string> addresses)
+        {
+            var ip = addresses[0];
+            addresses.RemoveAt(0);
+            return ip;
+        }
 
+        /// <summary>
+        /// Modify metadata based on remaining ip addresses
+        /// </summary>
+        /// <param name="addresses">List of remaining ip addresses</param>
+        /// <param name="blockId">Unique idenfier of block</param>
+        /// <returns>Modified metadata</returns>
+        public static Metadata ModifyMetaData(List<string> addresses, Guid blockId)
+        {
+            Metadata metaData = new Metadata { new Metadata.Entry("blockid", blockId.ToString()) };
+
+            if (addresses.Count > 0)
+            {
+                metaData.Add(new Metadata.Entry("ipaddresses", String.Join(",", addresses.ToArray())));
+            }
+
+            return metaData;
+        }
+
+        /// <summary>
+        /// Gets blockID from list of metadata
+        /// </summary>
+        /// <param name="metaData">List of metadata</param>
+        /// <returns>BlockID</returns>
+        public static Guid GetBlockID(List<Metadata.Entry> metaData)
+        {
+            Guid id = new Guid();
+            try
+            {
+                Metadata.Entry blckId = metaData.Find(m => { return m.Key == "blockid"; });
+                id = Guid.Parse(blckId.Value);
+                return id;
+            }
+            catch
+            {
+                return id;
+            }
+        }
+
+        public static Metadata.Entry GetIpAddresses(List<Metadata.Entry> metaData)
+        {
+            try
+            {
+                return metaData.Find(m => { return m.Key == "ipaddresses"; });
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

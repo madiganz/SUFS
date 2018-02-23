@@ -26,32 +26,41 @@ namespace ClientProto {
             "EiIKB2Jsb2NrSWQYASABKAsyES5DbGllbnRQcm90by5VVUlEEgwKBGRhdGEY",
             "AiABKAwSKAoJZGF0YU5vZGVzGAMgAygLMhUuQ2xpZW50UHJvdG8uRGF0YU5v",
             "ZGUiPAoIRGF0YU5vZGUSHQoCaWQYASABKAsyES5DbGllbnRQcm90by5VVUlE",
-            "EhEKCWlwQWRkcmVzcxgCIAEoCSIZCglCbG9ja0RhdGESDAoEZGF0YRgBIAEo",
-            "DCIVCgRVVUlEEg0KBXZhbHVlGAEgASgJIhgKBFBhdGgSEAoIZnVsbHBhdGgY",
-            "ASABKAkiawoOU3RhdHVzUmVzcG9uc2USNAoEdHlwZRgBIAEoDjImLkNsaWVu",
-            "dFByb3RvLlN0YXR1c1Jlc3BvbnNlLlN0YXR1c1R5cGUiIwoKU3RhdHVzVHlw",
-            "ZRILCgdTdWNjZXNzEAASCAoERmFpbBABIi4KC0xpc3RPZk5vZGVzEg8KB2Js",
-            "b2NrSWQYASABKAkSDgoGbm9kZUlkGAIgAygJIiIKDkxpc3RPZkNvbnRlbnRz",
-            "EhAKCGZpbGVOYW1lGAEgAygJIiwKB05ld0ZpbGUSEAoIZnVsbHBhdGgYASAB",
-            "KAkSDwoHYWRkcmVzcxgCIAEoCTKVBAoLQ2xpZW50UHJvdG8SQwoPRGVsZXRl",
-            "RGlyZWN0b3J5EhEuQ2xpZW50UHJvdG8uUGF0aBobLkNsaWVudFByb3RvLlN0",
-            "YXR1c1Jlc3BvbnNlIgASQAoMQWRkRGlyZWN0b3J5EhEuQ2xpZW50UHJvdG8u",
-            "UGF0aBobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgASOgoJTGlzdE5v",
-            "ZGVzEhEuQ2xpZW50UHJvdG8uUGF0aBoYLkNsaWVudFByb3RvLkxpc3RPZk5v",
-            "ZGVzIgASPgoHQWRkRmlsZRIULkNsaWVudFByb3RvLk5ld0ZpbGUaGy5DbGll",
-            "bnRQcm90by5TdGF0dXNSZXNwb25zZSIAEj4KCkRlbGV0ZUZpbGUSES5DbGll",
-            "bnRQcm90by5QYXRoGhsuQ2xpZW50UHJvdG8uU3RhdHVzUmVzcG9uc2UiABJA",
-            "CgxMaXN0Q29udGVudHMSES5DbGllbnRQcm90by5QYXRoGhsuQ2xpZW50UHJv",
-            "dG8uTGlzdE9mQ29udGVudHMiABI6CglSZWFkQmxvY2sSES5DbGllbnRQcm90",
-            "by5VVUlEGhYuQ2xpZW50UHJvdG8uQmxvY2tEYXRhIgAwARJFCgpXcml0ZUJs",
-            "b2NrEhYuQ2xpZW50UHJvdG8uQmxvY2tEYXRhGhsuQ2xpZW50UHJvdG8uU3Rh",
-            "dHVzUmVzcG9uc2UiACgBYgZwcm90bzM="));
+            "EhEKCWlwQWRkcmVzcxgCIAEoCSI5CgxCbG9ja01lc3NhZ2USKQoJYmxvY2tJ",
+            "bmZvGAEgAygLMhYuQ2xpZW50UHJvdG8uQmxvY2tJbmZvIkIKCUJsb2NrSW5m",
+            "bxIiCgdibG9ja0lkGAEgASgLMhEuQ2xpZW50UHJvdG8uVVVJRBIRCglpcEFk",
+            "ZHJlc3MYAiADKAkiGQoJQmxvY2tEYXRhEgwKBGRhdGEYASABKAwiJgoRRGF0",
+            "YU5vZGVBZGRyZXNzZXMSEQoJaXBBZGRyZXNzGAEgAygJIhUKBFVVSUQSDQoF",
+            "dmFsdWUYASABKAkiGAoEUGF0aBIQCghmdWxscGF0aBgBIAEoCSJ2Cg5TdGF0",
+            "dXNSZXNwb25zZRI0CgR0eXBlGAEgASgOMiYuQ2xpZW50UHJvdG8uU3RhdHVz",
+            "UmVzcG9uc2UuU3RhdHVzVHlwZSIuCgpTdGF0dXNUeXBlEgsKB1N1Y2Nlc3MQ",
+            "ABIICgRGYWlsEAESCQoFUmVhZHkQAiIuCgtMaXN0T2ZOb2RlcxIPCgdibG9j",
+            "a0lkGAEgASgJEg4KBm5vZGVJZBgCIAMoCSIiCg5MaXN0T2ZDb250ZW50cxIQ",
+            "CghmaWxlTmFtZRgBIAMoCSIsCgdOZXdGaWxlEhAKCGZ1bGxwYXRoGAEgASgJ",
+            "Eg8KB2FkZHJlc3MYAiABKAky4QQKC0NsaWVudFByb3RvEkMKD0RlbGV0ZURp",
+            "cmVjdG9yeRIRLkNsaWVudFByb3RvLlBhdGgaGy5DbGllbnRQcm90by5TdGF0",
+            "dXNSZXNwb25zZSIAEkAKDEFkZERpcmVjdG9yeRIRLkNsaWVudFByb3RvLlBh",
+            "dGgaGy5DbGllbnRQcm90by5TdGF0dXNSZXNwb25zZSIAEjoKCUxpc3ROb2Rl",
+            "cxIRLkNsaWVudFByb3RvLlBhdGgaGC5DbGllbnRQcm90by5MaXN0T2ZOb2Rl",
+            "cyIAEj8KCkNyZWF0ZUZpbGUSFC5DbGllbnRQcm90by5OZXdGaWxlGhkuQ2xp",
+            "ZW50UHJvdG8uQmxvY2tNZXNzYWdlIgASPgoKRGVsZXRlRmlsZRIRLkNsaWVu",
+            "dFByb3RvLlBhdGgaGy5DbGllbnRQcm90by5TdGF0dXNSZXNwb25zZSIAEkAK",
+            "DExpc3RDb250ZW50cxIRLkNsaWVudFByb3RvLlBhdGgaGy5DbGllbnRQcm90",
+            "by5MaXN0T2ZDb250ZW50cyIAEjoKCVJlYWRCbG9jaxIRLkNsaWVudFByb3Rv",
+            "LlVVSUQaFi5DbGllbnRQcm90by5CbG9ja0RhdGEiADABEkUKCldyaXRlQmxv",
+            "Y2sSFi5DbGllbnRQcm90by5CbG9ja0RhdGEaGy5DbGllbnRQcm90by5TdGF0",
+            "dXNSZXNwb25zZSIAKAESSQoIR2V0UmVhZHkSHi5DbGllbnRQcm90by5EYXRh",
+            "Tm9kZUFkZHJlc3NlcxobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgBi",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.DataBlock), global::ClientProto.DataBlock.Parser, new[]{ "BlockId", "Data", "DataNodes" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.DataNode), global::ClientProto.DataNode.Parser, new[]{ "Id", "IpAddress" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.BlockMessage), global::ClientProto.BlockMessage.Parser, new[]{ "BlockInfo" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.BlockInfo), global::ClientProto.BlockInfo.Parser, new[]{ "BlockId", "IpAddress" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.BlockData), global::ClientProto.BlockData.Parser, new[]{ "Data" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.DataNodeAddresses), global::ClientProto.DataNodeAddresses.Parser, new[]{ "IpAddress" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.UUID), global::ClientProto.UUID.Parser, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.Path), global::ClientProto.Path.Parser, new[]{ "Fullpath" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.StatusResponse), global::ClientProto.StatusResponse.Parser, new[]{ "Type" }, null, new[]{ typeof(global::ClientProto.StatusResponse.Types.StatusType) }, null),
@@ -389,6 +398,258 @@ namespace ClientProto {
 
   }
 
+  public sealed partial class BlockMessage : pb::IMessage<BlockMessage> {
+    private static readonly pb::MessageParser<BlockMessage> _parser = new pb::MessageParser<BlockMessage>(() => new BlockMessage());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<BlockMessage> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BlockMessage() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BlockMessage(BlockMessage other) : this() {
+      blockInfo_ = other.blockInfo_.Clone();
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BlockMessage Clone() {
+      return new BlockMessage(this);
+    }
+
+    /// <summary>Field number for the "blockInfo" field.</summary>
+    public const int BlockInfoFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::ClientProto.BlockInfo> _repeated_blockInfo_codec
+        = pb::FieldCodec.ForMessage(10, global::ClientProto.BlockInfo.Parser);
+    private readonly pbc::RepeatedField<global::ClientProto.BlockInfo> blockInfo_ = new pbc::RepeatedField<global::ClientProto.BlockInfo>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::ClientProto.BlockInfo> BlockInfo {
+      get { return blockInfo_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as BlockMessage);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(BlockMessage other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!blockInfo_.Equals(other.blockInfo_)) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= blockInfo_.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      blockInfo_.WriteTo(output, _repeated_blockInfo_codec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += blockInfo_.CalculateSize(_repeated_blockInfo_codec);
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(BlockMessage other) {
+      if (other == null) {
+        return;
+      }
+      blockInfo_.Add(other.blockInfo_);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            blockInfo_.AddEntriesFrom(input, _repeated_blockInfo_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class BlockInfo : pb::IMessage<BlockInfo> {
+    private static readonly pb::MessageParser<BlockInfo> _parser = new pb::MessageParser<BlockInfo>(() => new BlockInfo());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<BlockInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BlockInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BlockInfo(BlockInfo other) : this() {
+      BlockId = other.blockId_ != null ? other.BlockId.Clone() : null;
+      ipAddress_ = other.ipAddress_.Clone();
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BlockInfo Clone() {
+      return new BlockInfo(this);
+    }
+
+    /// <summary>Field number for the "blockId" field.</summary>
+    public const int BlockIdFieldNumber = 1;
+    private global::ClientProto.UUID blockId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::ClientProto.UUID BlockId {
+      get { return blockId_; }
+      set {
+        blockId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ipAddress" field.</summary>
+    public const int IpAddressFieldNumber = 2;
+    private static readonly pb::FieldCodec<string> _repeated_ipAddress_codec
+        = pb::FieldCodec.ForString(18);
+    private readonly pbc::RepeatedField<string> ipAddress_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> IpAddress {
+      get { return ipAddress_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as BlockInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(BlockInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(BlockId, other.BlockId)) return false;
+      if(!ipAddress_.Equals(other.ipAddress_)) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (blockId_ != null) hash ^= BlockId.GetHashCode();
+      hash ^= ipAddress_.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (blockId_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(BlockId);
+      }
+      ipAddress_.WriteTo(output, _repeated_ipAddress_codec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (blockId_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(BlockId);
+      }
+      size += ipAddress_.CalculateSize(_repeated_ipAddress_codec);
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(BlockInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.blockId_ != null) {
+        if (blockId_ == null) {
+          blockId_ = new global::ClientProto.UUID();
+        }
+        BlockId.MergeFrom(other.BlockId);
+      }
+      ipAddress_.Add(other.ipAddress_);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            if (blockId_ == null) {
+              blockId_ = new global::ClientProto.UUID();
+            }
+            input.ReadMessage(blockId_);
+            break;
+          }
+          case 18: {
+            ipAddress_.AddEntriesFrom(input, _repeated_ipAddress_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class BlockData : pb::IMessage<BlockData> {
     private static readonly pb::MessageParser<BlockData> _parser = new pb::MessageParser<BlockData>(() => new BlockData());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -396,7 +657,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[2]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -506,6 +767,115 @@ namespace ClientProto {
 
   }
 
+  public sealed partial class DataNodeAddresses : pb::IMessage<DataNodeAddresses> {
+    private static readonly pb::MessageParser<DataNodeAddresses> _parser = new pb::MessageParser<DataNodeAddresses>(() => new DataNodeAddresses());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DataNodeAddresses> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataNodeAddresses() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataNodeAddresses(DataNodeAddresses other) : this() {
+      ipAddress_ = other.ipAddress_.Clone();
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataNodeAddresses Clone() {
+      return new DataNodeAddresses(this);
+    }
+
+    /// <summary>Field number for the "ipAddress" field.</summary>
+    public const int IpAddressFieldNumber = 1;
+    private static readonly pb::FieldCodec<string> _repeated_ipAddress_codec
+        = pb::FieldCodec.ForString(10);
+    private readonly pbc::RepeatedField<string> ipAddress_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> IpAddress {
+      get { return ipAddress_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DataNodeAddresses);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DataNodeAddresses other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!ipAddress_.Equals(other.ipAddress_)) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= ipAddress_.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      ipAddress_.WriteTo(output, _repeated_ipAddress_codec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += ipAddress_.CalculateSize(_repeated_ipAddress_codec);
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DataNodeAddresses other) {
+      if (other == null) {
+        return;
+      }
+      ipAddress_.Add(other.ipAddress_);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            ipAddress_.AddEntriesFrom(input, _repeated_ipAddress_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class UUID : pb::IMessage<UUID> {
     private static readonly pb::MessageParser<UUID> _parser = new pb::MessageParser<UUID>(() => new UUID());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -513,7 +883,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[3]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -630,7 +1000,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[4]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -747,7 +1117,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[5]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -862,6 +1232,7 @@ namespace ClientProto {
       public enum StatusType {
         [pbr::OriginalName("Success")] Success = 0,
         [pbr::OriginalName("Fail")] Fail = 1,
+        [pbr::OriginalName("Ready")] Ready = 2,
       }
 
     }
@@ -876,7 +1247,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[6]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1013,7 +1384,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[7]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1122,7 +1493,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[8]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
