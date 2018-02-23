@@ -132,9 +132,9 @@ namespace NameNode
         private static void TestSavingFileSystem()
         {
             var Root = new Folder("root", null);
-            Root.subfolders.Add("user", new Folder("user", Root));
+            Root.subfolders.Add("user", new Folder("user", "root"));
             Folder currentLocation = Root.subfolders["user"];
-            currentLocation.subfolders.Add("other folder", new Folder("other folder", currentLocation));
+            currentLocation.subfolders.Add("other folder", new Folder("other folder", currentLocation.path));
             currentLocation.files.Add("File",  new FileSystem.File("File", currentLocation.path));
             FileSystem.File selectedFile = currentLocation.files["File"];
 
@@ -167,9 +167,8 @@ namespace NameNode
 
             Folder currentLocation = Root.subfolders["user"];
             Console.WriteLine(currentLocation.name);
-            currentLocation = currentLocation.subfolders["other folder"];
-            Console.WriteLine(currentLocation.name);
-            currentLocation = currentLocation.parent;
+            Folder subLocation = currentLocation.subfolders["other folder"];
+            Console.WriteLine(subLocation.name);
             FileSystem.File selectedFile = currentLocation.files["File"];
             Console.WriteLine(selectedFile.name);
 
