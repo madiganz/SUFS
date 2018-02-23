@@ -34,12 +34,14 @@ namespace NameNode
                 //either send OK back or send queued commands to the specific datanode
         }
 
-        public bool CreateFile()
+        public bool CreateFile(string path)
         {
             try
             {
+                string[] paths = ExtractPath(path);
+                GrabParentDirectory(path);
                 FileSystem.File file = new FileSystem.File();
-                file.name = "";
+                file.name = paths[paths.Length-1];
                 file.fileSize = 0;
                 for (int i = 0; i < file.fileSize % Constants.MaxBlockSize; i++)
                 {
@@ -48,6 +50,7 @@ namespace NameNode
                     redistribute(id.ToString());
                 }
                 CurrentDirectory.files.Add(file.name, file);
+                SaveFileDirectory();
             }
             catch(Exception e)
             {
@@ -68,8 +71,8 @@ namespace NameNode
 
         public void DeleteFile(string path)
         {
-
-            Folder currentFolder = GrabDirectory(path);
+            GrabParentDirectory(path);
+            Folder currentFolder = CurrentDirectory;
             //queue up requests for each of the datanodes that have blocks
             //      to delete as soon as they send in heartbeat/block report
             //remove file from directory system
@@ -81,6 +84,7 @@ namespace NameNode
             GrabDirectory(path);
             Folder folder = new Folder(paths[paths.Length-1], path);
             CurrentDirectory.subfolders.Add(folder.name, folder);
+            SaveFileDirectory();
         }
 
         public bool DeleteDirectory(string path)
@@ -110,6 +114,7 @@ namespace NameNode
 
                     //delete directory
                     parentFolder.subfolders.Remove(paths[paths.Length - 1]);
+                    SaveFileDirectory();
                     return true;
                 }
                 else
@@ -166,6 +171,14 @@ namespace NameNode
             //counts to see if number of blocks are >= replication factor
                 //if <, call redistribute
             //return
+        }
+
+        private void SaveFileDirectory()
+        {
+            var serializer = new SerializerBuilder().Build();
+            var yaml = serializer.Serialize(Root);
+            System.IO.File.WriteAllText(@"C:/data/testDirecotry.yml", yaml);
+            Console.WriteLine(yaml);
         }
 
         private void initializeFileDirectory()
