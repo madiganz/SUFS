@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NameNode.FileSystem;
 using YamlDotNet.Serialization;
@@ -33,18 +34,27 @@ namespace NameNode
                 //either send OK back or send queued commands to the specific datanode
         }
 
-        public void CreateFile()
+        public bool CreateFile()
         {
-            FileSystem.File file = new FileSystem.File();
-            file.name = "";
-            file.fileSize = 0;
-            for (int i = 0; i < file.fileSize % Constants.MaxBlockSize; i++)
+            try
             {
-                Guid id = Guid.NewGuid();
-                file.data.Add(id);
-                redistribute(id.ToString());
+                FileSystem.File file = new FileSystem.File();
+                file.name = "";
+                file.fileSize = 0;
+                for (int i = 0; i < file.fileSize % Constants.MaxBlockSize; i++)
+                {
+                    Guid id = Guid.NewGuid();
+                    file.data.Add(id);
+                    redistribute(id.ToString());
+                }
+                CurrentDirectory.files.Add(file.name, file);
             }
-            CurrentDirectory.files.Add(file.name, file);
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+            return true;
 
         }
 
@@ -58,49 +68,83 @@ namespace NameNode
 
         public void DeleteFile(string path)
         {
-            string[] paths = path.Split('/');
-            Folder currentFolder = Root;
-            for (int i = 0; i < paths.Length - 1; i++)
-            {
-                currentFolder = currentFolder.subfolders[paths[i]];
-            }
+
+            Folder currentFolder = GrabDirectory(path);
             //queue up requests for each of the datanodes that have blocks
             //      to delete as soon as they send in heartbeat/block report
             //remove file from directory system
         }
 
-        public void CreateDirectory()
+        public void CreateDirectory(string path)
         {
-            Folder folder = new Folder();
-            folder.name = "";
-            folder.parent = CurrentDirectory;
+            string[] paths = ExtractPath(path);
+            GrabDirectory(path);
+            Folder folder = new Folder(paths[paths.Length-1], path);
             CurrentDirectory.subfolders.Add(folder.name, folder);
         }
 
-        public void DeleteDirectory()
+        public bool DeleteDirectory(string path)
         {
-            //recursive call to subdirectories
-            //loop call delete files
-            //IF AT ROOT STOP HERE
-            //move current directory up a layer
-            //delete directory
+            try
+            {
+                if (path != "root")
+                {
+                    string[] paths = ExtractPath(path);
+                    GrabParentDirectory(path);
+                    Folder parentFolder = CurrentDirectory;
+                    Folder folderToDelete = CurrentDirectory.subfolders[paths[paths.Length - 1]];
+
+                    //loop call to subdirectories
+                    foreach (string key in folderToDelete.subfolders.Keys)
+                    {
+                        DeleteDirectory(folderToDelete.subfolders[key].path);
+                        folderToDelete.subfolders.Remove(key);
+                    }
+
+                    //loop call delete files
+                    foreach (string key in folderToDelete.files.Keys)
+                    {
+                        DeleteFile(folderToDelete.files[key].path);
+                        folderToDelete.files.Remove(key);
+                    }
+
+                    //delete directory
+                    parentFolder.subfolders.Remove(paths[paths.Length - 1]);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Cannot delete Root. Root has been emptied");
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+
         }
 
-        public void MoveDownDirectory()
-        {
-            if(CurrentDirectory.subfolders.ContainsKey(""))
-                CurrentDirectory = CurrentDirectory.subfolders[""];
-        }
-
-        public void MoveUpDirectory()
-        {
-            if (CurrentDirectory != Root)
-                CurrentDirectory = CurrentDirectory.parent;
-        }
-
-        public void ListDirectoryContents()
+        public List<string> ListDirectoryContents(string path)
         {
             //return a list of all subdirectories and files for current file
+            string[] paths = ExtractPath(path);
+            GrabDirectory(path);
+
+            List<string> returnList = new List<string>();
+            Folder directory = CurrentDirectory;
+            foreach(Folder folder in directory.subfolders.Values)
+            {
+                returnList.Add(folder.path);
+            }
+
+            foreach (FileSystem.File file in directory.files.Values)
+            {
+                returnList.Add(file.path);
+            }
+
+            return returnList;
         }
 
         public void ListDataNodesStoringReplicas()
@@ -144,6 +188,33 @@ namespace NameNode
                 Root = new Folder();
             }
             CurrentDirectory = Root;
+        }
+
+        private string[] ExtractPath(string path)
+        {
+            return path.Split('/');
+        }
+
+        private Folder GrabDirectory(string path)
+        {
+            string[] paths = ExtractPath(path);
+            CurrentDirectory = Root;
+            for (int i = 0; i < paths.Length; i++)
+            {
+                CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
+            }
+            return CurrentDirectory;
+        }
+
+        private Folder GrabParentDirectory(string path)
+        {
+            string[] paths = ExtractPath(path);
+            CurrentDirectory = Root;
+            for (int i = 0; i < paths.Length - 1; i++)
+            {
+                CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
+            }
+            return CurrentDirectory;
         }
 
     }
