@@ -55,12 +55,11 @@ namespace DataNode
             // Get blockID
             Guid blockId = GetBlockID(metaData);
 
+            //TODO: switch this
             //string filePath = BlockStorage.Instance.CreateFile(blockId);
             string filePath = BlockStorage.Instance.CreateFile(Guid.NewGuid());
             Console.WriteLine("Created file: " + filePath);
 
-            //Channel channel = new Channel(ip + ":" + Constants.Port, ChannelCredentials.Insecure);
-            //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
             Channel channel = ConnectionManager.Instance.GetChannel(blockId);
 
             // No channel found means last datanode in pipe

@@ -16,13 +16,14 @@ namespace Client
         {
             //// Assume passed in parameters:
             //// NameNodeIP:Port => args[0],
-            //Channel channel = new Channel(args[0], ChannelCredentials.Insecure);
+            Channel channel = new Channel(args[0], ChannelCredentials.Insecure);
 
             // Use "write" to write blocks to nodes. WriteBlock function takes some manual config
             string task = args[1];
             //Channel channel = new Channel(IpAddress + ":50051", ChannelCredentials.Insecure);
-            Channel channel = new Channel("127.0.0.1" + ":50051", ChannelCredentials.Insecure);
+            //Channel channel = new Channel("127.0.0.1" + ":50051", ChannelCredentials.Insecure);
             var client = new ClientProto.ClientProto.ClientProtoClient(channel);
+
             //var reply = client.DeleteDirectory(new ClientProto.Path { Fullpath = "Path" });
 
             if (task == "write")
@@ -81,23 +82,8 @@ namespace Client
                     ByteRange = new ByteRange(0, 134217727) // 128 MB
                 };
 
-                //List<string> addresses = new List<string>();
-                //List<string> addresses = new List<string>
-                //{
-                //    "172.31.40.133"
-                //};
-
-                //Metadata metaData = new Metadata
-                //    {
-                //        new Metadata.Entry("blockid", Guid.NewGuid().ToString()),
-                //        new Metadata.Entry("ipaddresses", String.Join(",", addresses.ToArray()))
-                //    };
-
-                Metadata metaData = new Metadata
-                    {
-                        new Metadata.Entry("blockid", blockId.ToString())
-                    };
-                //4096
+                Metadata metaData = new Metadata { new Metadata.Entry("blockid", blockId.ToString()) };
+                
                 byte[] block = new byte[2097152];
                 //byte[] block = new byte[4096];
                 long totalBytesRead = 0;
@@ -108,15 +94,12 @@ namespace Client
                     Console.WriteLine("call established " + DateTime.UtcNow);
                     Stopwatch watch = new Stopwatch();
                     watch.Start();
-                    //Console.WriteLine("call initialized");
-                    //using (Stream responseStream = new FileStream(@"C:\Users\Zach Madigan\Documents\Cloud Computing\CC-MAIN-20180116070444-20180116090444-00000.warc", FileMode.Open, FileAccess.Read))
+
                     using (GetObjectResponse response = s3Cient.GetObject(request))
                     using (Stream responseStream = response.ResponseStream)
                     {
                         long totalBytesToRead = response.ContentLength;
                         while (totalBytesRead < response.ContentLength)
-                        //long totalBytesToRead = 134217727;
-                        //while (totalBytesRead < 134217727)
                         {
                             int numBytesRead = 0;
                             if (totalBytesToRead < 2097152)
@@ -153,6 +136,7 @@ namespace Client
                                 dataNodeFailed = true;
                                 totalBytesRead = response.ContentLength; // Stop reading
                                 Console.WriteLine("Writing block failed");
+                                call.Dispose();
                             }
                         }
 
