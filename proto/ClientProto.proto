@@ -12,7 +12,7 @@ service ClientProto {
 	rpc ListNodes(Path) returns (ListOfNodes) {}
 	
 	//Create a new file in SUFS
-	rpc AddFile(NewFile) returns (StatusResponse){}
+	rpc CreateFile(NewFile) returns (BlockMessage){}
 	
 	//Read a file
 	
@@ -31,6 +31,8 @@ service ClientProto {
   
 	// Creates a pipeline to stream bytes to datanodes
 	rpc WriteBlock(stream BlockData) returns (StatusResponse) {}
+
+	rpc GetReady(BlockInfo) returns (StatusResponse) {}
 }
 
 
@@ -43,6 +45,14 @@ message DataBlock {
 message DataNode {
 	UUID id = 1;
 	string ipAddress = 2;
+}
+
+message BlockMessage {
+    repeated BlockInfo blockInfo = 1;
+}
+message BlockInfo {
+    UUID blockId = 1;
+    repeated string ipAddress = 2;
 }
 
 message BlockData {
@@ -61,6 +71,7 @@ message StatusResponse {
 	enum StatusType {
 		Success = 0;
 		Fail = 1;
+		Ready = 2;
 	}
 	StatusType type = 1;
 }

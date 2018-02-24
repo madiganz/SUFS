@@ -139,11 +139,8 @@ namespace DataNode
         /// <returns>Boolean indicating operator success</returns>
         public bool DeleteBlock(Guid blockUUID)
         {
-            string sFilePath = null;
-            blockStorageMap.TryGetValue(blockUUID, out sFilePath);
-
             // Path found for uuid
-            if (sFilePath != null)
+            if (blockStorageMap.TryGetValue(blockUUID, out string sFilePath))
             {
                 try
                 {
@@ -162,6 +159,31 @@ namespace DataNode
 
             // No file to be deleted
             return true;
+        }
+
+        /// <summary>
+        /// Validates that the block has the correct size
+        /// </summary>
+        /// <param name="blockUUID">Unique identifier of block</param>
+        /// <param name="filePath">Full path of file</param>
+        /// <returns>True is block size is correct, otherwise false</returns>
+        public bool ValidateBlock(Guid blockUUID, string filePath)
+        {
+            try
+            {
+                FileInfo info = new FileInfo(filePath);
+                bool valid = info.Length == Constants.BlockSize;
+
+                if (!valid)
+                {
+                    DeleteBlock(blockUUID);
+                }
+                return valid;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -197,6 +219,8 @@ namespace DataNode
             // examined for files.
             Stack<string> dirs = new Stack<string>(40);
 
+            string path = "";
+
             // Root should always exist
             try
             {
@@ -210,6 +234,7 @@ namespace DataNode
             while (dirs.Count > 0)
             {
                 string currentDir = dirs.Pop();
+                path += currentDir;
                 string[] subDirs;
                 try
                 {
@@ -246,11 +271,11 @@ namespace DataNode
                 // Just create a file
                 if (files.Length < 40)
                 {
-                    return currentDir.ToString();
+                    return path;
                 }
                 else if (subDirs.Length < 20) // Just create a directory
                 {
-                    return CreateRandomDirectory();
+                    return path + "/" + CreateRandomDirectory();
                 }
                 else
                 {
