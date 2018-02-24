@@ -48,10 +48,10 @@ namespace Client
                         IpAddress = { addresses }
                     });
                 }
-                catch
+                catch(RpcException e)
                 {
                     // Can't connect to first node -> Need to contact namenode or try other datanode
-                    Console.WriteLine("Get Ready Failed");
+                    Console.WriteLine("Get ready failed: " + e.Message);
                 }
                 if (readyResponse.Type == ClientProto.StatusResponse.Types.StatusType.Ready)
                 {
@@ -60,7 +60,7 @@ namespace Client
                 else
                 {
                     // Other nodes couldn't connect
-                    Console.WriteLine("ready failed");
+                    Console.WriteLine(readyResponse.Message);
                 }
             }
 
@@ -132,11 +132,11 @@ namespace Client
                                 Console.WriteLine("writing block, size: " + numBytesRead + ", remaining: " + (response.ContentLength - totalBytesRead));
                                 await call.RequestStream.WriteAsync(new ClientProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(block) });
                             }
-                            catch
+                            catch(RpcException e)
                             {
                                 dataNodeFailed = true;
                                 totalBytesRead = response.ContentLength; // Stop reading
-                                Console.WriteLine("Writing block failed");
+                                Console.WriteLine("Writing block failed: " + e.Message);
                                 call.Dispose();
                             }
                         }

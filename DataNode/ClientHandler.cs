@@ -34,7 +34,7 @@ namespace DataNode
                 }
                 catch (RpcException e)
                 {
-                    Console.WriteLine(e.Message);
+                    response.Message = e.Message;
                 }
 
                 return Task.FromResult(response);
@@ -84,6 +84,7 @@ namespace DataNode
         public static async Task<ClientProto.StatusResponse> WriteAndForwardBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context, Channel channel, string filePath, Guid blockId)
         {
             bool success = true;
+            string message = "";
             var client = new ClientProto.ClientProto.ClientProtoClient(channel);
             using (var call = client.WriteBlock(context.RequestHeaders))
             {
@@ -111,16 +112,17 @@ namespace DataNode
                                     // Send data through pipe
                                     await call.RequestStream.WriteAsync(blockData);
                                 }
-                                catch
+                                catch(RpcException e)
                                 {
                                     dataNodeFailed = true;
-                                    Console.WriteLine("Writing block failed");
+                                    Console.WriteLine("Writing block failed: " + e.Message);
+                                    message = e.Message;
                                 }
                             }
                         }
                         catch (IOException e)
                         {
-                            Console.WriteLine(e);
+                            message = e.Message;
                             success = false;
                         }
                     }
@@ -128,7 +130,7 @@ namespace DataNode
                     stream.Dispose();
                 }
 
-                ClientProto.StatusResponse resp = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                ClientProto.StatusResponse resp = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = message };
 
                 // If DataNode did not fail, get response and shut down
                 if (!dataNodeFailed)
@@ -174,9 +176,8 @@ namespace DataNode
                     }
                     catch (IOException e)
                     {
-                        Console.WriteLine(e);
                         BlockStorage.Instance.DeleteBlock(blockId);
-                        return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                        return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = e.Message };
                     }
                 }
 
@@ -187,7 +188,7 @@ namespace DataNode
             }
 
             // If write was successful, make sure block size is correct
-            return !BlockStorage.Instance.ValidateBlock(blockId, filePath) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
+            return !BlockStorage.Instance.ValidateBlock(blockId, filePath) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Block size is not correct" } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
         }
 
         /// <summary>

@@ -74,6 +74,7 @@ message StatusResponse {
 		Ready = 2;
 	}
 	StatusType type = 1;
+	string message = 2;
 }
 
 message ListOfNodes  {
