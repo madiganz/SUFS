@@ -51,7 +51,6 @@ namespace DataNode
         public override async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context)
         {
             List<Metadata.Entry> metaData = context.RequestHeaders.ToList();
-            bool success = true;
 
             // Get blockID
             Guid blockId = GetBlockID(metaData);
@@ -67,78 +66,33 @@ namespace DataNode
             // No channel found means last datanode in pipe
             if (channel != null)
             {
-                var client = new ClientProto.ClientProto.ClientProtoClient(channel);
-                using (var call = client.WriteBlock(context.RequestHeaders))
-                {
-                    bool dataNodeFailed = false;
-                    Stopwatch watch = new Stopwatch();
-                    watch.Start();
-
-                    using (var stream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 131072, FileOptions.WriteThrough)) // 128KB
-                    {
-                        while (await requestStream.MoveNext())
-                        {
-                            try
-                            {
-                                var blockData = requestStream.Current;
-                                byte[] data = blockData.Data.ToByteArray();
-
-                                // Write to file
-                                stream.Write(data, 0, data.Length);
-
-                                // Don't need to forward data in pipe if datanode failed
-                                if (!dataNodeFailed)
-                                {
-                                    try
-                                    {
-                                        // Send data through pipe
-                                        await call.RequestStream.WriteAsync(blockData);
-                                    }
-                                    catch
-                                    {
-                                        dataNodeFailed = true;
-                                        Console.WriteLine("Writing block failed");
-                                    }
-                                }
-                            }
-                            catch (IOException e)
-                            {
-                                Console.WriteLine(e);
-                                success = false;
-                            }
-                        }
-                    }
-
-                    ClientProto.StatusResponse resp = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
-
-                    // If DataNode did not fail, get response and shut down
-                    if (!dataNodeFailed)
-                    {
-                        await call.RequestStream.CompleteAsync();
-
-                        resp = await call.ResponseAsync;
-                        ConnectionManager.Instance.ShutDownChannel(blockId, channel);
-                    }
-
-                    watch.Stop();
-                    Console.WriteLine("Total time to write: " + watch.Elapsed);
-
-                    // If write was successful and block size is correct, return success
-                    if (success && BlockStorage.Instance.ValidateBlock(blockId, filePath))
-                    {
-                        return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
-                    }
-                    else // If not successful, return the response sent down through pipe
-                    {
-                        return resp;
-                    }
-
-                }
+                return await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId);
             }
             else // Just write to file
             {
+                return await WriteBlock(requestStream, filePath, blockId);
+            }
+        }
+
+        /// <summary>
+        /// Writes block to disk and forwards to next DataNode
+        /// </summary>
+        /// <param name="requestStream">Stream of bytes</param>
+        /// <param name="context">Context of call</param>
+        /// <param name="channel">Channel for pipe</param>
+        /// <param name="filePath">Full path of file</param>
+        /// <param name="blockId">Unique identifier of block</param>
+        /// <returns>Status of writing the block</returns>
+        public static async Task<ClientProto.StatusResponse> WriteAndForwardBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context, Channel channel, string filePath, Guid blockId)
+        {
+            bool success = true;
+            var client = new ClientProto.ClientProto.ClientProtoClient(channel);
+            using (var call = client.WriteBlock(context.RequestHeaders))
+            {
+                bool dataNodeFailed = false;
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
+
                 using (var stream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 131072, FileOptions.WriteThrough)) // 128KB
                 {
                     while (await requestStream.MoveNext())
@@ -150,25 +104,92 @@ namespace DataNode
 
                             // Write to file
                             stream.Write(data, 0, data.Length);
+
+                            // Don't need to forward data in pipe if datanode failed
+                            if (!dataNodeFailed)
+                            {
+                                try
+                                {
+                                    // Send data through pipe
+                                    await call.RequestStream.WriteAsync(blockData);
+                                }
+                                catch
+                                {
+                                    dataNodeFailed = true;
+                                    Console.WriteLine("Writing block failed");
+                                }
+                            }
                         }
                         catch (IOException e)
                         {
                             Console.WriteLine(e);
-                            return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                            success = false;
                         }
                     }
-
-                    watch.Stop();
-                    Console.WriteLine("Total time to write: " + watch.Elapsed);
+                    stream.Flush();
+                    stream.Dispose();
                 }
 
-                // If write was successful, make sure block size is correct
-                if (!BlockStorage.Instance.ValidateBlock(blockId, filePath))
+                ClientProto.StatusResponse resp = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+
+                // If DataNode did not fail, get response and shut down
+                if (!dataNodeFailed)
                 {
-                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                    await call.RequestStream.CompleteAsync();
+
+                    resp = await call.ResponseAsync;
+                    call.Dispose();
+                    ConnectionManager.Instance.ShutDownChannel(blockId, channel);
                 }
-                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
+
+                watch.Stop();
+                Console.WriteLine("Total time to write: " + watch.Elapsed);
+
+                // If write was successful and block size is correct, return success
+                // Otherwise return the response sent down through pipe
+                return (success && BlockStorage.Instance.ValidateBlock(blockId, filePath)) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success } : resp;
             }
+        }
+
+        /// <summary>
+        /// Writes block to disk
+        /// </summary>
+        /// <param name="requestStream">Stream of bytes</param>
+        /// <param name="filePath">Full path of file</param>
+        /// <param name="blockId">Unique identifier of block</param>
+        /// <returns>Status of writing the block</returns>
+        public static async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, string filePath, Guid blockId)
+        {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            using (var stream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 131072, FileOptions.WriteThrough)) // 128KB
+            {
+                while (await requestStream.MoveNext())
+                {
+                    try
+                    {
+                        var blockData = requestStream.Current;
+                        byte[] data = blockData.Data.ToByteArray();
+
+                        // Write to file
+                        stream.Write(data, 0, data.Length);
+                    }
+                    catch (IOException e)
+                    {
+                        Console.WriteLine(e);
+                        BlockStorage.Instance.DeleteBlock(blockId);
+                        return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                    }
+                }
+
+                watch.Stop();
+                Console.WriteLine("Total time to write: " + watch.Elapsed);
+                stream.Flush();
+                stream.Dispose();
+            }
+
+            // If write was successful, make sure block size is correct
+            return !BlockStorage.Instance.ValidateBlock(blockId, filePath) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
         }
 
         /// <summary>
