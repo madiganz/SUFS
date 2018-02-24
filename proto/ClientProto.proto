@@ -52,7 +52,8 @@ message BlockMessage {
 }
 message BlockInfo {
     UUID blockId = 1;
-    repeated string ipAddress = 2;
+	int32 blockSize = 2;
+    repeated string ipAddress = 3;
 }
 
 message BlockData {

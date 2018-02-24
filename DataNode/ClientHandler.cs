@@ -13,7 +13,7 @@ namespace DataNode
     {
         public override Task<ClientProto.StatusResponse> GetReady(ClientProto.BlockInfo blockInfo, ServerCallContext context)
         {
-            ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+            ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             if (blockInfo.IpAddress.Count() == 0)
             {
                 response.Type = ClientProto.StatusResponse.Types.StatusType.Ready;
@@ -21,22 +21,28 @@ namespace DataNode
             }
             else
             {
+                Guid blockId = Guid.Parse(blockInfo.BlockId.Value);
+                Channel channel = null;
+                string ipAddress = "";
                 try
                 {
+                    ipAddress = blockInfo.IpAddress[0];
                     blockInfo.IpAddress.RemoveAt(0);
-                    Channel channel = ConnectionManager.Instance.CreateChannel(Guid.Parse(blockInfo.BlockId.Value), "127.0.0.1", "50052");
+                    channel = ConnectionManager.Instance.CreateChannel(blockId, "127.0.0.1", "50052");
                     //Console.WriteLine(channel.State.ToString());
                     //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
                     var client = new ClientProto.ClientProto.ClientProtoClient(channel);
                     //return client.GetReady(new ClientProto.DataNodeAddresses { IpAddress = { addresses } });
 
-                    response = client.GetReady(blockInfo);
+                    client.GetReady(blockInfo);
                 }
                 catch (RpcException e)
                 {
-                    response.Message = e.Message;
+                    ConnectionManager.Instance.ShutDownChannel(blockId, channel);
+                    response.Message = "Failed to get ready for " + ipAddress + ": " + e.Message;
                 }
 
+                // We will always return ready as if it reaches this far there is at least 1 node in the pipeline, which is good enough!
                 return Task.FromResult(response);
             }
         }

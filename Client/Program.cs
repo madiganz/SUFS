@@ -42,25 +42,25 @@ namespace Client
                 Guid blockId = Guid.NewGuid();
                 try
                 {
+                    // readyResponse should always be Ready if it was able to connect
                     readyResponse = client.GetReady(new ClientProto.BlockInfo
                     {
                         BlockId = new ClientProto.UUID { Value = blockId.ToString() },
                         IpAddress = { addresses }
                     });
+
+                    // Mainly for debugging
+                    if (readyResponse.Message != null)
+                    {
+                        Console.WriteLine(readyResponse.Message);
+                    }
+
+                    WriteBlock(client, blockId).Wait();
                 }
-                catch(RpcException e)
+                catch (RpcException e)
                 {
                     // Can't connect to first node -> Need to contact namenode or try other datanode
                     Console.WriteLine("Get ready failed: " + e.Message);
-                }
-                if (readyResponse.Type == ClientProto.StatusResponse.Types.StatusType.Ready)
-                {
-                    WriteBlock(client, blockId).Wait();
-                }
-                else
-                {
-                    // Other nodes couldn't connect
-                    Console.WriteLine(readyResponse.Message);
                 }
             }
 
@@ -150,8 +150,10 @@ namespace Client
                         Console.WriteLine(resp.Type.ToString());
                         watch.Stop();
                         Console.WriteLine("Total time to write: " + watch.Elapsed);
+                        responseStream.Flush();
+                        responseStream.Dispose();
+                        response.Dispose();
                     };
-
                 }
             }
         }
