@@ -20,6 +20,37 @@ namespace NameNode
             Console.WriteLine(path);
             return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
         }
+
+        public override Task<ClientProto.StatusResponse> CreateFile(ClientProto.Path path, ServerCallContext context)
+        {
+            var response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Ok };
+            if (Program.Database.FileExists(path.FullPath))
+            {
+                response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
+            }
+            return Task.FromResult(response);
+        }
+
+        public override Task<ClientProto.BlockInfo> QueryBlockDestination(ClientProto.BlockInfo blockInfo, ServerCallContext context)
+        {
+            // TODO: replace with real query to get ipaddresses
+            List<string> ipAddresses = new List<string>()
+            {
+                //"test",
+                //"test",
+                //"test"
+            };
+
+            // Hopefully I can find a better way to do this
+            ClientProto.BlockInfo blckInfo = new ClientProto.BlockInfo
+            {
+                BlockId = blockInfo.BlockId,
+                BlockSize = blockInfo.BlockSize,
+                IpAddress = { ipAddresses }
+            };
+
+            return Task.FromResult(blckInfo);
+        }
     }
 
     class NameNodeImpl : DataNodeProto.DataNodeProto.DataNodeProtoBase
@@ -96,9 +127,12 @@ namespace NameNode
             // Use ec2 instance manager to get the private ip address of this name node
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
             string ipAddress = instanceManager.GetPrivateIpAddress();
-            instanceManager.OpenFirewallPort("50051"); // Need to open port on windows firewalls
 
-# if DEBUG
+#if !DEBUG
+            instanceManager.OpenFirewallPort(Constants.Port.ToString()); // Need to open port on windows firewalls
+#endif
+
+#if DEBUG
             if (ipAddress == null)
             {
                 ipAddress = "localhost";

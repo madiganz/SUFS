@@ -12,7 +12,8 @@ service ClientProto {
 	rpc ListNodes(Path) returns (ListOfNodes) {}
 	
 	//Create a new file in SUFS
-	rpc CreateFile(NewFile) returns (BlockMessage){}
+	rpc CreateFile(Path) returns (StatusResponse){}
+	rpc QueryBlockDestination(BlockInfo) returns (BlockInfo) {} 
 	
 	//Read a file
 	
@@ -65,7 +66,7 @@ message UUID {
 }
 
 message Path {
-	string fullpath = 1;
+	string fullPath = 1;
 }
 
 message StatusResponse {
@@ -73,6 +74,8 @@ message StatusResponse {
 		Success = 0;
 		Fail = 1;
 		Ready = 2;
+		FileExists = 3;
+		Ok = 4;
 	}
 	StatusType type = 1;
 	string message = 2;

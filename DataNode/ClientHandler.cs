@@ -74,6 +74,7 @@ namespace DataNode
             }
             else // Just write to file
             {
+                Console.WriteLine("Last Datanode in pipe");
                 return await WriteBlock(requestStream, filePath, blockId);
             }
         }
