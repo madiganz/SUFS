@@ -32,7 +32,7 @@ service ClientProto {
 	// Creates a pipeline to stream bytes to datanodes
 	rpc WriteBlock(stream BlockData) returns (StatusResponse) {}
 	
-	rpc GetReady(DataNodeAddresses) returns (StatusResponse) {}
+	rpc GetReady(BlockInfo) returns (StatusResponse) {}
 }
 
 
@@ -57,10 +57,6 @@ message BlockInfo {
 
 message BlockData {
 	bytes data = 1;
-}
-
-message DataNodeAddresses {
-	repeated string ipAddress = 1;
 }
 
 message UUID {

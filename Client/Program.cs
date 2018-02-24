@@ -37,9 +37,14 @@ namespace Client
                     "172.31.40.133"
                 };
                 ClientProto.StatusResponse readyResponse = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                Guid blockId = Guid.NewGuid();
                 try
                 {
-                    readyResponse = client.GetReady(new ClientProto.DataNodeAddresses { IpAddress = { addresses } });
+                    readyResponse = client.GetReady(new ClientProto.BlockInfo
+                    {
+                        BlockId = new ClientProto.UUID { Value = blockId.ToString() },
+                        IpAddress = { addresses }
+                    });
                 }
                 catch
                 {
@@ -48,7 +53,7 @@ namespace Client
                 }
                 if (readyResponse.Type == ClientProto.StatusResponse.Types.StatusType.Ready)
                 {
-                    WriteBlock(client).Wait();
+                    WriteBlock(client, blockId).Wait();
                 }
                 else
                 {
@@ -63,7 +68,7 @@ namespace Client
             Console.ReadKey();
         }
 
-        public static async Task WriteBlock(ClientProto.ClientProto.ClientProtoClient client)
+        public static async Task WriteBlock(ClientProto.ClientProto.ClientProtoClient client, Guid blockId)
         {
             Console.WriteLine("in WriteBLock call");
             IAmazonS3 s3Cient;
@@ -77,15 +82,20 @@ namespace Client
                 };
 
                 //List<string> addresses = new List<string>();
-                List<string> addresses = new List<string>
-                {
-                    "172.31.40.133"
-                };
+                //List<string> addresses = new List<string>
+                //{
+                //    "172.31.40.133"
+                //};
+
+                //Metadata metaData = new Metadata
+                //    {
+                //        new Metadata.Entry("blockid", Guid.NewGuid().ToString()),
+                //        new Metadata.Entry("ipaddresses", String.Join(",", addresses.ToArray()))
+                //    };
 
                 Metadata metaData = new Metadata
                     {
-                        new Metadata.Entry("blockid", Guid.NewGuid().ToString()),
-                        new Metadata.Entry("ipaddresses", String.Join(",", addresses.ToArray()))
+                        new Metadata.Entry("blockid", blockId.ToString())
                     };
                 //4096
                 byte[] block = new byte[2097152];
@@ -132,11 +142,11 @@ namespace Client
                                     totalBytesRead += n;
                                 } while (numBytesToRead > 0);
                             }
-                            
+
                             try
                             {
-                                    Console.WriteLine("writing block, size: " + numBytesRead + ", remaining: " + (response.ContentLength - totalBytesRead));
-                                    await call.RequestStream.WriteAsync(new ClientProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(block) });
+                                Console.WriteLine("writing block, size: " + numBytesRead + ", remaining: " + (response.ContentLength - totalBytesRead));
+                                await call.RequestStream.WriteAsync(new ClientProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(block) });
                             }
                             catch
                             {

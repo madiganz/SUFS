@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="BlockReport.cs" />
     <Compile Include="BlockStorage.cs" />
+    <Compile Include="ConnectionManager.cs" />
     <Compile Include="ClientHandler.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataNodeHandler.cs" />

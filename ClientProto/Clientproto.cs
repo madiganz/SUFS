@@ -29,29 +29,28 @@ namespace ClientProto {
             "EhEKCWlwQWRkcmVzcxgCIAEoCSI5CgxCbG9ja01lc3NhZ2USKQoJYmxvY2tJ",
             "bmZvGAEgAygLMhYuQ2xpZW50UHJvdG8uQmxvY2tJbmZvIkIKCUJsb2NrSW5m",
             "bxIiCgdibG9ja0lkGAEgASgLMhEuQ2xpZW50UHJvdG8uVVVJRBIRCglpcEFk",
-            "ZHJlc3MYAiADKAkiGQoJQmxvY2tEYXRhEgwKBGRhdGEYASABKAwiJgoRRGF0",
-            "YU5vZGVBZGRyZXNzZXMSEQoJaXBBZGRyZXNzGAEgAygJIhUKBFVVSUQSDQoF",
-            "dmFsdWUYASABKAkiGAoEUGF0aBIQCghmdWxscGF0aBgBIAEoCSJ2Cg5TdGF0",
-            "dXNSZXNwb25zZRI0CgR0eXBlGAEgASgOMiYuQ2xpZW50UHJvdG8uU3RhdHVz",
-            "UmVzcG9uc2UuU3RhdHVzVHlwZSIuCgpTdGF0dXNUeXBlEgsKB1N1Y2Nlc3MQ",
-            "ABIICgRGYWlsEAESCQoFUmVhZHkQAiIuCgtMaXN0T2ZOb2RlcxIPCgdibG9j",
-            "a0lkGAEgASgJEg4KBm5vZGVJZBgCIAMoCSIiCg5MaXN0T2ZDb250ZW50cxIQ",
-            "CghmaWxlTmFtZRgBIAMoCSIsCgdOZXdGaWxlEhAKCGZ1bGxwYXRoGAEgASgJ",
-            "Eg8KB2FkZHJlc3MYAiABKAky4QQKC0NsaWVudFByb3RvEkMKD0RlbGV0ZURp",
-            "cmVjdG9yeRIRLkNsaWVudFByb3RvLlBhdGgaGy5DbGllbnRQcm90by5TdGF0",
-            "dXNSZXNwb25zZSIAEkAKDEFkZERpcmVjdG9yeRIRLkNsaWVudFByb3RvLlBh",
-            "dGgaGy5DbGllbnRQcm90by5TdGF0dXNSZXNwb25zZSIAEjoKCUxpc3ROb2Rl",
-            "cxIRLkNsaWVudFByb3RvLlBhdGgaGC5DbGllbnRQcm90by5MaXN0T2ZOb2Rl",
-            "cyIAEj8KCkNyZWF0ZUZpbGUSFC5DbGllbnRQcm90by5OZXdGaWxlGhkuQ2xp",
-            "ZW50UHJvdG8uQmxvY2tNZXNzYWdlIgASPgoKRGVsZXRlRmlsZRIRLkNsaWVu",
-            "dFByb3RvLlBhdGgaGy5DbGllbnRQcm90by5TdGF0dXNSZXNwb25zZSIAEkAK",
-            "DExpc3RDb250ZW50cxIRLkNsaWVudFByb3RvLlBhdGgaGy5DbGllbnRQcm90",
-            "by5MaXN0T2ZDb250ZW50cyIAEjoKCVJlYWRCbG9jaxIRLkNsaWVudFByb3Rv",
-            "LlVVSUQaFi5DbGllbnRQcm90by5CbG9ja0RhdGEiADABEkUKCldyaXRlQmxv",
-            "Y2sSFi5DbGllbnRQcm90by5CbG9ja0RhdGEaGy5DbGllbnRQcm90by5TdGF0",
-            "dXNSZXNwb25zZSIAKAESSQoIR2V0UmVhZHkSHi5DbGllbnRQcm90by5EYXRh",
-            "Tm9kZUFkZHJlc3NlcxobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgBi",
-            "BnByb3RvMw=="));
+            "ZHJlc3MYAiADKAkiGQoJQmxvY2tEYXRhEgwKBGRhdGEYASABKAwiFQoEVVVJ",
+            "RBINCgV2YWx1ZRgBIAEoCSIYCgRQYXRoEhAKCGZ1bGxwYXRoGAEgASgJInYK",
+            "DlN0YXR1c1Jlc3BvbnNlEjQKBHR5cGUYASABKA4yJi5DbGllbnRQcm90by5T",
+            "dGF0dXNSZXNwb25zZS5TdGF0dXNUeXBlIi4KClN0YXR1c1R5cGUSCwoHU3Vj",
+            "Y2VzcxAAEggKBEZhaWwQARIJCgVSZWFkeRACIi4KC0xpc3RPZk5vZGVzEg8K",
+            "B2Jsb2NrSWQYASABKAkSDgoGbm9kZUlkGAIgAygJIiIKDkxpc3RPZkNvbnRl",
+            "bnRzEhAKCGZpbGVOYW1lGAEgAygJIiwKB05ld0ZpbGUSEAoIZnVsbHBhdGgY",
+            "ASABKAkSDwoHYWRkcmVzcxgCIAEoCTLZBAoLQ2xpZW50UHJvdG8SQwoPRGVs",
+            "ZXRlRGlyZWN0b3J5EhEuQ2xpZW50UHJvdG8uUGF0aBobLkNsaWVudFByb3Rv",
+            "LlN0YXR1c1Jlc3BvbnNlIgASQAoMQWRkRGlyZWN0b3J5EhEuQ2xpZW50UHJv",
+            "dG8uUGF0aBobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgASOgoJTGlz",
+            "dE5vZGVzEhEuQ2xpZW50UHJvdG8uUGF0aBoYLkNsaWVudFByb3RvLkxpc3RP",
+            "Zk5vZGVzIgASPwoKQ3JlYXRlRmlsZRIULkNsaWVudFByb3RvLk5ld0ZpbGUa",
+            "GS5DbGllbnRQcm90by5CbG9ja01lc3NhZ2UiABI+CgpEZWxldGVGaWxlEhEu",
+            "Q2xpZW50UHJvdG8uUGF0aBobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNl",
+            "IgASQAoMTGlzdENvbnRlbnRzEhEuQ2xpZW50UHJvdG8uUGF0aBobLkNsaWVu",
+            "dFByb3RvLkxpc3RPZkNvbnRlbnRzIgASOgoJUmVhZEJsb2NrEhEuQ2xpZW50",
+            "UHJvdG8uVVVJRBoWLkNsaWVudFByb3RvLkJsb2NrRGF0YSIAMAESRQoKV3Jp",
+            "dGVCbG9jaxIWLkNsaWVudFByb3RvLkJsb2NrRGF0YRobLkNsaWVudFByb3Rv",
+            "LlN0YXR1c1Jlc3BvbnNlIgAoARJBCghHZXRSZWFkeRIWLkNsaWVudFByb3Rv",
+            "LkJsb2NrSW5mbxobLkNsaWVudFByb3RvLlN0YXR1c1Jlc3BvbnNlIgBiBnBy",
+            "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -60,7 +59,6 @@ namespace ClientProto {
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.BlockMessage), global::ClientProto.BlockMessage.Parser, new[]{ "BlockInfo" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.BlockInfo), global::ClientProto.BlockInfo.Parser, new[]{ "BlockId", "IpAddress" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.BlockData), global::ClientProto.BlockData.Parser, new[]{ "Data" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.DataNodeAddresses), global::ClientProto.DataNodeAddresses.Parser, new[]{ "IpAddress" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.UUID), global::ClientProto.UUID.Parser, new[]{ "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.Path), global::ClientProto.Path.Parser, new[]{ "Fullpath" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::ClientProto.StatusResponse), global::ClientProto.StatusResponse.Parser, new[]{ "Type" }, null, new[]{ typeof(global::ClientProto.StatusResponse.Types.StatusType) }, null),
@@ -767,115 +765,6 @@ namespace ClientProto {
 
   }
 
-  public sealed partial class DataNodeAddresses : pb::IMessage<DataNodeAddresses> {
-    private static readonly pb::MessageParser<DataNodeAddresses> _parser = new pb::MessageParser<DataNodeAddresses>(() => new DataNodeAddresses());
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<DataNodeAddresses> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[5]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DataNodeAddresses() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DataNodeAddresses(DataNodeAddresses other) : this() {
-      ipAddress_ = other.ipAddress_.Clone();
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public DataNodeAddresses Clone() {
-      return new DataNodeAddresses(this);
-    }
-
-    /// <summary>Field number for the "ipAddress" field.</summary>
-    public const int IpAddressFieldNumber = 1;
-    private static readonly pb::FieldCodec<string> _repeated_ipAddress_codec
-        = pb::FieldCodec.ForString(10);
-    private readonly pbc::RepeatedField<string> ipAddress_ = new pbc::RepeatedField<string>();
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<string> IpAddress {
-      get { return ipAddress_; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as DataNodeAddresses);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(DataNodeAddresses other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if(!ipAddress_.Equals(other.ipAddress_)) return false;
-      return true;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      hash ^= ipAddress_.GetHashCode();
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      ipAddress_.WriteTo(output, _repeated_ipAddress_codec);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      size += ipAddress_.CalculateSize(_repeated_ipAddress_codec);
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(DataNodeAddresses other) {
-      if (other == null) {
-        return;
-      }
-      ipAddress_.Add(other.ipAddress_);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            input.SkipLastField();
-            break;
-          case 10: {
-            ipAddress_.AddEntriesFrom(input, _repeated_ipAddress_codec);
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
   public sealed partial class UUID : pb::IMessage<UUID> {
     private static readonly pb::MessageParser<UUID> _parser = new pb::MessageParser<UUID>(() => new UUID());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -883,7 +772,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[6]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1000,7 +889,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[7]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1117,7 +1006,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[8]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1247,7 +1136,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[9]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1384,7 +1273,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[10]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1493,7 +1382,7 @@ namespace ClientProto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[11]; }
+      get { return global::ClientProto.ClientprotoReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

@@ -21,7 +21,7 @@ namespace ClientProto {
     static readonly grpc::Marshaller<global::ClientProto.ListOfContents> __Marshaller_ListOfContents = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.ListOfContents.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::ClientProto.UUID> __Marshaller_UUID = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.UUID.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::ClientProto.BlockData> __Marshaller_BlockData = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.BlockData.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::ClientProto.DataNodeAddresses> __Marshaller_DataNodeAddresses = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.DataNodeAddresses.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::ClientProto.BlockInfo> __Marshaller_BlockInfo = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::ClientProto.BlockInfo.Parser.ParseFrom);
 
     static readonly grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse> __Method_DeleteDirectory = new grpc::Method<global::ClientProto.Path, global::ClientProto.StatusResponse>(
         grpc::MethodType.Unary,
@@ -79,11 +79,11 @@ namespace ClientProto {
         __Marshaller_BlockData,
         __Marshaller_StatusResponse);
 
-    static readonly grpc::Method<global::ClientProto.DataNodeAddresses, global::ClientProto.StatusResponse> __Method_GetReady = new grpc::Method<global::ClientProto.DataNodeAddresses, global::ClientProto.StatusResponse>(
+    static readonly grpc::Method<global::ClientProto.BlockInfo, global::ClientProto.StatusResponse> __Method_GetReady = new grpc::Method<global::ClientProto.BlockInfo, global::ClientProto.StatusResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
         "GetReady",
-        __Marshaller_DataNodeAddresses,
+        __Marshaller_BlockInfo,
         __Marshaller_StatusResponse);
 
     /// <summary>Service descriptor</summary>
@@ -184,7 +184,7 @@ namespace ClientProto {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> GetReady(global::ClientProto.DataNodeAddresses request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::ClientProto.StatusResponse> GetReady(global::ClientProto.BlockInfo request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -520,19 +520,19 @@ namespace ClientProto {
       {
         return CallInvoker.AsyncClientStreamingCall(__Method_WriteBlock, null, options);
       }
-      public virtual global::ClientProto.StatusResponse GetReady(global::ClientProto.DataNodeAddresses request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::ClientProto.StatusResponse GetReady(global::ClientProto.BlockInfo request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return GetReady(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::ClientProto.StatusResponse GetReady(global::ClientProto.DataNodeAddresses request, grpc::CallOptions options)
+      public virtual global::ClientProto.StatusResponse GetReady(global::ClientProto.BlockInfo request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_GetReady, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> GetReadyAsync(global::ClientProto.DataNodeAddresses request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> GetReadyAsync(global::ClientProto.BlockInfo request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return GetReadyAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> GetReadyAsync(global::ClientProto.DataNodeAddresses request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::ClientProto.StatusResponse> GetReadyAsync(global::ClientProto.BlockInfo request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_GetReady, null, options, request);
       }
