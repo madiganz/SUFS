@@ -188,7 +188,6 @@ namespace ClientProto {
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
-
     }
 
     /// <summary>Client for ClientProto</summary>

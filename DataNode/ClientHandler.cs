@@ -11,7 +11,6 @@ namespace DataNode
 {
     class ClientHandler : ClientProto.ClientProto.ClientProtoBase
     {
-
         public override Task<ClientProto.StatusResponse> GetReady(ClientProto.BlockInfo blockInfo, ServerCallContext context)
         {
             ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };

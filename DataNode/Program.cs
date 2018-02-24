@@ -49,10 +49,11 @@ namespace DataNode
             // Initialize blockstorage
             BlockStorage mBlockStorage = BlockStorage.Instance;
 
-            //Thread heartBeatThread = new Thread(new ParameterizedThreadStart(HeartBeat.SendHeartBeat));
-            //Thread blockReportThread = new Thread(new ParameterizedThreadStart(BlockReport.SendBlockReport));
-            //heartBeatThread.Start(client);
-            //blockReportThread.Start(client);
+            Thread heartBeatThread = new Thread(new ParameterizedThreadStart(HeartBeat.SendHeartBeat));
+            Thread blockReportThread = new Thread(new ParameterizedThreadStart(BlockReport.SendBlockReport));
+            heartBeatThread.Start(client);
+            blockReportThread.Start(client);
+
             while (true)
             {
             }

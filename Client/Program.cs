@@ -22,6 +22,7 @@ namespace Client
             string task = args[1];
             //Channel channel = new Channel(IpAddress + ":50051", ChannelCredentials.Insecure);
             //Channel channel = new Channel("127.0.0.1" + ":50051", ChannelCredentials.Insecure);
+
             var client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
             //var reply = client.DeleteDirectory(new ClientProto.Path { Fullpath = "Path" });
@@ -86,12 +87,12 @@ namespace Client
                 
                 byte[] block = new byte[2097152];
                 //byte[] block = new byte[4096];
+
                 long totalBytesRead = 0;
 
                 using (var call = client.WriteBlock(metaData))
                 {
                     bool dataNodeFailed = false;
-                    Console.WriteLine("call established " + DateTime.UtcNow);
                     Stopwatch watch = new Stopwatch();
                     watch.Start();
 
