@@ -13,6 +13,7 @@ service ClientProto {
 	
 	//Create a new file in SUFS
 	rpc CreateFile(Path) returns (StatusResponse){}
+	//rpc QueryBlockDestination(BlockList) returns (BlockList) {} 
 	rpc QueryBlockDestination(BlockInfo) returns (BlockInfo) {} 
 	
 	//Read a file
@@ -51,6 +52,11 @@ message DataNode {
 message BlockMessage {
     repeated BlockInfo blockInfo = 1;
 }
+
+message BlockList {
+	repeated BlockInfo blockInfo = 1;
+}
+
 message BlockInfo {
     UUID blockId = 1;
 	int32 blockSize = 2;

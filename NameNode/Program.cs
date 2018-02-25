@@ -31,24 +31,31 @@ namespace NameNode
             return Task.FromResult(response);
         }
 
+        //public override Task<ClientProto.BlockList> QueryBlockDestination(ClientProto.BlockList blockList, ServerCallContext context)
         public override Task<ClientProto.BlockInfo> QueryBlockDestination(ClientProto.BlockInfo blockInfo, ServerCallContext context)
         {
-            // TODO: replace with real query to get ipaddresses
-            List<string> ipAddresses = new List<string>()
-            {
-                //"test",
-                //"test",
-                //"test"
-            };
+            //List<ClientProto.BlockInfo> blockInfoList = new List<ClientProto.BlockInfo>();
+            //foreach (var blockInfo in blockList.BlockInfo)
+            //{
+                // TODO: replace with real query to get ipaddresses
+                List<string> ipAddresses = new List<string>()
+                {
+                    //"test",
+                    //"test",
+                    //"test"
+                };
 
-            // Hopefully I can find a better way to do this
-            ClientProto.BlockInfo blckInfo = new ClientProto.BlockInfo
-            {
-                BlockId = blockInfo.BlockId,
-                BlockSize = blockInfo.BlockSize,
-                IpAddress = { ipAddresses }
-            };
+                // Hopefully I can find a better way to do this
+                ClientProto.BlockInfo blckInfo = new ClientProto.BlockInfo
+                {
+                    BlockId = blockInfo.BlockId,
+                    BlockSize = blockInfo.BlockSize,
+                    IpAddress = { ipAddresses }
+                };
+                //blockInfoList.Add(blckInfo);
+            //}
 
+            //return Task.FromResult(new ClientProto.BlockList { BlockInfo = { blockInfoList } });
             return Task.FromResult(blckInfo);
         }
     }

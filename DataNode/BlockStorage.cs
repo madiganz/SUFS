@@ -199,11 +199,11 @@ namespace DataNode
         /// Creates a random directory
         /// </summary>
         /// <returns>Full path of directory</returns>
-        private static string CreateRandomDirectory()
+        private static string CreateRandomDirectory(string path)
         {
             Guid guid = Guid.NewGuid();
             string dir = guid.ToString();
-            Directory.CreateDirectory(dir);
+            Directory.CreateDirectory(path + @"\" + dir);
             return dir;
         }
 
@@ -275,7 +275,8 @@ namespace DataNode
                 }
                 else if (subDirs.Length < 20) // Just create a directory
                 {
-                    return path + "/" + CreateRandomDirectory();
+                    //return path + @"\" + CreateRandomDirectory();
+                    return CreateRandomDirectory(path);
                 }
                 else
                 {

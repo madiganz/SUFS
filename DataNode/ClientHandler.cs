@@ -74,7 +74,6 @@ namespace DataNode
             }
             else // Just write to file
             {
-                Console.WriteLine("Last Datanode in pipe");
                 return await WriteBlock(requestStream, filePath, blockId);
             }
         }
@@ -134,7 +133,6 @@ namespace DataNode
                         }
                     }
                     stream.Flush();
-                    stream.Dispose();
                 }
 
                 ClientProto.StatusResponse resp = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = message };
@@ -145,7 +143,6 @@ namespace DataNode
                     await call.RequestStream.CompleteAsync();
 
                     resp = await call.ResponseAsync;
-                    call.Dispose();
                     ConnectionManager.Instance.ShutDownChannel(blockId, channel);
                 }
 
@@ -191,7 +188,6 @@ namespace DataNode
                 watch.Stop();
                 Console.WriteLine("Total time to write: " + watch.Elapsed);
                 stream.Flush();
-                stream.Dispose();
             }
 
             // If write was successful, make sure block size is correct
