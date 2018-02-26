@@ -13,7 +13,7 @@ namespace DataNode
     {
         public override Task<ClientProto.StatusResponse> GetReady(ClientProto.BlockInfo blockInfo, ServerCallContext context)
         {
-            ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+            ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             if (blockInfo.IpAddress.Count() == 0)
             {
                 response.Type = ClientProto.StatusResponse.Types.StatusType.Ready;
@@ -21,22 +21,28 @@ namespace DataNode
             }
             else
             {
+                Guid blockId = Guid.Parse(blockInfo.BlockId.Value);
+                Channel channel = null;
+                string ipAddress = "";
                 try
                 {
+                    ipAddress = blockInfo.IpAddress[0];
                     blockInfo.IpAddress.RemoveAt(0);
-                    Channel channel = ConnectionManager.Instance.CreateChannel(Guid.Parse(blockInfo.BlockId.Value), "127.0.0.1", "50052");
+                    channel = ConnectionManager.Instance.CreateChannel(blockId, "127.0.0.1", "50052");
                     //Console.WriteLine(channel.State.ToString());
                     //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
                     var client = new ClientProto.ClientProto.ClientProtoClient(channel);
                     //return client.GetReady(new ClientProto.DataNodeAddresses { IpAddress = { addresses } });
 
-                    response = client.GetReady(blockInfo);
+                    client.GetReady(blockInfo);
                 }
                 catch (RpcException e)
                 {
-                    response.Message = e.Message;
+                    ConnectionManager.Instance.ShutDownChannel(blockId, channel);
+                    response.Message = "Failed to get ready for " + ipAddress + ": " + e.Message;
                 }
 
+                // We will always return ready as if it reaches this far there is at least 1 node in the pipeline, which is good enough!
                 return Task.FromResult(response);
             }
         }
@@ -53,6 +59,7 @@ namespace DataNode
 
             // Get blockID
             Guid blockId = GetBlockID(metaData);
+            int blockSize = GetBlockSize(metaData);
 
             //TODO: switch this
             //string filePath = BlockStorage.Instance.CreateFile(blockId);
@@ -64,11 +71,11 @@ namespace DataNode
             // No channel found means last datanode in pipe
             if (channel != null)
             {
-                return await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId);
+                return await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId, blockSize);
             }
             else // Just write to file
             {
-                return await WriteBlock(requestStream, filePath, blockId);
+                return await WriteBlock(requestStream, filePath, blockId, blockSize);
             }
         }
 
@@ -81,7 +88,7 @@ namespace DataNode
         /// <param name="filePath">Full path of file</param>
         /// <param name="blockId">Unique identifier of block</param>
         /// <returns>Status of writing the block</returns>
-        public static async Task<ClientProto.StatusResponse> WriteAndForwardBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context, Channel channel, string filePath, Guid blockId)
+        public async Task<ClientProto.StatusResponse> WriteAndForwardBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context, Channel channel, string filePath, Guid blockId, int blockSize)
         {
             bool success = true;
             string message = "";
@@ -127,7 +134,6 @@ namespace DataNode
                         }
                     }
                     stream.Flush();
-                    stream.Dispose();
                 }
 
                 ClientProto.StatusResponse resp = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = message };
@@ -138,7 +144,6 @@ namespace DataNode
                     await call.RequestStream.CompleteAsync();
 
                     resp = await call.ResponseAsync;
-                    call.Dispose();
                     ConnectionManager.Instance.ShutDownChannel(blockId, channel);
                 }
 
@@ -147,7 +152,7 @@ namespace DataNode
 
                 // If write was successful and block size is correct, return success
                 // Otherwise return the response sent down through pipe
-                return (success && BlockStorage.Instance.ValidateBlock(blockId, filePath)) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success } : resp;
+                return (success && BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize)) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success } : resp;
             }
         }
 
@@ -158,7 +163,7 @@ namespace DataNode
         /// <param name="filePath">Full path of file</param>
         /// <param name="blockId">Unique identifier of block</param>
         /// <returns>Status of writing the block</returns>
-        public static async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, string filePath, Guid blockId)
+        public async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, string filePath, Guid blockId, int blockSize)
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -184,11 +189,10 @@ namespace DataNode
                 watch.Stop();
                 Console.WriteLine("Total time to write: " + watch.Elapsed);
                 stream.Flush();
-                stream.Dispose();
             }
 
             // If write was successful, make sure block size is correct
-            return !BlockStorage.Instance.ValidateBlock(blockId, filePath) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Block size is not correct" } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
+            return !BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Block size is not correct" } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
         }
 
         /// <summary>
@@ -196,7 +200,7 @@ namespace DataNode
         /// </summary>
         /// <param name="metaData">List of metadata</param>
         /// <returns>BlockID</returns>
-        public static Guid GetBlockID(List<Metadata.Entry> metaData)
+        public Guid GetBlockID(List<Metadata.Entry> metaData)
         {
             Guid id = new Guid();
             try
@@ -208,6 +212,26 @@ namespace DataNode
             catch
             {
                 return id;
+            }
+        }
+
+        /// <summary>
+        /// Gets block size from list of metadata
+        /// </summary>
+        /// <param name="metaData">List of metadata</param>
+        /// <returns>Size of block</returns>
+        public int GetBlockSize(List<Metadata.Entry> metaData)
+        {
+            int blockSize = 0;
+            try
+            {
+                Metadata.Entry size = metaData.Find(m => { return m.Key == "blocksize"; });
+                blockSize = Convert.ToInt32(size.Value);
+                return blockSize;
+            }
+            catch
+            {
+                return blockSize;
             }
         }
     }

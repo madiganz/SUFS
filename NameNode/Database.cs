@@ -34,6 +34,19 @@ namespace NameNode
                 //either send OK back or send queued commands to the specific datanode
         }
 
+        public bool FileExists(string path)
+        {
+            try
+            {
+                Folder folder = GrabDirectory(path);
+                return folder.FileExists(GetFileName(path));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public bool CreateFile(string path)
         {
             try
@@ -228,6 +241,11 @@ namespace NameNode
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
             return CurrentDirectory;
+        }
+
+        private string GetFileName(string path)
+        {
+            return Path.GetFileName(path);
         }
 
     }

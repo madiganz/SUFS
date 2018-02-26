@@ -20,5 +20,10 @@ namespace NameNode.FileSystem
             this.path = path + "/" + name;
             this.name = name;
         }
+
+        public bool FileExists(string file)
+        {
+            return files.ContainsKey(file);
+        }
     }
 }
