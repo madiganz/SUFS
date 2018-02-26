@@ -59,6 +59,7 @@ namespace DataNode
 
             // Get blockID
             Guid blockId = GetBlockID(metaData);
+            int blockSize = GetBlockSize(metaData);
 
             //TODO: switch this
             //string filePath = BlockStorage.Instance.CreateFile(blockId);
@@ -70,11 +71,11 @@ namespace DataNode
             // No channel found means last datanode in pipe
             if (channel != null)
             {
-                return await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId);
+                return await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId, blockSize);
             }
             else // Just write to file
             {
-                return await WriteBlock(requestStream, filePath, blockId);
+                return await WriteBlock(requestStream, filePath, blockId, blockSize);
             }
         }
 
@@ -87,7 +88,7 @@ namespace DataNode
         /// <param name="filePath">Full path of file</param>
         /// <param name="blockId">Unique identifier of block</param>
         /// <returns>Status of writing the block</returns>
-        public static async Task<ClientProto.StatusResponse> WriteAndForwardBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context, Channel channel, string filePath, Guid blockId)
+        public async Task<ClientProto.StatusResponse> WriteAndForwardBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context, Channel channel, string filePath, Guid blockId, int blockSize)
         {
             bool success = true;
             string message = "";
@@ -151,7 +152,7 @@ namespace DataNode
 
                 // If write was successful and block size is correct, return success
                 // Otherwise return the response sent down through pipe
-                return (success && BlockStorage.Instance.ValidateBlock(blockId, filePath)) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success } : resp;
+                return (success && BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize)) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success } : resp;
             }
         }
 
@@ -162,7 +163,7 @@ namespace DataNode
         /// <param name="filePath">Full path of file</param>
         /// <param name="blockId">Unique identifier of block</param>
         /// <returns>Status of writing the block</returns>
-        public static async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, string filePath, Guid blockId)
+        public async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, string filePath, Guid blockId, int blockSize)
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -191,7 +192,7 @@ namespace DataNode
             }
 
             // If write was successful, make sure block size is correct
-            return !BlockStorage.Instance.ValidateBlock(blockId, filePath) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Block size is not correct" } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
+            return !BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Block size is not correct" } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
         }
 
         /// <summary>
@@ -199,7 +200,7 @@ namespace DataNode
         /// </summary>
         /// <param name="metaData">List of metadata</param>
         /// <returns>BlockID</returns>
-        public static Guid GetBlockID(List<Metadata.Entry> metaData)
+        public Guid GetBlockID(List<Metadata.Entry> metaData)
         {
             Guid id = new Guid();
             try
@@ -211,6 +212,26 @@ namespace DataNode
             catch
             {
                 return id;
+            }
+        }
+
+        /// <summary>
+        /// Gets block size from list of metadata
+        /// </summary>
+        /// <param name="metaData">List of metadata</param>
+        /// <returns>Size of block</returns>
+        public int GetBlockSize(List<Metadata.Entry> metaData)
+        {
+            int blockSize = 0;
+            try
+            {
+                Metadata.Entry size = metaData.Find(m => { return m.Key == "blocksize"; });
+                blockSize = Convert.ToInt32(size.Value);
+                return blockSize;
+            }
+            catch
+            {
+                return blockSize;
             }
         }
     }

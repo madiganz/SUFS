@@ -167,12 +167,12 @@ namespace DataNode
         /// <param name="blockUUID">Unique identifier of block</param>
         /// <param name="filePath">Full path of file</param>
         /// <returns>True is block size is correct, otherwise false</returns>
-        public bool ValidateBlock(Guid blockUUID, string filePath)
+        public bool ValidateBlock(Guid blockUUID, string filePath, int blockSize)
         {
             try
             {
                 FileInfo info = new FileInfo(filePath);
-                bool valid = info.Length == Constants.BlockSize;
+                bool valid = info.Length == blockSize;
 
                 if (!valid)
                 {
