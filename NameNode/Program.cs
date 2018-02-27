@@ -9,24 +9,58 @@ using YamlDotNet.Serialization;
 using NameNode.FileSystem;
 using System.IO;
 using YamlDotNet.Serialization.NamingConventions;
+using ClientProto;
 
 namespace NameNode
 {
     class ClientImpl : ClientProto.ClientProto.ClientProtoBase
     {
 
-        public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
+        public override Task<StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            Console.WriteLine(path);
-            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+            if (Program.Database.DeleteDirectory(path.Fullpath))
+                return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
+            else
+                return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Fail });
         }
 
-        public override Task<ClientProto.StatusResponse> CreateFile(ClientProto.Path path, ServerCallContext context)
+        //?
+        public override Task<StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            var response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Ok };
+            Program.Database.CreateDirectory(path.Fullpath);
+            return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
+        }
+
+
+        public override Task<ListOfNodes> ListNodes(ClientProto.Path path, ServerCallContext context)
+        {
+            Program.Database.ListDataNodesStoringReplicas();
+        }
+
+        //*
+        public override Task<StatusResponse> DeleteFile(ClientProto.Path path, ServerCallContext context)
+        {
+            Program.Database.DeleteFile(path.Fullpath);
+            return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
+        }
+
+        public override Task<ListOfContents> ListContents(ClientProto.Path path, ServerCallContext context)
+        {
+            List<String> filename = new List<String>();
+            filename = Program.Database.ListDirectoryContents(path.Fullpath);
+            ListOfContents contents = new ListOfContents
+            {
+                fileName = {filename}
+            };
+            return Task.FromResult(contents);
+        }
+
+        public override Task<StatusResponse> CreateFile(ClientProto.Path path, ServerCallContext context)
+        {
+            var response = new StatusResponse { Type = StatusResponse.Types.StatusType.Ok };
             if (Program.Database.FileExists(path.FullPath))
             {
-                response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
+                response = new StatusResponse { Type = StatusResponse.Types.StatusType.FileExists };
             }
             return Task.FromResult(response);
         }
