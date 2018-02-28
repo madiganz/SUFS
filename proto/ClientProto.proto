@@ -96,7 +96,4 @@ message ListOfContents {
 	repeated string fileName = 1;
 }
 
-message NewFile {
-	string fullpath = 1;
-	string address = 2; // s3 object
-}
+

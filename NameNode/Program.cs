@@ -18,7 +18,7 @@ namespace NameNode
 
         public override Task<StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            if (Program.Database.DeleteDirectory(path.Fullpath))
+            if (Program.Database.DeleteDirectory(path.fullPath))
                 return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
             else
                 return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Fail });
@@ -27,7 +27,7 @@ namespace NameNode
         //?
         public override Task<StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            Program.Database.CreateDirectory(path.Fullpath);
+            Program.Database.CreateDirectory(path.fullPath);
             return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
         }
 
@@ -40,14 +40,14 @@ namespace NameNode
         //*
         public override Task<StatusResponse> DeleteFile(ClientProto.Path path, ServerCallContext context)
         {
-            Program.Database.DeleteFile(path.Fullpath);
+            Program.Database.DeleteFile(path.fullPath);
             return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
         }
 
         public override Task<ListOfContents> ListContents(ClientProto.Path path, ServerCallContext context)
         {
             List<String> filename = new List<String>();
-            filename = Program.Database.ListDirectoryContents(path.Fullpath);
+            filename = Program.Database.ListDirectoryContents(path.fullPath);
             ListOfContents contents = new ListOfContents
             {
                 fileName = {filename}
@@ -58,7 +58,7 @@ namespace NameNode
         public override Task<StatusResponse> CreateFile(ClientProto.Path path, ServerCallContext context)
         {
             var response = new StatusResponse { Type = StatusResponse.Types.StatusType.Ok };
-            if (Program.Database.FileExists(path.FullPath))
+            if (Program.Database.FileExists(path.fullPath))
             {
                 response = new StatusResponse { Type = StatusResponse.Types.StatusType.FileExists };
             }
