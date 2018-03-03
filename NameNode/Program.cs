@@ -16,7 +16,77 @@ namespace NameNode
     class ClientImpl : ClientProto.ClientProto.ClientProtoBase
     {
 
-        public override Task<StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
+        /* API between Client and Namenode */       
+        public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
+        {
+            Console.WriteLine(path);
+            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+        }
+
+		public override Task<ClientProto.StatusResponse> CreateDirectory(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+		public override Task<ClientProto.StatusResponse> AddFile(ClientProto.NewFile file, ServerCallContext context)
+		{
+			Console.WriteLine(file);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+
+		public override Task<ClientProto.StatusResponse> DeleteFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+	
+
+
+		public override Task<ClientProto.StatusResponse> RenameFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+		public override Task<ClientProto.StatusResponse> MoveFile(ClientProto.DoublePath path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+		public override Task<ClientProto.Test> TestFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.Test { Test_ = { "1", "@" } });
+		}
+
+		public override Task<ClientProto.BlockMessage> ReadFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			List<ClientProto.BlockInfo> blockMessage = new List<ClientProto.BlockInfo>();
+			ClientProto.UUID id = new ClientProto.UUID { Value = Guid.NewGuid().ToString() };
+			List<string> ip = new List<string>();
+			ip.Add("1");
+			ip.Add("2");
+
+			ClientProto.BlockInfo blockInfo = new ClientProto.BlockInfo { BlockId = id, IpAddress = { "1", "2" } };
+			
+
+			blockMessage.Add(blockInfo);
+			blockMessage.Add(blockInfo);
+			
+			foreach (ClientProto.BlockInfo block in blockMessage)
+				Console.WriteLine(block);
+
+			return Task.FromResult(new ClientProto.BlockMessage { BlockInfo = { blockMessage } });
+		}
+       
+        /* Below are original part */
+       
+       public override Task<StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
             if (Program.Database.DeleteDirectory(path.fullPath))
                 return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
