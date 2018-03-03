@@ -2,26 +2,46 @@ syntax = "proto3";
 package ClientProto;
 
 service ClientProto {
-	//Delete a directory 
+
+
+	// Move a file to another directory
+	rpc MoveFile(DoublePath) returns (StatusResponse) {}
+
+	// Read a file
+	rpc ReadFile(Path) returns (BlockMessage) {}
+	
+	// Rename a file 
+	rpc RenameFile(Path) returns (StatusResponse) {}
+	
+	// Delete a file
+	rpc DeleteFile(Path) returns (StatusResponse) {}
+	
+	// Create a directory (add or create?)
+	rpc CreateDirectory(Path) returns (StatusResponse) {}
+
+	// Delete a directory 
 	rpc DeleteDirectory (Path) returns (StatusResponse) {}
 
-	//Create a directory
+	// Create a directory 
 	rpc AddDirectory(Path) returns (StatusResponse) {}
+	
+
 
 	// List the DataNodes that store replicas of each block of a file
 	rpc ListNodes(Path) returns (ListOfNodes) {}
 	
-	//Create a new file in SUFS
+	// Create a new file in SUFS
 	rpc CreateFile(Path) returns (StatusResponse){}
-	//rpc QueryBlockDestination(BlockList) returns (BlockList) {} 
+	
+	// rpc QueryBlockDestination(BlockList) returns (BlockList) {} 
 	rpc QueryBlockDestination(BlockInfo) returns (BlockInfo) {} 
 	
-	//Read a file
+	// Read a file
 	
-	//Delete a file
+	// Delete a file
 	rpc DeleteFile(Path) returns (StatusResponse) {}
 	
-	//List the contents of a directory
+	// List the contents of a directory
 	rpc ListContents (Path) returns (ListOfContents){}
 	
 	// bideectional streaming
@@ -37,6 +57,15 @@ service ClientProto {
 	rpc GetReady(BlockInfo) returns (StatusResponse) {}
 }
 
+
+
+
+
+
+message DoublePath {
+	string fullpath = 1;
+	string newpath = 2;
+}
 
 message DataBlock {
 	UUID blockId = 1;
