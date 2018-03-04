@@ -1,0 +1,69 @@
+﻿using Grpc.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NameNode
+{
+    class DataNodeHandler : DataNodeProto.DataNodeProto.DataNodeProtoBase
+    {
+
+        // Server side handler of the SendBlockReportRequest RPC
+        public override Task<DataNodeProto.StatusResponse> SendBlockReport(DataNodeProto.BlockReportRequest request, ServerCallContext context)
+        {
+            Console.WriteLine(request);
+            return Task.FromResult(new DataNodeProto.StatusResponse { Type = DataNodeProto.StatusResponse.Types.StatusType.Success });
+        }
+
+        // Server side handler of the SendHeartBeat RPC
+        public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
+        {
+            Console.WriteLine(request);
+
+            // Update list of datanodes
+            int index = Program.nodeList.FindIndex(node => node.ipAddress == request.NodeInfo.DataNode.IpAddress);
+
+            // Not found -> add to list
+            if (index < 0)
+            {
+                DataNode node = new DataNode(request.NodeInfo.DataNode.IpAddress, request.NodeInfo.DiskSpace, DateTime.UtcNow);
+                Program.nodeList.Add(node);
+            }
+            else // Found, update lastHeartBeat timestamp
+            {
+                Program.nodeList[index].diskSpace = request.NodeInfo.DiskSpace;
+                Program.nodeList[index].lastHeartBeat = DateTime.UtcNow;
+            }
+
+            // Create fake list of blocks to invalidate
+            List<DataNodeProto.UUID> blocks = new List<DataNodeProto.UUID>();
+            for (var i = 0; i < 11; i++)
+            {
+                blocks.Add(new DataNodeProto.UUID { Value = Guid.NewGuid().ToString() });
+            }
+
+            // Create command
+            DataNodeProto.DataNodeCommands commands = new DataNodeProto.DataNodeCommands
+            {
+                Command = new DataNodeProto.BlockCommand
+                {
+                    Action = DataNodeProto.BlockCommand.Types.Action.Delete,
+                    BlockList = new DataNodeProto.BlockList
+                    {
+                        BlockId = { blocks }
+                    }
+                }
+
+            };
+
+            DataNodeProto.HeartBeatResponse response = new DataNodeProto.HeartBeatResponse
+            {
+                Commands = { commands }
+            };
+
+            return Task.FromResult(response);
+        }
+    }
+}

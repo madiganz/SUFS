@@ -36,17 +36,8 @@ service ClientProto {
 	// rpc QueryBlockDestination(BlockList) returns (BlockList) {} 
 	rpc QueryBlockDestination(BlockInfo) returns (BlockInfo) {} 
 	
-	// Read a file
-	
-	// Delete a file
-	rpc DeleteFile(Path) returns (StatusResponse) {}
-	
 	// List the contents of a directory
 	rpc ListContents (Path) returns (ListOfContents){}
-	
-	// bideectional streaming
-
-	// write streaming
 	
 	// Reads block from datanode
 	rpc ReadBlock(UUID) returns (stream BlockData) {}
