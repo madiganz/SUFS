@@ -9,46 +9,157 @@ using YamlDotNet.Serialization;
 using NameNode.FileSystem;
 using System.IO;
 using YamlDotNet.Serialization.NamingConventions;
+using ClientProto;
 
 namespace NameNode
 {
     class ClientImpl : ClientProto.ClientProto.ClientProtoBase
     {
 
+        /* API between Client and Namenode */       
         public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
             Console.WriteLine(path);
             return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
         }
 
-        public override Task<ClientProto.StatusResponse> CreateFile(ClientProto.Path path, ServerCallContext context)
+		public override Task<ClientProto.StatusResponse> CreateDirectory(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+		public override Task<ClientProto.StatusResponse> AddFile(ClientProto.NewFile file, ServerCallContext context)
+		{
+			Console.WriteLine(file);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+
+		public override Task<ClientProto.StatusResponse> DeleteFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+	
+
+
+		public override Task<ClientProto.StatusResponse> RenameFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+		public override Task<ClientProto.StatusResponse> MoveFile(ClientProto.DoublePath path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+		}
+
+		public override Task<ClientProto.Test> TestFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			return Task.FromResult(new ClientProto.Test { Test_ = { "1", "@" } });
+		}
+
+		public override Task<ClientProto.BlockMessage> ReadFile(ClientProto.Path path, ServerCallContext context)
+		{
+			Console.WriteLine(path);
+			List<ClientProto.BlockInfo> blockMessage = new List<ClientProto.BlockInfo>();
+			ClientProto.UUID id = new ClientProto.UUID { Value = Guid.NewGuid().ToString() };
+			List<string> ip = new List<string>();
+			ip.Add("1");
+			ip.Add("2");
+
+			ClientProto.BlockInfo blockInfo = new ClientProto.BlockInfo { BlockId = id, IpAddress = { "1", "2" } };
+			
+
+			blockMessage.Add(blockInfo);
+			blockMessage.Add(blockInfo);
+			
+			foreach (ClientProto.BlockInfo block in blockMessage)
+				Console.WriteLine(block);
+
+			return Task.FromResult(new ClientProto.BlockMessage { BlockInfo = { blockMessage } });
+		}
+       
+        /* Below are original part */
+       
+       public override Task<StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            var response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Ok };
-            if (Program.Database.FileExists(path.FullPath))
+            if (Program.Database.DeleteDirectory(path.fullPath))
+                return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
+            else
+                return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Fail });
+        }
+
+        //?
+        public override Task<StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
+        {
+            Program.Database.CreateDirectory(path.fullPath);
+            return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
+        }
+
+
+        public override Task<ListOfNodes> ListNodes(ClientProto.Path path, ServerCallContext context)
+        {
+            Program.Database.ListDataNodesStoringReplicas();
+        }
+
+        //*
+        public override Task<StatusResponse> DeleteFile(ClientProto.Path path, ServerCallContext context)
+        {
+            Program.Database.DeleteFile(path.fullPath);
+            return Task.FromResult(new StatusResponse { Type = StatusResponse.Types.StatusType.Success });
+        }
+
+        public override Task<ListOfContents> ListContents(ClientProto.Path path, ServerCallContext context)
+        {
+            List<String> filename = new List<String>();
+            filename = Program.Database.ListDirectoryContents(path.fullPath);
+            ListOfContents contents = new ListOfContents
             {
-                response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
+                fileName = {filename}
+            };
+            return Task.FromResult(contents);
+        }
+
+        public override Task<StatusResponse> CreateFile(ClientProto.Path path, ServerCallContext context)
+        {
+            var response = new StatusResponse { Type = StatusResponse.Types.StatusType.Ok };
+            if (Program.Database.FileExists(path.fullPath))
+            {
+                response = new StatusResponse { Type = StatusResponse.Types.StatusType.FileExists };
             }
             return Task.FromResult(response);
         }
 
+        //public override Task<ClientProto.BlockList> QueryBlockDestination(ClientProto.BlockList blockList, ServerCallContext context)
         public override Task<ClientProto.BlockInfo> QueryBlockDestination(ClientProto.BlockInfo blockInfo, ServerCallContext context)
         {
-            // TODO: replace with real query to get ipaddresses
-            List<string> ipAddresses = new List<string>()
-            {
-                //"test",
-                //"test",
-                //"test"
-            };
+            //List<ClientProto.BlockInfo> blockInfoList = new List<ClientProto.BlockInfo>();
+            //foreach (var blockInfo in blockList.BlockInfo)
+            //{
+                // TODO: replace with real query to get ipaddresses
+                List<string> ipAddresses = new List<string>()
+                {
+                    //"test",
+                    //"test",
+                    //"test"
+                };
 
-            // Hopefully I can find a better way to do this
-            ClientProto.BlockInfo blckInfo = new ClientProto.BlockInfo
-            {
-                BlockId = blockInfo.BlockId,
-                BlockSize = blockInfo.BlockSize,
-                IpAddress = { ipAddresses }
-            };
+                // Hopefully I can find a better way to do this
+                ClientProto.BlockInfo blckInfo = new ClientProto.BlockInfo
+                {
+                    BlockId = blockInfo.BlockId,
+                    BlockSize = blockInfo.BlockSize,
+                    IpAddress = { ipAddresses }
+                };
+                //blockInfoList.Add(blckInfo);
+            //}
 
+            //return Task.FromResult(new ClientProto.BlockList { BlockInfo = { blockInfoList } });
             return Task.FromResult(blckInfo);
         }
     }
