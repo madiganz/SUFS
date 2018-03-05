@@ -16,7 +16,7 @@ message HeartBeatResponse {
 }
 
 message BlockReportRequest {
-	UUID nodeId = 1;
+	DataNode dataNode = 1;
 	BlockList blockList = 2;
 }
 
@@ -27,8 +27,7 @@ message DataBlock {
 }
 
 message DataNode {
-	UUID id = 1;
-	string ipAddress = 2;
+	string ipAddress = 1;
 }
 
 message DataNodeInfo {

@@ -28,11 +28,10 @@ namespace DataNode
                 {
                     ipAddress = blockInfo.IpAddress[0];
                     blockInfo.IpAddress.RemoveAt(0);
-                    channel = ConnectionManager.Instance.CreateChannel(blockId, "127.0.0.1", "50052");
-                    //Console.WriteLine(channel.State.ToString());
-                    //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
+                    //TODO: Remove the debugging code
+                    //channel = ConnectionManager.Instance.CreateChannel(blockId, "127.0.0.1", "50052");
+                    channel = ConnectionManager.Instance.CreateChannel(blockId, ipAddress, Constants.Port.ToString());
                     var client = new ClientProto.ClientProto.ClientProtoClient(channel);
-                    //return client.GetReady(new ClientProto.DataNodeAddresses { IpAddress = { addresses } });
 
                     client.GetReady(blockInfo);
                 }
@@ -61,22 +60,30 @@ namespace DataNode
             Guid blockId = GetBlockID(metaData);
             int blockSize = GetBlockSize(metaData);
 
-            //TODO: switch this
-            //string filePath = BlockStorage.Instance.CreateFile(blockId);
-            string filePath = BlockStorage.Instance.CreateFile(Guid.NewGuid());
+            string filePath = BlockStorage.Instance.CreateFile(blockId);
             Console.WriteLine("Created file: " + filePath);
 
             Channel channel = ConnectionManager.Instance.GetChannel(blockId);
 
+            ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             // No channel found means last datanode in pipe
             if (channel != null)
             {
-                return await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId, blockSize);
+                response = await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId, blockSize);
             }
             else // Just write to file
             {
-                return await WriteBlock(requestStream, filePath, blockId, blockSize);
+                response = await WriteBlock(requestStream, filePath, blockId, blockSize);
             }
+
+            if(response.Type == ClientProto.StatusResponse.Types.StatusType.Success)
+            {
+                // Send block report to NameNode
+                var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(ConnectionManager.Instance.NameNodeConnection);
+                BlockReport.SendSingleBlockReport(client);
+            }
+
+            return response;
         }
 
         /// <summary>

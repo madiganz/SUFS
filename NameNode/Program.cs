@@ -47,8 +47,9 @@ namespace NameNode
 
             server.Start();
 
+            DataNodeManager nodeManager = DataNodeManager.Instance;
             //Check for dead datanodes
-            Task nodeCheckTask = RunNodeCheck();
+            Task nodeCheckTask = nodeManager.RunNodeCheck();
 
             Console.WriteLine("Greeter server listening on ip address " + ipAddress + ", port " + Constants.Port);
             Console.WriteLine("Press any key to stop the server...");
@@ -106,37 +107,5 @@ namespace NameNode
             Console.WriteLine(selectedFile.data.Count());
 
         }
-
-        public static async Task RunNodeCheck(CancellationToken token = default(CancellationToken))
-        {
-            while (!token.IsCancellationRequested)
-            {
-                CheckDeadNodes();
-                try
-                {
-                    await Task.Delay(60000, token);
-                }
-                catch (TaskCanceledException)
-                {
-                    break;
-                }
-            }
-        }
-
-        private static void CheckDeadNodes()
-        {
-            Console.WriteLine("Checking dead nodes");
-            foreach (var node in nodeList)
-            {
-                TimeSpan span = DateTime.UtcNow.Subtract(node.lastHeartBeat);
-                // Too much time has passed
-                if (span.Minutes >= 10)
-                {
-                    nodeList.Remove(node);
-                }
-
-            }
-        }
-
     }
 }

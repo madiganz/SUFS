@@ -8,6 +8,9 @@ namespace DataNode
     {
         private static ConnectionManager instance;
 
+        // Channel for NameNode
+        public Channel NameNodeConnection { get; set; }
+
         // List of channels for each block id
         private static Dictionary<Guid,Channel> channelMap;
 

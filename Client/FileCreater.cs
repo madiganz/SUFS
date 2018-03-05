@@ -141,15 +141,12 @@ namespace Client
                     // Get DataNode locations to store block
                     blockInfo = client.QueryBlockDestination(blockInfo);
 
-                    // Create pipeline from list
-                    if (GetPipeLineReady(blockInfo, out ClientProto.ClientProto.ClientProtoClient writeClient))
+                    // Keep asking NameNode for new DataNodes if it fails
+                    do
                     {
-                        if (client != null)
-                        {
-                            // Send block through pipeline
-                            WriteBlock(writeClient, blockInfo, block).Wait();
-                        }
-                    }
+                        // Get DataNode locations to store block
+                        blockInfo = client.QueryBlockDestination(blockInfo);
+                    } while (!CreatePipelineAndWrite(blockInfo, block));
                 }
                 catch (RpcException e)
                 {
@@ -165,6 +162,35 @@ namespace Client
         }
 
         /// <summary>
+        /// Creates the pipeline and writes to datanode
+        /// </summary>
+        /// <param name="blockInfo">Info of the block. Contains blockid, blocksize, and ipaddresses for pipeline creation</param>
+        /// <param name="block">data of block</param>
+        /// <returns>Returns true if streaming of data through newly created pipeline was successful</returns>
+        private bool CreatePipelineAndWrite(ClientProto.BlockInfo blockInfo, byte[] block)
+        {
+            // Create pipeline from list
+            if (GetPipeLineReady(blockInfo, out ClientProto.ClientProto.ClientProtoClient writeClient))
+            {
+                if (client != null)
+                {
+                    try
+                    {
+                        // Send block through pipeline
+                        WriteBlock(writeClient, blockInfo, block).Wait();
+                        return true;
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Creates the pipeline for streaming the block to DataNodes
         /// </summary>
         /// <param name="blockInfo">Info of the block. Contains blockid, blocksize, and ipaddresses for pipeline creation</param>
@@ -175,18 +201,13 @@ namespace Client
             ClientProto.StatusResponse readyResponse = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             try
             {
-                //Channel channel = new Channel(blockInfo.IpAddress[0] + ":" + "50051", ChannelCredentials.Insecure);
-                Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
+                Channel channel = new Channel(blockInfo.IpAddress[0] + ":" + "50051", ChannelCredentials.Insecure);
+                // TODO: Remove debugging code
+                //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
                 //channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
 
-
+                blockInfo.IpAddress.RemoveAt(0);
                 client = new ClientProto.ClientProto.ClientProtoClient(channel);
-                // readyResponse should always be Ready if it was able to connect
-                //readyResponse = client.GetReady(new ClientProto.BlockInfo
-                //{
-                //    BlockId = new ClientProto.UUID { Value = blockId.ToString() },
-                //    IpAddress = { addresses }
-                //});
 
                 readyResponse = client.GetReady(blockInfo);
 
@@ -212,7 +233,7 @@ namespace Client
         /// <param name="client">Client Connection to the first DataNode</param>
         /// <param name="blockInfo">Info of the block. Contains blockid, blocksize, and ipaddresses for pipeline creation</param>
         /// <param name="block">Data of block</param>
-        /// <returns>Task of the write</returns>
+        /// <returns>Task of the write or Exception on fail</returns>
         private async Task WriteBlock(ClientProto.ClientProto.ClientProtoClient client, ClientProto.BlockInfo blockInfo, byte[] block)
         {
             Metadata metaData = new Metadata {
@@ -245,7 +266,7 @@ namespace Client
                     {
                         dataNodeFailed = true;
                         totalBytesRead = blockInfo.BlockSize; // Stop reading
-                        Console.WriteLine("Writing block failed: " + e);
+                        throw new Exception("Writing block failed", e);
                     }
                 }
 
@@ -256,7 +277,11 @@ namespace Client
                     resp = await call.ResponseAsync;
                 }
                 Console.WriteLine(resp.Type.ToString());
-            };
+                if (resp.Type == ClientProto.StatusResponse.Types.StatusType.Fail)
+                {
+                    throw new Exception("Writing block failed");
+                }
+            }
         }
     }
 }

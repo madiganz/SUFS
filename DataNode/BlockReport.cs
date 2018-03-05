@@ -10,18 +10,14 @@ namespace DataNode
     public static class BlockReport
     {
         /// <summary>
-        /// Sends block report
+        /// Sends block report in loop
         /// </summary>
         /// <param name="client">Datanode grpc client</param>
-        public static async void SendBlockReport(object client)
+        public static async Task SendBlockReport(DataNodeProto.DataNodeProto.DataNodeProtoClient client)
         {
-            DataNodeProto.DataNodeProto.DataNodeProtoClient tClient = ((DataNodeProto.DataNodeProto.DataNodeProtoClient)client);
-
             while (true)
             {
-                DataNodeProto.BlockReportRequest blockReport = CreateBlockReport();
-                DataNodeProto.StatusResponse response = tClient.SendBlockReport(blockReport, new CallOptions().WithWaitForReady(true));
-                Console.WriteLine(response.Type.ToString());
+                SendSingleBlockReport(client);
 #if (!DEBUG)
                 await Task.Delay(Constants.BlockReportInterval);
 #endif
@@ -29,6 +25,24 @@ namespace DataNode
 #if DEBUG
                 await Task.Delay(20000);
 #endif
+            }
+        }
+
+        /// <summary>
+        /// Sends a single block report
+        /// </summary>
+        /// <param name="client">Connection to NameNode</param>
+        public static void SendSingleBlockReport(DataNodeProto.DataNodeProto.DataNodeProtoClient client)
+        {
+            try
+            {
+                DataNodeProto.BlockReportRequest blockReport = CreateBlockReport();
+                DataNodeProto.StatusResponse response = client.SendBlockReport(blockReport);
+                Console.WriteLine(response.Type.ToString());
+            }
+            catch (RpcException e)
+            {
+                Console.WriteLine("Blockreport failed: " + e.Message);
             }
         }
 
@@ -46,9 +60,9 @@ namespace DataNode
 
             DataNodeProto.BlockReportRequest BlockReportRequest = new DataNodeProto.BlockReportRequest
             {
-                NodeId = new DataNodeProto.UUID
+                DataNode = new DataNodeProto.DataNode
                 {
-                    Value = Program.mNodeID.ToString()
+                    IpAddress = Program.ipAddress
                 },
                 BlockList = new DataNodeProto.BlockList
                 {

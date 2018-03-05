@@ -9,7 +9,6 @@ namespace NameNode
 {
     class DataNodeHandler : DataNodeProto.DataNodeProto.DataNodeProtoBase
     {
-
         // Server side handler of the SendBlockReportRequest RPC
         public override Task<DataNodeProto.StatusResponse> SendBlockReport(DataNodeProto.BlockReportRequest request, ServerCallContext context)
         {
@@ -22,21 +21,9 @@ namespace NameNode
         {
             Console.WriteLine(request);
 
-            // Update list of datanodes
-            int index = Program.nodeList.FindIndex(node => node.ipAddress == request.NodeInfo.DataNode.IpAddress);
+            DataNodeManager.Instance.UpdateDataNodes(request.NodeInfo);
 
-            // Not found -> add to list
-            if (index < 0)
-            {
-                DataNode node = new DataNode(request.NodeInfo.DataNode.IpAddress, request.NodeInfo.DiskSpace, DateTime.UtcNow);
-                Program.nodeList.Add(node);
-            }
-            else // Found, update lastHeartBeat timestamp
-            {
-                Program.nodeList[index].diskSpace = request.NodeInfo.DiskSpace;
-                Program.nodeList[index].lastHeartBeat = DateTime.UtcNow;
-            }
-
+            // TODO: Use the redistribution logic
             // Create fake list of blocks to invalidate
             List<DataNodeProto.UUID> blocks = new List<DataNodeProto.UUID>();
             for (var i = 0; i < 11; i++)

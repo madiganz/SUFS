@@ -61,6 +61,7 @@
     <Compile Include="DataNode.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DataNodeHandler.cs" />
+    <Compile Include="DataNodeManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FileSystem\File.cs" />

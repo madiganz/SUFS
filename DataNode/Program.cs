@@ -1,19 +1,19 @@
 ﻿using Grpc.Core;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DataNode
 {
     class Program
     {
         public static string ipAddress;
-        public static Guid mNodeID = Guid.NewGuid();
         static void Main(string[] args)
         {
             Console.WriteLine("Initializing DataNode");
-            //string nameNodeIp = args[0];
+            string nameNodeIp = args[0];
 
-            int port = Convert.ToInt32(args[0]);
+            int port = Convert.ToInt32(args[1]);
 
             // Use ec2 instance manager to get the private ip address of this data node
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
@@ -42,20 +42,19 @@ namespace DataNode
 
             server.Start();
 
-            //Console.WriteLine("Trying to connect to: " + nameNodeIp);
-            //Channel channel = new Channel(nameNodeIp + ":" + Constants.Port, ChannelCredentials.Insecure);
-            //var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
+            Console.WriteLine("Trying to connect to: " + nameNodeIp);
+            Channel channel = new Channel(nameNodeIp + ":" + Constants.Port, ChannelCredentials.Insecure);
+            ConnectionManager.Instance.NameNodeConnection = channel;
+            var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
 
             // Initialize blockstorage
             BlockStorage mBlockStorage = BlockStorage.Instance;
 
-            //Thread heartBeatThread = new Thread(new ParameterizedThreadStart(HeartBeat.SendHeartBeat));
-            //Thread blockReportThread = new Thread(new ParameterizedThreadStart(BlockReport.SendBlockReport));
-            //heartBeatThread.Start(client);
-            //blockReportThread.Start(client);
-
+            Task heartBeatTask = HeartBeat.SendHeartBeat(client);
+            Task blockReportTask = BlockReport.SendBlockReport(client);
             while (true)
             {
+
             }
         }
     }
