@@ -19,9 +19,9 @@ namespace DataNode
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
             ipAddress = instanceManager.GetPrivateIpAddress();
 
-#if !DEBUG
-            instanceManager.OpenFirewallPort(Constants.Port.ToString()); // Need to open port on windows firewalls
-#endif
+//#if !DEBUG
+//            instanceManager.OpenFirewallPort(Constants.Port.ToString()); // Need to open port on windows firewalls
+//#endif
 
 #if DEBUG
             if (ipAddress == null)
