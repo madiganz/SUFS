@@ -16,60 +16,15 @@ namespace NameNode
         //NOTE: DELETION FOR DATANODES WILL BE IN THE FOLLOWING FORMAT = "Delete:BlockID"
         public Database()
         {
-            initializeFileDirectory();
+            InitializeFileDirectory();
             
         }
 
         private static Folder Root = null;
         private Folder CurrentDirectory;
         private static Dictionary<Guid, List<string>> BlockID_To_ip;
-        private static int RoundRobinDistributionIndex;
 
         //needs file directory
-
-
-        //~~~~Sorted out in the DataNodeHandler~~~~
-        //public List<string> processHeartbeat(string ipAddress)
-        //{
-        //    //either send back "OK"
-        //    //or send queued commands to the specific datanode
-        //}
-
-        public List<string> processBlockReport(Guid[] blockList, string currentNodeIP)
-        {
-            try
-            {
-                List<string> currentBlock;
-                List<string> returnRequests = new List<string>();
-                int index = Program.nodeList.FindIndex(node => node.ipAddress == currentNodeIP);
-                DataNode currentDataNode = Program.nodeList[index];
-
-                //For each BlockID in report:
-                foreach (Guid blockID in blockList)
-                {
-                    // Grab the list of ips that are connected to this BlockID
-                    currentBlock = BlockID_To_ip[blockID];
-                    if (checkIfRedistributeNeeded(currentBlock))
-                        returnRequests.Add(redistribute(currentBlock, currentNodeIP, blockID));
-
-                }
-
-                //Loops through to see if there are any more requests to send to this node
-                foreach(string request in currentDataNode.requests)
-                {
-                    returnRequests.Add(request);
-                }
-                currentDataNode.requests.Clear();
-
-
-                //either send empty list back or send queued commands to the specific datanode
-                return returnRequests;
-            } catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return null;
-            }
-        }
 
         public bool FileExists(string path)
         {
@@ -117,7 +72,7 @@ namespace NameNode
                     string firstDataNodeRequest = "";
                     for (int j = 0; j < Constants.ReplicationFactor; j++)
                     {
-                        ipAddresses.Add(GrabNextDataNode());
+                        ipAddresses.Add(DataNodeManager.Instance.GrabNextDataNode());
                         if (j == 0)
                             firstDataNodeRequest = $"{ipAddresses[j]}:{id}";
                         else
@@ -192,8 +147,14 @@ namespace NameNode
                 {
                     foreach (string ipAddress in BlockID_To_ip[blockID])
                     {
-                        int index = Program.nodeList.FindIndex(node => node.ipAddress == ipAddress);
-                        Program.nodeList[index].requests.Add($"Delete:{blockID}");
+                        DataNodeManager.Instance.AddRequestToNode(ipAddress, new DataNodeProto.BlockCommand
+                        {
+                            Action = DataNodeProto.BlockCommand.Types.Action.Delete,
+                            BlockList = new DataNodeProto.BlockList
+                            {
+                                BlockId = { new DataNodeProto.UUID { Value = blockID.ToString() } }
+                            }
+                        });
                     }
                 }
                 //remove file from directory system
@@ -365,31 +326,9 @@ namespace NameNode
             
         }
 
-        private string GrabNextDataNode()
+        public List<string> GetIPsFromBlock(Guid blockId)
         {
-            if (RoundRobinDistributionIndex % Program.nodeList.Count == 0)
-                RoundRobinDistributionIndex = 0;
-            return Program.nodeList[RoundRobinDistributionIndex++ % Program.nodeList.Count].ipAddress;
-            
-        }
-
-        public string redistribute(List<string> currentBlock, string currentNodeIP, Guid blockID)
-        {
-            string ipAddress = Program.nodeList[RoundRobinDistributionIndex++ % Program.nodeList.Count].ipAddress;
-            // While it isn't a node that contains this block, choose the next in the node list
-            while (ipAddress == currentNodeIP || currentBlock.Contains(ipAddress))
-            {
-                ipAddress = GrabNextDataNode();
-            }
-
-            // Tell the node where to send a copy of the current block
-            return $"{ipAddress}:{blockID}";
-        }
-
-        public bool checkIfRedistributeNeeded(List<string> currentBlock)
-        {
-            // If the Block is not above the minimum ReplicationFactor
-            return currentBlock.Count < Constants.ReplicationFactor;
+            return BlockID_To_ip[blockId];
         }
 
         private void SaveFileDirectory()
@@ -401,7 +340,7 @@ namespace NameNode
         }
 
         //Loads the directory from file.
-        private void initializeFileDirectory()
+        private void InitializeFileDirectory()
         {
             if (Root != null)
             {
@@ -423,7 +362,6 @@ namespace NameNode
                     Root = new Folder();
                 }
                 BlockID_To_ip = new Dictionary<Guid, List<string>>();
-                RoundRobinDistributionIndex = 0;
             }
             CurrentDirectory = Root;
         }

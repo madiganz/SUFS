@@ -8,17 +8,17 @@ namespace NameNode
 {
     class DataNode
     {
-        public string ipAddress { get; set; }
-        public long diskSpace { get; set; }
-        public DateTime lastHeartBeat { get; set; }
-        public List<string> requests { get; set; }
+        public string IpAddress { get; set; }
+        public long DiskSpace { get; set; }
+        public DateTime LastHeartBeat { get; set; }
+        public List<DataNodeProto.BlockCommand> Requests { get; set; }
 
         public DataNode( string ip, long space, DateTime time)
         {
-            ipAddress = ip;
-            diskSpace = space;
-            lastHeartBeat = time;
-            requests = new List<string>();
+            IpAddress = ip;
+            DiskSpace = space;
+            LastHeartBeat = time;
+            Requests = new List<DataNodeProto.BlockCommand>();
         }
     }
 }

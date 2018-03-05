@@ -15,7 +15,7 @@ namespace NameNode
 {
     class Program
     {
-        public static List<DataNode> nodeList = new List<DataNode>();
+        //public static List<DataNode> nodeList = new List<DataNode>();
         public static Database Database = new Database();
         static void Main(string[] args)
         {
