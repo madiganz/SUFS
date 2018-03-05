@@ -217,9 +217,7 @@ namespace DataNode
         {
             // Data structure to hold names of subfolders to be
             // examined for files.
-            Stack<string> dirs = new Stack<string>(40);
-
-            string path = "";
+            Stack<string> dirs = new Stack<string>();
 
             // Root should always exist
             try
@@ -234,7 +232,6 @@ namespace DataNode
             while (dirs.Count > 0)
             {
                 string currentDir = dirs.Pop();
-                path += currentDir;
                 string[] subDirs;
                 try
                 {
@@ -271,17 +268,15 @@ namespace DataNode
                 // Just create a file
                 if (files.Length < 40)
                 {
-                    return path;
+                    return currentDir;
                 }
                 else if (subDirs.Length < 20) // Just create a directory
                 {
-                    //return path + @"\" + CreateRandomDirectory();
-                    return CreateRandomDirectory(path);
+                    return CreateRandomDirectory(currentDir);
                 }
                 else
                 {
                     // Push the subdirectories onto the stack for traversal.
-                    // This could also be done before handing the files.
                     foreach (string str in subDirs)
                     {
                         dirs.Push(str);
