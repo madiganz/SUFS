@@ -10,9 +10,6 @@ service ClientProto {
 	// Read a file
 	rpc ReadFile(Path) returns (BlockMessage) {}
 	
-	// Rename a file 
-	rpc RenameFile(Path) returns (StatusResponse) {}
-	
 	// Delete a file
 	rpc DeleteFile(Path) returns (StatusResponse) {}
 	
