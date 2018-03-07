@@ -14,9 +14,7 @@ namespace Client
     {
         public static void Main(string[] args)
         {
-            //// Assume passed in parameters:
-            //// NameNodeIP:Port => args[0],
-            // validate number of argumens
+            
 		    /*API between Client and NameNode*/
 		    if (args.Length < 2)
 		    {
@@ -38,22 +36,26 @@ namespace Client
 			    var reply = client.DeleteDirectory(new ClientProto.Path { FullPath = path });
 			    Console.WriteLine("Delete directory action: " + reply);
 		    }
+		
 		    else if (action == "CreateDirectory")
 		    {
 			    var reply = client.CreateDirectory(new ClientProto.Path { FullPath = path });
 			    Console.WriteLine("Create directory action: " + reply);
 		    }
+		
 		    else if (action == "CreateFile")
 		    {
 			    string address = args[2];
 			    var reply = client.CreateFile(new ClientProto.Path { FullPath = path });
 			    Console.WriteLine("Add file action: " + reply);
-                FileCreater fileCreater = new FileCreater(client);
-                if (args.Length > 2)
-                {
-                    fileCreater.CreateFile(args[2]);
-                }
-            }
+                	    FileCreater fileCreater = new FileCreater(client);
+                            
+			    if (args.Length > 2)
+                            {
+                            	fileCreater.CreateFile(args[2]);
+                	    }
+                    }
+		
 		    else if (action == "DeleteFile")
 		    {
 			    var reply = client.DeleteFile(new ClientProto.Path { FullPath = path });
@@ -66,11 +68,7 @@ namespace Client
 
 			    Console.WriteLine("Read file action: " + reply);
 		    }
-		    else if (action == "RenameFile")
-		    {
-			    var reply = client.RenameFile(new ClientProto.Path { FullPath = path });
-			    Console.WriteLine("Rename file action: " + reply);
-		    }
+		
 		    else if (action == "MoveFile")
 		    {
 			    string newpath = args[2];
