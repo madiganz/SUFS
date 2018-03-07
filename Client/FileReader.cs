@@ -1,0 +1,8 @@
+namespace Client
+{
+  class FileReader
+  {
+  
+  
+  }
+}
