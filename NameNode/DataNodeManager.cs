@@ -72,9 +72,9 @@ namespace NameNode
         {
             List<string> ipAddresses = new List<string>
             {
-                GrabNextDataNode(),
-                GrabNextDataNode(),
-                GrabNextDataNode()
+                GrabNextDataNode().IpAddress,
+                GrabNextDataNode().IpAddress,
+                GrabNextDataNode().IpAddress
             };
             return ipAddresses;
         }
@@ -116,7 +116,7 @@ namespace NameNode
             }
         }
 
-        public string GrabNextDataNode()
+        public DataNode GrabNextDataNode()
         {
             if (RoundRobinDistributionIndex % NodeList.Count == 0)
                 RoundRobinDistributionIndex = 0;
@@ -130,7 +130,7 @@ namespace NameNode
             // While it isn't a node that contains this block, choose the next in the node list
             while (ipAddress == currentNodeIP || currentBlock.Contains(ipAddress))
             {
-                ipAddress = GrabNextDataNode();
+                ipAddress = GrabNextDataNode().IpAddress;
             }
 
             List<DataNodeProto.DataNode> nodes = new List<DataNodeProto.DataNode>

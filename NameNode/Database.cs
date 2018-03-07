@@ -72,7 +72,10 @@ namespace NameNode
                     string firstDataNodeRequest = "";
                     for (int j = 0; j < Constants.ReplicationFactor; j++)
                     {
-                        ipAddresses.Add(DataNodeManager.Instance.GrabNextDataNode());
+                        DataNode nextDatanode = DataNodeManager.Instance.GrabNextDataNode();
+                        nextDatanode.BlockIDs.Add(id);
+
+                        ipAddresses.Add(nextDatanode.IpAddress);
                         if (j == 0)
                             firstDataNodeRequest = $"{ipAddresses[j]}:{id}";
                         else

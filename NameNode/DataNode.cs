@@ -12,6 +12,7 @@ namespace NameNode
         public long DiskSpace { get; set; }
         public DateTime LastHeartBeat { get; set; }
         public List<DataNodeProto.BlockCommand> Requests { get; set; }
+        public List<Guid> BlockIDs { get; set; }
 
         public DataNode( string ip, long space, DateTime time)
         {
@@ -19,6 +20,7 @@ namespace NameNode
             DiskSpace = space;
             LastHeartBeat = time;
             Requests = new List<DataNodeProto.BlockCommand>();
+            BlockIDs = new List<Guid>();
         }
     }
 }
