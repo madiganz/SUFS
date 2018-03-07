@@ -59,11 +59,7 @@ namespace Client
 			    var reply = client.DeleteFile(new ClientProto.Path { FullPath = path });
 			    Console.WriteLine("Delete file action: " + reply);
 		    }
-		    //else if (action == "TestFile")
-		    //{
-		    //	var reply = client.TestFile(new ClientProto.Path { FullPath = path });
-		    //	Console.WriteLine("Test file action: " + reply);
-		    //}
+		
 		    else if (action == "ReadFile")
 		    {
 			    var reply = client.ReadFile(new ClientProto.Path { FullPath = path });
