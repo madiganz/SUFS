@@ -105,18 +105,20 @@ namespace NameNode
 
         }
 
-        public List<string> ReadFile(string path)
+        public ClientProto.BlockMessage ReadFile(ClientProto.Path wrappedPath)
         {
             try
             {
+                string path = wrappedPath.fullPath;
                 // Breaks up the path variable into the path's segments
                 string name = TraverseFileSystem(path);
 
                 // Grabs the parent directory
                 FileSystem.File toBeRead = CurrentDirectory.files[name];
 
+                List<ClientProto.BlockInfo> blockInfos = new List<ClientProto.BlockInfo>();
+
                 List<string> ipAddresses;
-                List<string> requestResponse = new List<string>();
 
                 //checks block ids based on the file requested
                 foreach (Guid blockID in toBeRead.data)
@@ -124,22 +126,23 @@ namespace NameNode
                     //cross references those against the list of ids to ips
                     //choose ips for each block of the file
                     ipAddresses = BlockID_To_ip[blockID];
-                    requestResponse.Add($"{ipAddresses[0]}:{blockID}");
+                    blockInfos.Add(new ClientProto.BlockInfo { blockId = blockID, blockSize = Constants.MaxBlockSize, ipAddress = ipAddresses });
                 }
 
                 //send back to client the ips and what to search for on the datanode
-                return requestResponse;
+                return new ClientProto.BlockMessage { blockInfo = blockInfos};
             }catch (Exception e)
             {
                 Console.WriteLine(e);
-                return null;
+                return new ClientProto.BlockMessage {blockInfo = null};
             }
         }
 
-        public bool DeleteFile(string path)
+        public ClientProto.StatusResponse DeleteFile(ClientProto.Path wrappedPath)
         {
             try
             {
+                string path = wrappedPath.fullPath;
                 string name = TraverseFileSystem(path);
 
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
@@ -163,37 +166,39 @@ namespace NameNode
                 //remove file from directory system
                 CurrentDirectory.files.Remove(name);
                 SaveFileDirectory();
-                return true;
+                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Success };
             }
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                return false;
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             }
         }
 
-        public bool CreateDirectory(string path)
+        public ClientProto.StatusResponse CreateDirectory(ClientProto.Path wrappedPath)
         {
             try
             {
+                string path = wrappedPath.fullPath;
                 if (FileExists(path))
                     return false;
                 string name = TraverseFileSystem(path);
                 Folder folder = new Folder(name, path);
                 CurrentDirectory.subfolders.Add(folder.name, folder);
                 SaveFileDirectory();
-                return true;
+                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Success};
             }catch (Exception e)
             {
                 Console.WriteLine(e);
-                return false;
+                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Fail};
             }
         }
 
-        public bool DeleteDirectory(string path)
+        public ClientProto.StatusResponse DeleteDirectory(ClientProto.Path  wrappedPath)
         {
             try
             {
+                string path = wrappedPath.fullPath;
                 if (path != "root")
                 {
                     string name = TraverseFileSystem(path);
@@ -217,18 +222,18 @@ namespace NameNode
                     //delete directory
                     parentFolder.subfolders.Remove(name);
                     SaveFileDirectory();
-                    return true;
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success};
                 }
                 else
                 {
                     Console.WriteLine("Cannot delete Root. Root has been emptied");
-                    return false;
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root. Root has been emptied."};
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return false;
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail};
             }
 
         }
@@ -261,10 +266,11 @@ namespace NameNode
             }
         }
 
-        public List<string> ListDataNodesStoringReplicas(string path)
+        public ClientProto.ListOfNodes ListDataNodesStoringReplicas(ClientProto.Path wrappedPath)
         {
             try
             {
+                string path = wrappedPath.fullPath;
                 //cross reference file name to block ids and locations
                 string name = TraverseFileSystem(path);
 
@@ -303,10 +309,12 @@ namespace NameNode
         //}
 
 
-        public bool MoveFile(string path, string newPath)
+        public ClientProto.StatusResponse MoveFile(ClientProto.DoublePath doublePath)
         {
             try
             {
+                string path = doublePath.fullpath;
+                string newPath = doublePath.newpath;
                 string oldName = TraverseFileSystem(path);
                 Folder oldFolder = CurrentDirectory;
 
@@ -319,12 +327,12 @@ namespace NameNode
                 toBeMoved.path = $"{CurrentDirectory.path}/{newName}";
                 CurrentDirectory.files.Add(newName, toBeMoved);
                 SaveFileDirectory();
-                return true;
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
 
             }catch (Exception e)
             {
                 Console.WriteLine(e);
-                return false;
+                return new ClientProto.StatusResponse{Type = ClientProto.StatusResponse.Types.StatusType.Fail, message = "Internal Server Failure"};
             }
             
         }
