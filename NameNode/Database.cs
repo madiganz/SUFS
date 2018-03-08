@@ -238,10 +238,11 @@ namespace NameNode
 
         }
 
-        public List<string> ListDirectoryContents(string path)
+        public ClientProto.ListOfContents ListDirectoryContents(ClientProto.Path wrappedPath)
         {
             try
             {
+                string path = wrappedPath.fullPath;
                 //return a list of all subdirectories and files for current file
                 string[] paths = ExtractPath(path);
                 GrabDirectory(path);
@@ -250,19 +251,19 @@ namespace NameNode
                 Folder directory = CurrentDirectory;
                 foreach (Folder folder in directory.subfolders.Values)
                 {
-                    returnList.Add(folder.path);
+                    returnList.Add(folder.name);
                 }
 
                 foreach (FileSystem.File file in directory.files.Values)
                 {
-                    returnList.Add(file.path);
+                    returnList.Add(file.name);
                 }
 
-                return returnList;
+                return new ClientProto.ListOfContents {fileName = returnList};
             }catch (Exception e)
             {
                 Console.WriteLine(e);
-                return null;
+                return new ClientProto.ListOfContents {fileName = null};
             }
         }
 
