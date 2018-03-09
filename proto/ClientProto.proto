@@ -76,6 +76,7 @@ message BlockList {
 
 message BlockInfo {
     UUID blockId = 1;
+	string fullPath = 1;
 	int32 blockSize = 2;
     repeated string ipAddress = 3;
 }
