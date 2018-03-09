@@ -40,7 +40,7 @@ namespace NameNode
         }
 
 
-        public List<string> CreateFile(string path, int size)
+        public ClientProto.StatusRepsponse CreateFile(ClientProto.Path fullPath)
         {
             // Wrap in try block, if fails then returns false
             try
@@ -48,61 +48,55 @@ namespace NameNode
                 // If a file exists, fail the execution
                 if (FileExists(path))
                 {
-                    return null;
+                    return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.FileExists};
                 }
 
                 // Creates the file
                 FileSystem.File file = new FileSystem.File();
                 file.name = TraverseFileSystem(path);
-                file.fileSize = size;
 
-                // to be used to send back a write request to the client
-                List<string> responseRequests = new List<string>();
-
-                // Builds the blocks to be distributed to other DataNodes
-                for (int i = 0; i < file.fileSize % Constants.MaxBlockSize; i++)
-                {
-                    // stores blockID and adds it to the file.
-                    Guid id = Guid.NewGuid();
-                    file.data.Add(id);
-
-                    List<string> ipAddresses = new List<string>();
-
-                    //chooses DataNodes to store this block
-                    string firstDataNodeRequest = "";
-                    for (int j = 0; j < Constants.ReplicationFactor; j++)
-                    {
-                        DataNode nextDatanode = DataNodeManager.Instance.GrabNextDataNode();
-                        nextDatanode.BlockIDs.Add(id);
-
-                        ipAddresses.Add(nextDatanode.IpAddress);
-                        if (j == 0)
-                            firstDataNodeRequest = $"{ipAddresses[j]}:{id}";
-                        else
-                            firstDataNodeRequest += $"={ipAddresses[j]}:{id}";
-                    }
-
-                    responseRequests.Add(firstDataNodeRequest);
-
-                    // add it to the BlockID to DataNode Dictionary
-                    BlockID_To_ip.Add(id, ipAddresses);
-                }
 
                 // Saves to file system
                 CurrentDirectory.files.Add(file.name, file);
                 SaveFileDirectory();
                 //It done did it
-                return responseRequests;
+                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Ok};
             }
             catch(Exception e)
             {
                 // Logs the error to console
                 Console.WriteLine(e);
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+            }
+        }
+
+        public ClientProto.BlockInfo AddBlockToFile(ClientProto.BlockInfo addedBlock)
+        {
+            try
+            {
+                string path = addedBlock.fullPath;
+                string name = TraverseFileSystem(path);
+                FileSystem.File file = CurrentDirectory.files[name];
+                file.fileSize = size;
+
+                // to be used to send back a write request to the client
+                List<string> responseRequests = new List<string>();
+
+                // stores blockID and adds it to the file.
+                Guid id = addedBlock.blockId;
+                file.data.Add(id);
+
+                List<string> ipAddresses = DataNodeManager.GetDataNodesForReplication();
+
+                // add it to the BlockID to DataNode Dictionary
+                BlockID_To_ip.Add(id, ipAddresses);
+                SaveFileDirectory();
+                return new ClientProto.BlockInfo {blockId = id, fullPath = path, blockSize = addedBlock.blockSize, ipAddress = ipAddresses };
+            }catch (Exception e)
+            {
+                Console.WriteLine(e);
                 return null;
             }
-
-
-
         }
 
         public ClientProto.BlockMessage ReadFile(ClientProto.Path wrappedPath)
@@ -267,7 +261,7 @@ namespace NameNode
             }
         }
 
-        public ClientProto.ListOfNodes ListDataNodesStoringReplicas(ClientProto.Path wrappedPath)
+        public ClientProto.ListOfNodesList ListDataNodesStoringReplicas(ClientProto.Path wrappedPath)
         {
             try
             {
@@ -278,16 +272,21 @@ namespace NameNode
                 List<string> responseLocations = new List<string>();
                 FileSystem.File requestedFile = CurrentDirectory.files[name];
 
+                List<ClientProto.ListOfNodes> responseList = new List<ClientProto.ListOfNodesList>();
+
+
                 //queue up requests for each of the datanodes that have blocks
                 //      to delete as soon as they send in heartbeat/block report
                 foreach (Guid blockID in requestedFile.data)
                 {
+                    List<string> ips = new List<string>();
                     foreach (string ipAddress in BlockID_To_ip[blockID])
                     {
-                        responseLocations.Add($"{ipAddress}:{blockID}");
+                        ips.Add(ipAddress);
                     }
+                    responseList.Add(new ClientProto.ListOfNodes { blockId = blockID.ToString(), nodeId = ips });
                 }
-                return responseLocations;
+                return new ClientProto.ListOfNodesList { listOfNodes = responseList };
             }catch (Exception e)
             {
                 Console.WriteLine(e);
