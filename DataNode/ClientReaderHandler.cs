@@ -118,9 +118,9 @@ namespace DataNode
         
         
         // Server side handler of ReadBlock  RPC
-        public override async Task ReadBlock(ClientProto.BlockInfo blockInfo, Grpc.Core.IServerStreamWriter<> responseStream, Grpc.Core.ServerCallContext context)
-        {
+        //public override async Task ReadBlock(ClientProto.BlockInfo blockInfo, Grpc.Core.IServerStreamWriter<> responseStream, Grpc.Core.ServerCallContext context)
+        //{
             
-        }
+        //}
     }
 }

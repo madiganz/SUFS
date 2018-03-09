@@ -34,12 +34,6 @@ namespace NameNode
             return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
         }
 
-        public override Task<ClientProto.StatusResponse> RenameFile(ClientProto.Path path, ServerCallContext context)
-        {
-            Console.WriteLine(path);
-            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
-        }
-
         public override Task<ClientProto.StatusResponse> MoveFile(ClientProto.DoublePath path, ServerCallContext context)
         {
             Console.WriteLine(path);
@@ -77,16 +71,13 @@ namespace NameNode
 
         public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            if (Program.Database.DeleteDirectory(path.FullPath))
-                return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
-            else
-                return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail });
+            return Task.FromResult(Program.Database.DeleteDirectory(path));
         }
 
         //?
         public override Task<ClientProto.StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            Program.Database.CreateDirectory(path.FullPath);
+            Program.Database.CreateDirectory(path);
             return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
         }
 
@@ -98,25 +89,12 @@ namespace NameNode
 
         public override Task<ClientProto.ListOfContents> ListContents(ClientProto.Path path, ServerCallContext context)
         {
-            List<String> filename = new List<String>();
-            filename = Program.Database.ListDirectoryContents(path.FullPath);
-            ClientProto.ListOfContents contents = new ClientProto.ListOfContents
-            {
-                FileName = { filename }
-            };
-            return Task.FromResult(contents);
+            return Task.FromResult(Program.Database.ListDirectoryContents(path));
         }
 
         public override Task<ClientProto.BlockInfo> QueryBlockDestination(ClientProto.BlockInfo blockInfo, ServerCallContext context)
         {
-            ClientProto.BlockInfo blckInfo = new ClientProto.BlockInfo
-            {
-                BlockId = blockInfo.BlockId,
-                BlockSize = blockInfo.BlockSize,
-                IpAddress = { DataNodeManager.Instance.GetDataNodesForReplication() }
-            };
-
-            return Task.FromResult(blckInfo);
+            return Task.FromResult(Program.Database.AddBlockToFile(blockInfo));
         }
     }
 }

@@ -120,7 +120,7 @@ namespace NameNode
         {
             if (RoundRobinDistributionIndex % NodeList.Count == 0)
                 RoundRobinDistributionIndex = 0;
-            return NodeList[RoundRobinDistributionIndex++ % NodeList.Count].IpAddress;
+            return NodeList[RoundRobinDistributionIndex++ % NodeList.Count];
 
         }
 

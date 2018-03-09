@@ -1,3 +1,6 @@
+using Grpc.Core;
+using System;
+
 namespace Client
 {
   class FileReader

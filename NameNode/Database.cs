@@ -40,20 +40,20 @@ namespace NameNode
         }
 
 
-        public ClientProto.StatusRepsponse CreateFile(ClientProto.Path fullPath)
+        public ClientProto.StatusResponse CreateFile(ClientProto.Path fullPath)
         {
             // Wrap in try block, if fails then returns false
             try
             {
                 // If a file exists, fail the execution
-                if (FileExists(path))
+                if (FileExists(fullPath.FullPath))
                 {
                     return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.FileExists};
                 }
 
                 // Creates the file
                 FileSystem.File file = new FileSystem.File();
-                file.name = TraverseFileSystem(path);
+                file.name = TraverseFileSystem(fullPath.FullPath);
 
 
                 // Saves to file system
@@ -74,24 +74,24 @@ namespace NameNode
         {
             try
             {
-                string path = addedBlock.fullPath;
+                string path = addedBlock.FullPath;
                 string name = TraverseFileSystem(path);
                 FileSystem.File file = CurrentDirectory.files[name];
-                file.fileSize = size;
+                file.fileSize += addedBlock.BlockSize;
 
                 // to be used to send back a write request to the client
                 List<string> responseRequests = new List<string>();
 
                 // stores blockID and adds it to the file.
-                Guid id = addedBlock.blockId;
+                Guid id = Guid.Parse(addedBlock.BlockId.Value);
                 file.data.Add(id);
 
-                List<string> ipAddresses = DataNodeManager.GetDataNodesForReplication();
+                List<string> ipAddresses = DataNodeManager.Instance.GetDataNodesForReplication();
 
                 // add it to the BlockID to DataNode Dictionary
                 BlockID_To_ip.Add(id, ipAddresses);
                 SaveFileDirectory();
-                return new ClientProto.BlockInfo {blockId = id, fullPath = path, blockSize = addedBlock.blockSize, ipAddress = ipAddresses };
+                return new ClientProto.BlockInfo {BlockId = new ClientProto.UUID { Value = id.ToString() }, FullPath = path, BlockSize = addedBlock.BlockSize, IpAddress = { ipAddresses } };
             }catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -103,7 +103,7 @@ namespace NameNode
         {
             try
             {
-                string path = wrappedPath.fullPath;
+                string path = wrappedPath.FullPath;
                 // Breaks up the path variable into the path's segments
                 string name = TraverseFileSystem(path);
 
@@ -120,15 +120,15 @@ namespace NameNode
                     //cross references those against the list of ids to ips
                     //choose ips for each block of the file
                     ipAddresses = BlockID_To_ip[blockID];
-                    blockInfos.Add(new ClientProto.BlockInfo { blockId = blockID, blockSize = Constants.MaxBlockSize, ipAddress = ipAddresses });
+                    blockInfos.Add(new ClientProto.BlockInfo { BlockId = new ClientProto.UUID { Value = blockID.ToString() }, BlockSize = Constants.MaxBlockSize, IpAddress = { ipAddresses } });
                 }
 
                 //send back to client the ips and what to search for on the datanode
-                return new ClientProto.BlockMessage { blockInfo = blockInfos};
+                return new ClientProto.BlockMessage { BlockInfo = { blockInfos } };
             }catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new ClientProto.BlockMessage {blockInfo = null};
+                return null;
             }
         }
 
@@ -136,7 +136,7 @@ namespace NameNode
         {
             try
             {
-                string path = wrappedPath.fullPath;
+                string path = wrappedPath.FullPath;
                 string name = TraverseFileSystem(path);
 
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
@@ -173,9 +173,9 @@ namespace NameNode
         {
             try
             {
-                string path = wrappedPath.fullPath;
+                string path = wrappedPath.FullPath;
                 if (FileExists(path))
-                    return false;
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
                 string name = TraverseFileSystem(path);
                 Folder folder = new Folder(name, path);
                 CurrentDirectory.subfolders.Add(folder.name, folder);
@@ -192,7 +192,7 @@ namespace NameNode
         {
             try
             {
-                string path = wrappedPath.fullPath;
+                string path = wrappedPath.FullPath;
                 if (path != "root")
                 {
                     string name = TraverseFileSystem(path);
@@ -202,14 +202,14 @@ namespace NameNode
                     //loop call to subdirectories
                     foreach (string key in folderToDelete.subfolders.Keys)
                     {
-                        DeleteDirectory(folderToDelete.subfolders[key].path);
+                        DeleteDirectory(new ClientProto.Path { FullPath = folderToDelete.subfolders[key].path });
                         folderToDelete.subfolders.Remove(key);
                     }
 
                     //loop call delete files
                     foreach (string key in folderToDelete.files.Keys)
                     {
-                        DeleteFile(folderToDelete.files[key].path);
+                        DeleteFile(new ClientProto.Path { FullPath = folderToDelete.files[key].path });
                         folderToDelete.files.Remove(key);
                     }
 
@@ -236,7 +236,7 @@ namespace NameNode
         {
             try
             {
-                string path = wrappedPath.fullPath;
+                string path = wrappedPath.FullPath;
                 //return a list of all subdirectories and files for current file
                 string[] paths = ExtractPath(path);
                 GrabDirectory(path);
@@ -253,11 +253,11 @@ namespace NameNode
                     returnList.Add(file.name);
                 }
 
-                return new ClientProto.ListOfContents {fileName = returnList};
+                return new ClientProto.ListOfContents { FileName = { returnList } };
             }catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new ClientProto.ListOfContents {fileName = null};
+                return null;
             }
         }
 
@@ -265,14 +265,14 @@ namespace NameNode
         {
             try
             {
-                string path = wrappedPath.fullPath;
+                string path = wrappedPath.FullPath;
                 //cross reference file name to block ids and locations
                 string name = TraverseFileSystem(path);
 
                 List<string> responseLocations = new List<string>();
                 FileSystem.File requestedFile = CurrentDirectory.files[name];
 
-                List<ClientProto.ListOfNodes> responseList = new List<ClientProto.ListOfNodesList>();
+                List<ClientProto.ListOfNodes> responseList = new List<ClientProto.ListOfNodes>();
 
 
                 //queue up requests for each of the datanodes that have blocks
@@ -284,9 +284,9 @@ namespace NameNode
                     {
                         ips.Add(ipAddress);
                     }
-                    responseList.Add(new ClientProto.ListOfNodes { blockId = blockID.ToString(), nodeId = ips });
+                    responseList.Add(new ClientProto.ListOfNodes { BlockId = blockID.ToString(), NodeId = { ips } });
                 }
-                return new ClientProto.ListOfNodesList { listOfNodes = responseList };
+                return new ClientProto.ListOfNodesList { ListOfNodes = { responseList } };
             }catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -313,8 +313,8 @@ namespace NameNode
         {
             try
             {
-                string path = doublePath.fullpath;
-                string newPath = doublePath.newpath;
+                string path = doublePath.Fullpath;
+                string newPath = doublePath.Newpath;
                 string oldName = TraverseFileSystem(path);
                 Folder oldFolder = CurrentDirectory;
 
@@ -332,7 +332,7 @@ namespace NameNode
             }catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new ClientProto.StatusResponse{Type = ClientProto.StatusResponse.Types.StatusType.Fail, message = "Internal Server Failure"};
+                return new ClientProto.StatusResponse{Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Internal Server Failure"};
             }
             
         }
