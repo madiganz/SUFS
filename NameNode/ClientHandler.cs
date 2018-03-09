@@ -15,29 +15,29 @@ namespace NameNode
         public override Task<ClientProto.StatusResponse> CreateDirectory(ClientProto.Path path, ServerCallContext context)
         {
             Console.WriteLine(path);
-            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+            return Task.FromResult(Program.Database.CreateDirectory(path));
         }
 
         public override Task<ClientProto.StatusResponse> CreateFile(ClientProto.Path file, ServerCallContext context)
         {
-            var response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Ok };
-            if (Program.Database.FileExists(file.FullPath))
-            {
-                response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
-            }
-            return Task.FromResult(response);
+            //var response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Ok };
+            //if (Program.Database.FileExists(file.FullPath))
+            //{
+            //    response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
+            //}
+            return Task.FromResult(Program.Database.CreateFile(file));
         }
 
         public override Task<ClientProto.StatusResponse> DeleteFile(ClientProto.Path path, ServerCallContext context)
         {
             Console.WriteLine(path);
-            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+            return Task.FromResult(Program.Database.DeleteFile(path));
         }
 
         public override Task<ClientProto.StatusResponse> MoveFile(ClientProto.DoublePath path, ServerCallContext context)
         {
             Console.WriteLine(path);
-            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+            return Task.FromResult(Program.Database.MoveFile(path));
         }
 
         //public override Task<ClientProto.Test> TestFile(ClientProto.Path path, ServerCallContext context)
@@ -48,23 +48,23 @@ namespace NameNode
 
         public override Task<ClientProto.BlockMessage> ReadFile(ClientProto.Path path, ServerCallContext context)
         {
-            Console.WriteLine(path);
-            List<ClientProto.BlockInfo> blockMessage = new List<ClientProto.BlockInfo>();
-            ClientProto.UUID id = new ClientProto.UUID { Value = Guid.NewGuid().ToString() };
-            List<string> ip = new List<string>();
-            ip.Add("1");
-            ip.Add("2");
+            //Console.WriteLine(path);
+            //List<ClientProto.BlockInfo> blockMessage = new List<ClientProto.BlockInfo>();
+            //ClientProto.UUID id = new ClientProto.UUID { Value = Guid.NewGuid().ToString() };
+            //List<string> ip = new List<string>();
+            //ip.Add("1");
+            //ip.Add("2");
 
-            ClientProto.BlockInfo blockInfo = new ClientProto.BlockInfo { BlockId = id, IpAddress = { "1", "2" } };
+            //ClientProto.BlockInfo blockInfo = new ClientProto.BlockInfo { BlockId = id, IpAddress = { "1", "2" } };
 
 
-            blockMessage.Add(blockInfo);
-            blockMessage.Add(blockInfo);
+            //blockMessage.Add(blockInfo);
+            //blockMessage.Add(blockInfo);
 
-            foreach (ClientProto.BlockInfo block in blockMessage)
-                Console.WriteLine(block);
+            //foreach (ClientProto.BlockInfo block in blockMessage)
+                //Console.WriteLine(block);
 
-            return Task.FromResult(new ClientProto.BlockMessage { BlockInfo = { blockMessage } });
+            return Task.FromResult(Program.Database.ReadFile(path));
         }
 
         /* Below are original part */
@@ -77,15 +77,15 @@ namespace NameNode
         //?
         public override Task<ClientProto.StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            Program.Database.CreateDirectory(path);
-            return Task.FromResult(new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success });
+            
+            return Task.FromResult(Program.Database.CreateDirectory(path));
         }
 
 
-        //public override Task<ListOfNodes> ListNodes(ClientProto.Path path, ServerCallContext context)
-        //{
-        //    Program.Database.ListDataNodesStoringReplicas();
-        //}
+        public override Task<ClientProto.ListOfNodesList> ListNodes(ClientProto.Path path, ServerCallContext context)
+        {
+            return Task.FromResult(Program.Database.ListDataNodesStoringReplicas(path));
+        }
 
         public override Task<ClientProto.ListOfContents> ListContents(ClientProto.Path path, ServerCallContext context)
         {
