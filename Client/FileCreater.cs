@@ -55,7 +55,7 @@ namespace Client
         /// <summary>
         /// Writes a file to SUFS using a file from S3
         /// </summary>
-        private void ReadFileFromS3(string bucketName = "wordcount-madiganz", string key = "CC-MAIN-20180116070444-20180116090444-00000.warc.gz")
+        private async void ReadFileFromS3(string bucketName = "wordcount-madiganz", string key = "CC-MAIN-20180116070444-20180116090444-00000.warc.gz")
         {
             IAmazonS3 s3Cient;
             using (s3Cient = new AmazonS3Client(Amazon.RegionEndpoint.USWest2))
@@ -69,7 +69,7 @@ namespace Client
                         Key = key
                     };
 
-                    using (GetObjectResponse response = s3Cient.GetObject(request))
+                    using (GetObjectResponse response = await s3Cient.GetObjectAsync(request))
                     using (BufferedStream responseStream = new BufferedStream(response.ResponseStream, Constants.ChunkSize))
                     {
                         ProcessStream(responseStream, response.ContentLength);
