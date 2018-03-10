@@ -29,7 +29,7 @@ namespace Client
         /// <param name="location">Location of file. Defaults to local disk</param>
         public void CreateFile(string location = "local")
         {
-            filePath = @"C:\test\example.warc.gz";
+            filePath = @"file.txt";
             var response = client.CreateFile(new ClientProto.Path { FullPath = filePath });
             Console.WriteLine(response);
 
