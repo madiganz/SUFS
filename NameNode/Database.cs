@@ -355,7 +355,7 @@ namespace NameNode
         //Loads the directory from file.
         private void InitializeFileDirectory()
         {
-            if (Root != null)
+            if (Root == null)
             {
                 try
                 {
@@ -395,9 +395,13 @@ namespace NameNode
         private Folder GrabDirectory(string path)
         {
             string[] paths = ExtractPath(path);
+            string currentPath = "";
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length; i++)
             {
+                currentPath += "/" + paths[i];
+                if(!CurrentDirectory.subfolders.ContainsKey(paths[i]))
+                    CreateDirectory(new ClientProto.Path {FullPath = currentPath});
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
             return CurrentDirectory;
@@ -406,9 +410,13 @@ namespace NameNode
         private Folder GrabParentDirectory(string path)
         {
             string[] paths = ExtractPath(path);
+            string currentPath = "";
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length - 1; i++)
             {
+                currentPath += "/" + paths[i];
+                if (!CurrentDirectory.subfolders.ContainsKey(paths[i]))
+                    CreateDirectory(new ClientProto.Path { FullPath = currentPath });
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
             return CurrentDirectory;
