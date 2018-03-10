@@ -37,7 +37,7 @@ service ClientProto {
 	rpc ListContents (Path) returns (ListOfContents){}
 	
 	// Reads block from datanode
-	rpc ReadBlock(UUID) returns (stream BlockData) {}
+	rpc ReadBlock(UUID) returns (BlockData) {}
   
 	// Creates a pipeline to stream bytes to datanodes
 	rpc WriteBlock(stream BlockData) returns (StatusResponse) {}

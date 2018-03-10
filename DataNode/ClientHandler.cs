@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using ClientProto;
+using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ namespace DataNode
 {
     class ClientHandler : ClientProto.ClientProto.ClientProtoBase
     {
-        public override Task<ClientProto.StatusResponse> GetReady(ClientProto.BlockInfo blockInfo, ServerCallContext context)
+        public override Task<ClientProto.StatusResponse> GetReady(BlockInfo blockInfo, ServerCallContext context)
         {
             ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             if (blockInfo.IpAddress.Count() == 0)
@@ -33,7 +34,7 @@ namespace DataNode
                     channel = ConnectionManager.Instance.CreateChannel(blockId, ipAddress, Constants.Port.ToString());
                     var client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
-                    client.GetReady(blockInfo);
+                    client.GetReadyAsync(blockInfo);
                 }
                 catch (RpcException e)
                 {
@@ -241,5 +242,16 @@ namespace DataNode
                 return blockSize;
             }
         }
+
+        // Read file
+        public override Task<BlockData> ReadBlock(UUID id,  ServerCallContext context)
+        {
+            byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));
+            
+               return Task.FromResult(new BlockData { Data = Google.Protobuf.ByteString.CopyFrom(blockData)});
+        }
+
+
+
     }
 }

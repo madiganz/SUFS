@@ -67,7 +67,13 @@ namespace Client
 			    var reply = client.ReadFile(new ClientProto.Path { FullPath = path });
 
 			    Console.WriteLine("Read file action: " + reply);
-		    }
+                FileReader fileReader = new FileReader(client);
+
+                if (args.Length > 2)
+                {
+                    fileReader.ReadFile(args[2]);
+                }
+            }
 		
 		    else if (action == "MoveFile")
 		    {

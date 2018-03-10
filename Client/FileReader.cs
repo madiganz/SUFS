@@ -1,51 +1,103 @@
+using Amazon.S3;
+using Amazon.S3.Model;
+using Grpc.Core;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Google.Protobuf;
+
 namespace Client
 {
   class FileReader
   {
+        private const int BufferSize = 1;
+
         private static ClientProto.ClientProto.ClientProtoClient client;
 
         public FileReader(ClientProto.ClientProto.ClientProtoClient nameNodeClient)
         {
             client = nameNodeClient;
         }
-        
-        /// <summary>
-        /// Creates the pipeline for streaming the block to DataNodes
-        /// </summary>
-        /// <param name="blockInfo">Info of the block. Contains blockid, blocksize, and ipaddresses for pipeline creation</param>
-        /// <param name="client">Client connection with first DataNode in pipe</param>
-        /// <returns>Success of pipeline creation</returns>
+        public void ReadFile(String readPath, String writePath)
+        {
+            var buffer = new byte[BufferSize];
+            var writeFileStream = new FileStream(writePath, FileMode.CreateNew, FileAccess.ReadWrite);
+            List<ClientProto.BlockInfo> nodeList = GetList(readPath);
+            //Read from each DataNode
+            nodeList.ForEach(ReadFromNode);
+            
+            
+        }
 
-        private bool GetPipeLineReady(ClientProto.BlockInfo blockInfo, out ClientProto.ClientProto.ClientProtoClient client)
+        //Ask NameNode for list
+        private List<ClientProto.BlockInfo> GetList(String path)
+        {
+            List<ClientProto.BlockInfo> blockInfo = client.ReadFile(new ClientProto.Path { FullPath = path }).BlockInfo.ToList();
+            return blockInfo;
+        }
+
+        //Read file from DataNode
+        private void ReadFromNode(ClientProto.BlockInfo blockInfo)
+        {
+            while (!blockInfo.IpAddress.Any())
+            {
+                if (GetReady(blockInfo))
+                {
+                    ReadBlock(blockInfo.BlockId.Value);
+                    break;
+                }
+                else
+                {
+                    blockInfo.IpAddress.RemoveAt(0);
+                }
+            }
+
+        }
+
+        private bool GetReady(ClientProto.BlockInfo blockInfo)
         {
             ClientProto.StatusResponse readyResponse = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
-            
             try
             {
                 Channel channel = new Channel(blockInfo.IpAddress[0] + ":" + "50051", ChannelCredentials.Insecure);
-                // TODO: Remove debugging code
-                //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
-                //channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
-
-                blockInfo.IpAddress.RemoveAt(0);
+               
+                //blockInfo.IpAddress.RemoveAt(0);
                 client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
                 readyResponse = client.GetReady(blockInfo);
 
-                // Mainly for debugging
-                if (readyResponse.Message != null || readyResponse.Message != "")
-                {
-                    Console.WriteLine(readyResponse.Message);
-                }
                 return true;
             }
             catch (RpcException e)
             {
-                // Can't connect to first node -> Need to contact namenode or try other datanode
                 Console.WriteLine("Get ready failed: " + e.Message);
                 client = null;
                 return false;
             }
+        }
+
+        private void ReadBlock(String id)
+        {
+            try
+            {
+                ClientProto.UUID blockId = new ClientProto.UUID { Value = id };
+
+                byte[] byteData = client.ReadBlock(blockId).ToByteArray();
+                //write here?
+            }
+            catch (RpcException e)
+            {
+                throw new Exception("RPC failed " , e);
+            }
+        }
+
+        private void WriteFile()
+        {
+
         }
     
     
