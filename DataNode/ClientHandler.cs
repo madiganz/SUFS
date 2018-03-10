@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using ClientProto;
+using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -240,6 +241,13 @@ namespace DataNode
             {
                 return blockSize;
             }
+        }
+
+        public override Task<BlockData> ReadBlock(UUID id, ServerCallContext context)
+        {
+            byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));
+
+            return Task.FromResult(new BlockData { Data = Google.Protobuf.ByteString.CopyFrom(blockData) });
         }
     }
 }
