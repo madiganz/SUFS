@@ -303,8 +303,8 @@ namespace DataNode
 
             foreach (var drive in drives)
             {
-                // Only care about c drive
-                if (drive.Name == "Drive C:\\")
+                // Only care about current drive
+                if (drive.Name == "/dev")
                 {
                     return drive.AvailableFreeSpace;
                 }
