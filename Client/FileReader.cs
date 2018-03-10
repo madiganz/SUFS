@@ -26,6 +26,8 @@ namespace Client
             {
                 WriteToFile(blockInfo, writerStream);
             }
+            writerStream.Flush();
+
         }
 
         private static string GetFileName(string path)
@@ -69,8 +71,6 @@ namespace Client
         private static void WriteToFile(byte[] blockData, FileStream writerStream)
         {
             writerStream.Write(blockData, 0, blockData.Length);
-            writerStream.Flush();
-
         }
     }
 }
