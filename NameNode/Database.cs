@@ -397,10 +397,14 @@ namespace NameNode
         {
             string[] paths = ExtractPath(path);
             string currentPath = "";
+            bool firstFile = true;
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length; i++)
             {
-                currentPath += "/" + paths[i];
+                if (firstFile)
+                    currentPath += paths[i];
+                else
+                    currentPath += "/" + paths[i];
                 if(!CurrentDirectory.subfolders.ContainsKey(paths[i]))
                     CreateDirectory(new ClientProto.Path {FullPath = currentPath});
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
@@ -412,10 +416,14 @@ namespace NameNode
         {
             string[] paths = ExtractPath(path);
             string currentPath = "";
+            bool firstFile = true;
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length - 1; i++)
             {
-                currentPath += "/" + paths[i];
+                if (firstFile)
+                    currentPath += paths[i];
+                else
+                    currentPath += "/" + paths[i];
                 if (!CurrentDirectory.subfolders.ContainsKey(paths[i]))
                     CreateDirectory(new ClientProto.Path { FullPath = currentPath });
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
