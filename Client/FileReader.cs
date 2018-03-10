@@ -20,7 +20,7 @@ namespace Client
                 localPath += fileName;
             }
 
-            var writerStream = new FileStream(localPath, FileMode.CreateNew, FileAccess.Write);
+            var writerStream = new FileStream(localPath, FileMode.Append, FileAccess.Write);
 
             foreach (var blockInfo in blockMessage.BlockInfo)
             {
@@ -68,7 +68,9 @@ namespace Client
 
         private static void WriteToFile(byte[] blockData, FileStream writerStream)
         {
-            //// TODO
+            writerStream.Write(blockData, 0, blockData.Length);
+            writerStream.Flush();
+
         }
     }
 }
