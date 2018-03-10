@@ -1,57 +1,74 @@
+using ClientProto;
+using Google.Protobuf;
 using Grpc.Core;
 using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Client
 {
-  class FileReader
-  {
-        private static ClientProto.ClientProto.ClientProtoClient client;
-
-        public FileReader(ClientProto.ClientProto.ClientProtoClient nameNodeClient)
+    static class FileReader
+    {
+        public static void ReadFile(ClientProto.ClientProto.ClientProtoClient nameNodeClient, string remotePath, string localPath)
         {
-            client = nameNodeClient;
-        }
-        
-        /// <summary>
-        /// Creates the pipeline for streaming the block to DataNodes
-        /// </summary>
-        /// <param name="blockInfo">Info of the block. Contains blockid, blocksize, and ipaddresses for pipeline creation</param>
-        /// <param name="client">Client connection with first DataNode in pipe</param>
-        /// <returns>Success of pipeline creation</returns>
+            var blockMessage = nameNodeClient.ReadFile(new ClientProto.Path { FullPath = remotePath });
 
-        private bool GetPipeLineReady(ClientProto.BlockInfo blockInfo, out ClientProto.ClientProto.ClientProtoClient client)
-        {
-            ClientProto.StatusResponse readyResponse = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
-            
-            try
+            var fileName = GetFileName(remotePath);
+
+            if (localPath.EndsWith('\\'))
             {
-                Channel channel = new Channel(blockInfo.IpAddress[0] + ":" + "50051", ChannelCredentials.Insecure);
-                // TODO: Remove debugging code
-                //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
-                //channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
+                localPath += fileName;
+            }
 
-                blockInfo.IpAddress.RemoveAt(0);
-                client = new ClientProto.ClientProto.ClientProtoClient(channel);
+            var writerStream = new FileStream(localPath, FileMode.CreateNew, FileAccess.Write);
 
-                readyResponse = client.GetReady(blockInfo);
+            foreach (var blockInfo in blockMessage.BlockInfo)
+            {
+                WriteToFile(blockInfo, writerStream);
+            }
+        }
 
-                // Mainly for debugging
-                if (readyResponse.Message != null || readyResponse.Message != "")
+        private static string GetFileName(string path)
+        {
+            var array = path.Split(@"\");
+
+            return array[array.Length - 1];
+        }
+
+        private static void WriteToFile(BlockInfo blockInfo, FileStream writerStream)
+        {
+            bool success = false;
+
+            foreach (var dataNodeIp in blockInfo.IpAddress)
+            {
+                try
                 {
-                    Console.WriteLine(readyResponse.Message);
+                    var channel = new Channel(dataNodeIp + ":50051", ChannelCredentials.Insecure);
+                    var dataNodeClient = new ClientProto.ClientProto.ClientProtoClient(channel);
+
+                    var bytesString = dataNodeClient.ReadBlock(blockInfo.BlockId);
+                    var bytes = bytesString.ToByteArray();
+                    WriteToFile(bytes, writerStream);
+
+                    success = true;
+
+                    break;
                 }
-                return true;
+                catch (Exception exception)
+                {
+                    Console.WriteLine($"Error when connecting to data node: {dataNodeIp}. Exception: {exception.Message}. Trying next.");
+                }
             }
-            catch (RpcException e)
+
+            if (!success)
             {
-                // Can't connect to first node -> Need to contact namenode or try other datanode
-                Console.WriteLine("Get ready failed: " + e.Message);
-                client = null;
-                return false;
+                throw new Exception($"Cannot get block {blockInfo.BlockId.Value}");
             }
         }
-    
-    
-  
-  }
+
+        private static void WriteToFile(byte[] blockData, FileStream writerStream)
+        {
+            //// TODO
+        }
+    }
 }

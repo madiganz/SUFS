@@ -64,9 +64,14 @@ namespace Client
 		
 		    else if (action == "ReadFile")
 		    {
-			    var reply = client.ReadFile(new ClientProto.Path { FullPath = path });
+                var localPath = Directory.GetCurrentDirectory();
 
-			    Console.WriteLine("Read file action: " + reply);
+                if (args.Length > 2)
+                {
+                    localPath = args[2];
+                }
+
+                FileReader.ReadFile(client, path, localPath);
 		    }
 		
 		    else if (action == "MoveFile")
