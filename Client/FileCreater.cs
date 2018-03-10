@@ -87,7 +87,7 @@ namespace Client
         /// <summary>
         /// Writes a file to SUFS using a file from local disk
         /// </summary>
-        private void ReadFileFromDisk(string filePath = @"C:\Users\Zach Madigan\Documents\Cloud Computing\CC-MAIN-20180116070444-20180116090444-00000.warc.gz")
+        private void ReadFileFromDisk(string filePath = "./CC-MAIN-20180116070444-20180116090444-00000.warc.gz")
         {
             try
             {

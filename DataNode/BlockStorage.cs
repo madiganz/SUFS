@@ -128,7 +128,7 @@ namespace DataNode
             //string filePath = ChooseRandomDirectory();
 
             // Making it simple and just create files in root
-            string filePath = root + @"\" + blockUUID.ToString() + "."; // Extensionless file
+            string filePath = root + "/" + blockUUID.ToString() + "."; // Extensionless file
             blockStorageMap.Add(blockUUID, filePath);
             return filePath;
         }

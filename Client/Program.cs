@@ -52,7 +52,7 @@ namespace Client
 
                     if (args.Length > 2)
                     {
-                        fileCreater.CreateFile(args[3],"s3");
+                        fileCreater.CreateFile(path, args[3]);
                     }
                 }
                 catch(Exception e)
