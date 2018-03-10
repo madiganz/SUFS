@@ -372,6 +372,7 @@ namespace NameNode
                 {
                     Console.Error.WriteLine(e.ToString());
                     Console.Error.WriteLine("Creating new filesystem . . .");
+                    Directory.CreateDirectory("data");
                     Root = new Folder();
                 }
                 BlockID_To_ip = new Dictionary<Guid, List<string>>();
