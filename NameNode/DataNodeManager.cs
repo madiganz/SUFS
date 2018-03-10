@@ -81,12 +81,10 @@ namespace NameNode
         /// <returns>List of the next 3 DataNodes in list</returns>
         public List<string> GetDataNodesForReplication()
         {
-            List<string> ipAddresses = new List<string>
-            {
-                GrabNextDataNode().IpAddress,
-                GrabNextDataNode().IpAddress,
-                GrabNextDataNode().IpAddress
-            };
+            List<string> ipAddresses = new List<string>();
+            int factor = Math.Min(NodeList.Count, Constants.ReplicationFactor);
+            for (int i = 0; i < factor; i++)
+                ipAddresses.Add(GrabNextDataNode().IpAddress);
             return ipAddresses;
         }
 

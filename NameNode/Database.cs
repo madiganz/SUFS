@@ -85,7 +85,7 @@ namespace NameNode
                 List<string> ipAddresses = DataNodeManager.Instance.GetDataNodesForReplication();
 
                 // add it to the BlockID to DataNode Dictionary
-                BlockID_To_ip.Add(id, ipAddresses);
+                BlockID_To_ip.Add(id, new List<string>());
                 SaveFileDirectory();
                 return new ClientProto.BlockInfo { BlockId = new ClientProto.UUID { Value = id.ToString() }, FullPath = path, BlockSize = addedBlock.BlockSize, IpAddress = { ipAddresses } };
             }
@@ -348,18 +348,18 @@ namespace NameNode
         {
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
-            System.IO.File.WriteAllText(@"C:/data/testDirecotry.yml", yaml);
+            System.IO.File.WriteAllText($"{Directory.GetCurrentDirectory()}/data/testDirecotry.yml", yaml);
             Console.WriteLine(yaml);
         }
 
         //Loads the directory from file.
         private void InitializeFileDirectory()
         {
-            if (Root != null)
+            if (Root == null)
             {
                 try
                 {
-                    string yaml = System.IO.File.ReadAllText(@"C:/data/testDirecotry.yml");
+                    string yaml = System.IO.File.ReadAllText($"{Directory.GetCurrentDirectory()}/data/testDirecotry.yml");
                     var input = new StringReader(yaml);
 
                     var deserializer = new DeserializerBuilder()
@@ -395,9 +395,13 @@ namespace NameNode
         private Folder GrabDirectory(string path)
         {
             string[] paths = ExtractPath(path);
+            string currentPath = "";
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length; i++)
             {
+                currentPath += "/" + paths[i];
+                if(!CurrentDirectory.subfolders.ContainsKey(paths[i]))
+                    CreateDirectory(new ClientProto.Path {FullPath = currentPath});
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
             return CurrentDirectory;
@@ -406,9 +410,13 @@ namespace NameNode
         private Folder GrabParentDirectory(string path)
         {
             string[] paths = ExtractPath(path);
+            string currentPath = "";
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length - 1; i++)
             {
+                currentPath += "/" + paths[i];
+                if (!CurrentDirectory.subfolders.ContainsKey(paths[i]))
+                    CreateDirectory(new ClientProto.Path { FullPath = currentPath });
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
             return CurrentDirectory;
