@@ -406,6 +406,7 @@ namespace NameNode
             string[] paths = ExtractPath(path);
             string currentPath = "";
             bool firstFile = true;
+            Folder currentFolder;
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length; i++)
             {
@@ -414,7 +415,11 @@ namespace NameNode
                 else
                     currentPath += "/" + paths[i];
                 if(!CurrentDirectory.subfolders.ContainsKey(paths[i]))
-                    CreateDirectory(new ClientProto.Path {FullPath = currentPath});
+                {
+                    currentFolder = CurrentDirectory;
+                    CreateDirectory(new ClientProto.Path { FullPath = currentPath });
+                    CurrentDirectory = currentFolder;
+                }
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
             return CurrentDirectory;
@@ -425,6 +430,7 @@ namespace NameNode
             string[] paths = ExtractPath(path);
             string currentPath = "";
             bool firstFile = true;
+            Folder currentFolder;
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length - 1; i++)
             {
@@ -433,7 +439,11 @@ namespace NameNode
                 else
                     currentPath += "/" + paths[i];
                 if (!CurrentDirectory.subfolders.ContainsKey(paths[i]))
+                {
+                    currentFolder = CurrentDirectory;
                     CreateDirectory(new ClientProto.Path { FullPath = currentPath });
+                    CurrentDirectory = currentFolder;
+                }
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
             return CurrentDirectory;
@@ -442,6 +452,11 @@ namespace NameNode
         private string GetFileName(string path)
         {
             return Path.GetFileName(path);
+        }
+
+        public Dictionary<Guid,List<string>> GrabBlockToIpDictionary()
+        {
+            return BlockID_To_ip;
         }
 
     }
