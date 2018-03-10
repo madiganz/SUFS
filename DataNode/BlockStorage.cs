@@ -13,17 +13,15 @@ namespace DataNode
 
         private static string root;
 
-        // Initial directory to store blocks in
-        private static DirectoryInfo baseDirectoryInfo;
-
         /// <summary>
         /// Initialize the block storage
         /// </summary>
         private BlockStorage()
         {
             blockStorageMap = new Dictionary<Guid, string>();
-            baseDirectoryInfo = Directory.CreateDirectory(@"C:\data");
-            root = @"C:\data";
+
+            // Use the current directory as the root directory
+            root = Directory.GetCurrentDirectory();
 
             // Looks at file system to add any files to memory
             AddFilesToMemory(root);
@@ -126,8 +124,10 @@ namespace DataNode
         /// <returns>Full path of created file</returns>
         public string CreateFile(Guid blockUUID)
         {
-            string filePath = ChooseRandomDirectory();
-            filePath += @"\" + blockUUID.ToString() + "."; // Extensionless file
+            //string filePath = ChooseRandomDirectory();
+
+            // Making it simple and just create files in root
+            string filePath = root + @"\" + blockUUID.ToString() + "."; // Extensionless file
             blockStorageMap.Add(blockUUID, filePath);
             return filePath;
         }

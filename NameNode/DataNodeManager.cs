@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace NameNode
 {
+    /// <summary>
+    /// Class to manage the data nodes
+    /// </summary>
     class DataNodeManager
     {
+        /// <summary>
+        /// List of DataNodes that are connected to the NameNode
+        /// </summary>
         private static List<DataNode> NodeList;
+
         private static int RoundRobinDistributionIndex;
 
         private static DataNodeManager instance;
@@ -38,6 +45,10 @@ namespace NameNode
             }
         }
 
+        /// <summary>
+        /// Updates the list of Datanodes
+        /// </summary>
+        /// <param name="nodeInfo">A single DataNodes info</param>
         public void UpdateDataNodes(DataNodeProto.DataNodeInfo nodeInfo)
         {
             // Update list of datanodes
@@ -79,6 +90,12 @@ namespace NameNode
             return ipAddresses;
         }
 
+        /// <summary>
+        /// Processes the blockreport. Need to add requests when a datanode has died causing replications to fall before replication factor
+        /// </summary>
+        /// <param name="blockList">Blocks contained in DataNode</param>
+        /// <param name="currentNodeIP">DataNode's IP Address</param>
+        /// <returns>List of Commands to be sent back to the DataNode</returns>
         public List<DataNodeProto.BlockCommand> ProcessBlockReport(Guid[] blockList, string currentNodeIP)
         {
             try
@@ -116,6 +133,10 @@ namespace NameNode
             }
         }
 
+        /// <summary>
+        /// Gets next DataNode and moves index
+        /// </summary>
+        /// <returns>DataNode</returns>
         public DataNode GrabNextDataNode()
         {
             if (RoundRobinDistributionIndex % NodeList.Count == 0)
@@ -124,6 +145,13 @@ namespace NameNode
 
         }
 
+        /// <summary>
+        /// Data block redistribution log. Chooses a DataNode to forward to that does not currently contain the block
+        /// </summary>
+        /// <param name="currentBlock">The data block infomation, which contains list of addresses the block is stored on</param>
+        /// <param name="currentNodeIP">The DataNode's IP Address</param>
+        /// <param name="blockID">Unique ID of block</param>
+        /// <returns>Command for the DataNode to run</returns>
         public DataNodeProto.BlockCommand Redistribute(List<string> currentBlock, string currentNodeIP, Guid blockID)
         {
             string ipAddress = NodeList[RoundRobinDistributionIndex++ % NodeList.Count].IpAddress;
@@ -156,12 +184,22 @@ namespace NameNode
             return blockCommand;
         }
 
+        /// <summary>
+        /// Checks if block redistribution is needed based on replication factor
+        /// </summary>
+        /// <param name="currentBlock">Addresses the block the stored on</param>
+        /// <returns>True if redistribution is needed</returns>
         public bool CheckIfRedistributeNeeded(List<string> currentBlock)
         {
             // If the Block is not above the minimum ReplicationFactor
             return currentBlock.Count < Constants.ReplicationFactor;
         }
 
+        /// <summary>
+        /// Run a node check every 6 minutes
+        /// </summary>
+        /// <param name="token">Cancellation token for task</param>
+        /// <returns>Task</returns>
         public async Task RunNodeCheck(CancellationToken token = default(CancellationToken))
         {
             while (!token.IsCancellationRequested)
@@ -178,9 +216,12 @@ namespace NameNode
             }
         }
 
+        /// <summary>
+        /// Checks whether or not the Node is dead. If it is, it removes it from the list.
+        /// TODO: When a node is dead, remove blocks and redistribute if needed
+        /// </summary>
         private void CheckDeadNodes()
         {
-            Console.WriteLine("Checking dead nodes");
             foreach (var node in NodeList)
             {
                 TimeSpan span = DateTime.UtcNow.Subtract(node.LastHeartBeat);
@@ -193,12 +234,22 @@ namespace NameNode
             }
         }
 
+        /// <summary>
+        /// Adds a request that will be sent to a DataNode to perform
+        /// </summary>
+        /// <param name="ipAddress">Address of DataNode</param>
+        /// <param name="blockCommand">Command to be added</param>
         public void AddRequestToNode(string ipAddress, DataNodeProto.BlockCommand blockCommand)
         {
             int index = FindNodeIndexFromIP(ipAddress);
             NodeList[index].Requests.Add(blockCommand);
         }
 
+        /// <summary>
+        /// Simple helper function to return a Node's index given an ip address
+        /// </summary>
+        /// <param name="ipAddress">IP Address of DataNode</param>
+        /// <returns>Index DataNode in list</returns>
         public int FindNodeIndexFromIP(string ipAddress)
         {
             return NodeList.FindIndex(node => node.IpAddress == ipAddress);

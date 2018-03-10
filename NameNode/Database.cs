@@ -7,17 +7,13 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace NameNode
 {
-    
+
     public class Database
     {
-
-        //NOTE: ALL RESPONSES ARE AS FOLLOWS IN FORMAT = "ipAddress:BlockID"
-        //NOTE: FOR SENDING THE LOCATIONS FOR THE DATANODE T FORWARD TO, THE FOLLOWING FORMAT IS USED = "ipAddress:BlockID=ipAddress:BlockID=..."
-        //NOTE: DELETION FOR DATANODES WILL BE IN THE FOLLOWING FORMAT = "Delete:BlockID"
         public Database()
         {
             InitializeFileDirectory();
-            
+
         }
 
         private static Folder Root = null;
@@ -48,7 +44,7 @@ namespace NameNode
                 // If a file exists, fail the execution
                 if (FileExists(fullPath.FullPath))
                 {
-                    return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.FileExists};
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
                 }
 
                 // Creates the file
@@ -60,9 +56,9 @@ namespace NameNode
                 CurrentDirectory.files.Add(file.name, file);
                 SaveFileDirectory();
                 //It done did it
-                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Ok};
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Ok };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 // Logs the error to console
                 Console.WriteLine(e);
@@ -91,8 +87,9 @@ namespace NameNode
                 // add it to the BlockID to DataNode Dictionary
                 BlockID_To_ip.Add(id, ipAddresses);
                 SaveFileDirectory();
-                return new ClientProto.BlockInfo {BlockId = new ClientProto.UUID { Value = id.ToString() }, FullPath = path, BlockSize = addedBlock.BlockSize, IpAddress = { ipAddresses } };
-            }catch (Exception e)
+                return new ClientProto.BlockInfo { BlockId = new ClientProto.UUID { Value = id.ToString() }, FullPath = path, BlockSize = addedBlock.BlockSize, IpAddress = { ipAddresses } };
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return null;
@@ -125,7 +122,8 @@ namespace NameNode
 
                 //send back to client the ips and what to search for on the datanode
                 return new ClientProto.BlockMessage { BlockInfo = { blockInfos } };
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return null;
@@ -160,9 +158,9 @@ namespace NameNode
                 //remove file from directory system
                 CurrentDirectory.files.Remove(name);
                 SaveFileDirectory();
-                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Success };
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
@@ -180,15 +178,16 @@ namespace NameNode
                 Folder folder = new Folder(name, path);
                 CurrentDirectory.subfolders.Add(folder.name, folder);
                 SaveFileDirectory();
-                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Success};
-            }catch (Exception e)
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new ClientProto.StatusResponse {Type = ClientProto.StatusResponse.Types.StatusType.Fail};
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             }
         }
 
-        public ClientProto.StatusResponse DeleteDirectory(ClientProto.Path  wrappedPath)
+        public ClientProto.StatusResponse DeleteDirectory(ClientProto.Path wrappedPath)
         {
             try
             {
@@ -216,18 +215,18 @@ namespace NameNode
                     //delete directory
                     parentFolder.subfolders.Remove(name);
                     SaveFileDirectory();
-                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success};
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
                 }
                 else
                 {
                     Console.WriteLine("Cannot delete Root. Root has been emptied");
-                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root. Root has been emptied."};
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root. Root has been emptied." };
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail};
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             }
 
         }
@@ -254,7 +253,8 @@ namespace NameNode
                 }
 
                 return new ClientProto.ListOfContents { FileName = { returnList } };
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return null;
@@ -287,7 +287,8 @@ namespace NameNode
                     responseList.Add(new ClientProto.ListOfNodes { BlockId = blockID.ToString(), NodeId = { ips } });
                 }
                 return new ClientProto.ListOfNodesList { ListOfNodes = { responseList } };
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return null;
@@ -305,7 +306,7 @@ namespace NameNode
         //        Console.WriteLine(e);
         //        return false;
         //    }
-            
+
         //}
 
 
@@ -329,12 +330,13 @@ namespace NameNode
                 SaveFileDirectory();
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
 
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new ClientProto.StatusResponse{Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Internal Server Failure"};
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Internal Server Failure" };
             }
-            
+
         }
 
         public List<string> GetIPsFromBlock(Guid blockId)

@@ -141,12 +141,31 @@ namespace Client
                         BlockSize = bytesRead
                     };
 
-                    // Keep asking NameNode for new DataNodes if it fails
-                    do
+                    bool writeSuccess = false;
+                    while (!writeSuccess)
                     {
+                        // Keep asking NameNode for new DataNodes if all fail
                         // Get DataNode locations to store block
                         blockInfo = client.QueryBlockDestination(blockInfo);
-                    } while (!CreatePipelineAndWrite(blockInfo, block));
+                        for (int i = 0; i < blockInfo.IpAddress.Count(); i++)
+                        {
+                            // Need to reassign because classes are passed by reference and we are removing nodes
+                            ClientProto.BlockInfo info = blockInfo;
+                            if (CreatePipelineAndWrite(info, block))
+                            {
+                                writeSuccess = true;
+                                break;
+                            }
+                            else
+                            {
+                                // Try a different datanode first.
+                                // This has a chance because this flow only fails if the first datanode fails to connect or somehow they all fail.
+                                // Not sure if this is the best way to handle it, but it works
+                                blockInfo.IpAddress.Clear();
+                                blockInfo.IpAddress.AddRange(blockInfo.IpAddress.Shift());
+                            }
+                        }
+                    }
                 }
                 catch (RpcException e)
                 {
@@ -180,7 +199,7 @@ namespace Client
                         WriteBlock(writeClient, blockInfo, block).Wait();
                         return true;
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Console.WriteLine(e.Message);
                         return false;
