@@ -20,8 +20,9 @@ namespace DataNode
         {
             blockStorageMap = new Dictionary<Guid, string>();
 
-            // Use the current directory as the root directory
-            root = Directory.GetCurrentDirectory();
+            // Use the current directory/data as the root directory
+            Directory.CreateDirectory("data");
+            root = Directory.GetCurrentDirectory() + "/data";
 
             // Looks at file system to add any files to memory
             AddFilesToMemory(root);
