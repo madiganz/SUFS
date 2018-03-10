@@ -16,6 +16,7 @@ namespace Client
     /// </summary>
     class FileCreater
     {
+        private static string filePath;
         private static ClientProto.ClientProto.ClientProtoClient client;
         public FileCreater(ClientProto.ClientProto.ClientProtoClient nameNodeClient)
         {
@@ -28,7 +29,8 @@ namespace Client
         /// <param name="location">Location of file. Defaults to local disk</param>
         public void CreateFile(string location = "local")
         {
-            var response = client.CreateFile(new ClientProto.Path { FullPath = @"C:\test\example.warc.gz" });
+            filePath = @"C:\test\example.warc.gz";
+            var response = client.CreateFile(new ClientProto.Path { FullPath = filePath });
             Console.WriteLine(response);
 
             if (response.Type == ClientProto.StatusResponse.Types.StatusType.Ok)
@@ -135,11 +137,9 @@ namespace Client
                     ClientProto.BlockInfo blockInfo = new ClientProto.BlockInfo
                     {
                         BlockId = new ClientProto.UUID { Value = Guid.NewGuid().ToString() },
+                        FullPath = filePath,
                         BlockSize = bytesRead
                     };
-
-                    // Get DataNode locations to store block
-                    blockInfo = client.QueryBlockDestination(blockInfo);
 
                     // Keep asking NameNode for new DataNodes if it fails
                     do
