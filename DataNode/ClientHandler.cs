@@ -246,7 +246,7 @@ namespace DataNode
         /// <summary>
         /// Read block from disk
         /// </summary>
-        /// <param name="metaData">UUID</param>
+        /// <param name="id">UUID</param>
         /// <returns>BlockData</returns>
         public override Task<BlockData> ReadBlock(UUID id, ServerCallContext context)
         {
