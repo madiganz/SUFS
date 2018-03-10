@@ -48,14 +48,11 @@ namespace Client
             {
                 try
                 {
-                    Console.WriteLine(path);
-                    var reply = client.CreateFile(new ClientProto.Path { FullPath = path });
-                    Console.WriteLine("Add file action: " + reply);
                     FileCreater fileCreater = new FileCreater(client);
 
                     if (args.Length > 2)
                     {
-                        fileCreater.CreateFile("s3");
+                        fileCreater.CreateFile(args[3],"s3");
                     }
                 }
                 catch(Exception e)

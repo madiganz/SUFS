@@ -27,9 +27,9 @@ namespace Client
         /// Creates a file in SUFS
         /// </summary>
         /// <param name="location">Location of file. Defaults to local disk</param>
-        public void CreateFile(string location = "local")
+        public void CreateFile(string path, string location = "local")
         {
-            filePath = @"file.txt";
+            filePath = path;
             var response = client.CreateFile(new ClientProto.Path { FullPath = filePath });
             Console.WriteLine(response);
 
