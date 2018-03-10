@@ -85,7 +85,7 @@ namespace NameNode
                 List<string> ipAddresses = DataNodeManager.Instance.GetDataNodesForReplication();
 
                 // add it to the BlockID to DataNode Dictionary
-                BlockID_To_ip.Add(id, ipAddresses);
+                BlockID_To_ip.Add(id, new List<string>());
                 SaveFileDirectory();
                 return new ClientProto.BlockInfo { BlockId = new ClientProto.UUID { Value = id.ToString() }, FullPath = path, BlockSize = addedBlock.BlockSize, IpAddress = { ipAddresses } };
             }
@@ -348,7 +348,7 @@ namespace NameNode
         {
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
-            System.IO.File.WriteAllText(@"C:/data/testDirecotry.yml", yaml);
+            System.IO.File.WriteAllText($"{Directory.GetCurrentDirectory()}/data/testDirecotry.yml", yaml);
             Console.WriteLine(yaml);
         }
 
@@ -359,7 +359,7 @@ namespace NameNode
             {
                 try
                 {
-                    string yaml = System.IO.File.ReadAllText(@"C:/data/testDirecotry.yml");
+                    string yaml = System.IO.File.ReadAllText($"{Directory.GetCurrentDirectory()}/data/testDirecotry.yml");
                     var input = new StringReader(yaml);
 
                     var deserializer = new DeserializerBuilder()
