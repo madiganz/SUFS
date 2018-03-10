@@ -242,7 +242,12 @@ namespace DataNode
                 return blockSize;
             }
         }
-
+        
+        /// <summary>
+        /// Read block from disk
+        /// </summary>
+        /// <param name="id">UUID</param>
+        /// <returns>BlockData</returns>
         public override Task<BlockData> ReadBlock(UUID id, ServerCallContext context)
         {
             byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));
