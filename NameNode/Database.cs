@@ -344,6 +344,14 @@ namespace NameNode
             return BlockID_To_ip[blockId];
         }
 
+        public void RemoveIPToBlockReferences(string ipAddress){
+            foreach(List<string> ipAddresses in BlockID_To_ip.Values)
+            {
+                if (ipAddresses.Contains(ipAddress))
+                    ipAddresses.Remove(ipAddress);
+            }
+        }
+
         private void SaveFileDirectory()
         {
             var serializer = new SerializerBuilder().Build();

@@ -12,7 +12,7 @@ message HeartBeatRequest {
 }
 
 message HeartBeatResponse {
-	repeated DataNodeCommands commands = 1; // Returned commands can be null
+	repeated BlockCommand commands = 1; // Returned commands can be null
 }
 
 message BlockReportRequest {
@@ -33,11 +33,6 @@ message DataNode {
 message DataNodeInfo {
 	DataNode dataNode = 1;
 	int64 diskSpace = 2;
-}
-
-// Commands sent back from namenode is response to heartbeat
-message DataNodeCommands {
-  BlockCommand command = 1;
 }
 
 message BlockCommand {

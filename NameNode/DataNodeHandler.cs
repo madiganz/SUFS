@@ -21,34 +21,38 @@ namespace NameNode
         {
             Console.WriteLine(request);
 
-            DataNodeManager.Instance.UpdateDataNodes(request.NodeInfo);
+            List<DataNodeProto.BlockCommand> blockCommands = DataNodeManager.Instance.UpdateDataNodes(request.NodeInfo);
 
             // TODO: Use the redistribution logic
             // Create fake list of blocks to invalidate
-            List<DataNodeProto.UUID> blocks = new List<DataNodeProto.UUID>();
-            for (var i = 0; i < 11; i++)
-            {
-                blocks.Add(new DataNodeProto.UUID { Value = Guid.NewGuid().ToString() });
-            }
+            //List<DataNodeProto.UUID> blocks = new List<DataNodeProto.UUID>();
+            //for (var i = 0; i < 11; i++)
+            //{
+            //    blocks.Add(new DataNodeProto.UUID { Value = Guid.NewGuid().ToString() });
+            //}
 
-            // Create command
-            DataNodeProto.DataNodeCommands commands = new DataNodeProto.DataNodeCommands
-            {
-                Command = new DataNodeProto.BlockCommand
-                {
-                    Action = DataNodeProto.BlockCommand.Types.Action.Delete,
-                    BlockList = new DataNodeProto.BlockList
-                    {
-                        BlockId = { blocks }
-                    }
-                }
+            //// Create command
+            //DataNodeProto.DataNodeCommands commands = new DataNodeProto.DataNodeCommands
+            //{
+            //    Command = new DataNodeProto.BlockCommand
+            //    {
+            //        Action = DataNodeProto.BlockCommand.Types.Action.Delete,
+            //        BlockList = new DataNodeProto.BlockList
+            //        {
+            //            BlockId = { blocks }
+            //        }
+            //    }
 
-            };
+            //};
+
+
 
             DataNodeProto.HeartBeatResponse response = new DataNodeProto.HeartBeatResponse
             {
-                Commands = { commands }
+                Commands = { blockCommands }
             };
+
+            blockCommands.Clear();
 
             return Task.FromResult(response);
         }

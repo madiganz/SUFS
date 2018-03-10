@@ -35,7 +35,7 @@ namespace DataNode
                     Console.WriteLine(response);
 
 
-                    List<DataNodeProto.DataNodeCommands> nameNodeCommands = response.Commands.ToList();
+                    List<DataNodeProto.BlockCommand> nameNodeCommands = response.Commands.ToList();
 
                     foreach (var command in nameNodeCommands)
                     {

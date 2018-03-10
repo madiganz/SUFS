@@ -49,7 +49,7 @@ namespace NameNode
         /// Updates the list of Datanodes
         /// </summary>
         /// <param name="nodeInfo">A single DataNodes info</param>
-        public void UpdateDataNodes(DataNodeProto.DataNodeInfo nodeInfo)
+        public List<DataNodeProto.BlockCommand> UpdateDataNodes(DataNodeProto.DataNodeInfo nodeInfo)
         {
             // Update list of datanodes
             int index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
@@ -73,6 +73,7 @@ namespace NameNode
             }
             Console.WriteLine();
 #endif
+            return NodeList[index].Requests;
         }
 
         /// <summary>
@@ -94,40 +95,46 @@ namespace NameNode
         /// <param name="blockList">Blocks contained in DataNode</param>
         /// <param name="currentNodeIP">DataNode's IP Address</param>
         /// <returns>List of Commands to be sent back to the DataNode</returns>
-        public List<DataNodeProto.BlockCommand> ProcessBlockReport(Guid[] blockList, string currentNodeIP)
+        public DataNodeProto.StatusResponse ProcessBlockReport(Guid[] blockList, string currentNodeIP)
         {
             try
             {
                 List<string> currentBlock;
-                List<DataNodeProto.BlockCommand> returnRequests = new List<DataNodeProto.BlockCommand>();
+                //DataNodeProto.StatusResponse returnRequests = new DataNodeProto.BlockCommand();
                 int index = FindNodeIndexFromIP(currentNodeIP);
                 DataNode currentDataNode = NodeList[index];
+
+                Program.Database.RemoveIPToBlockReferences(currentNodeIP);
 
                 //For each BlockID in report:
                 foreach (Guid blockID in blockList)
                 {
                     // Grab the list of ips that are connected to this BlockID
                     currentBlock = Program.Database.GetIPsFromBlock(blockID);
-                    if (CheckIfRedistributeNeeded(currentBlock))
-                        returnRequests.Add(Redistribute(currentBlock, currentNodeIP, blockID));
+                    if (!currentBlock.Contains(currentNodeIP)) 
+                    {
+                        currentBlock.Add(currentNodeIP);
+                    }
+                    //if (CheckIfRedistributeNeeded(currentBlock))
+                        //returnRequests.Add(Redistribute(currentBlock, currentNodeIP, blockID));
 
                 }
 
                 //Loops through to see if there are any more requests to send to this node
-                foreach (DataNodeProto.BlockCommand request in currentDataNode.Requests)
-                {
-                    returnRequests.Add(request);
-                }
-                currentDataNode.Requests.Clear();
+                //foreach (DataNodeProto.BlockCommand request in currentDataNode.Requests)
+                //{
+                //    returnRequests.Add(request);
+                //}
+                //currentDataNode.Requests.Clear();
 
 
                 //either send empty list back or send queued commands to the specific datanode
-                return returnRequests;
+                return new DataNodeProto.StatusResponse { Type = DataNodeProto.StatusResponse.Types.StatusType.Success };
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return null;
+                return new DataNodeProto.StatusResponse {Type = DataNodeProto.StatusResponse.Types.StatusType.Fail};
             }
         }
 
