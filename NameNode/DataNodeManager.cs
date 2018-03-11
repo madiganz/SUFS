@@ -59,6 +59,12 @@ namespace NameNode
             {
                 DataNode node = new DataNode(nodeInfo.DataNode.IpAddress, nodeInfo.DiskSpace, DateTime.UtcNow);
                 NodeList.Add(node);
+                if(NodeList.Count <= Constants.ReplicationFactor)
+                {
+                    BelowReplicationFactorNewDataNodeRedistribute(node.IpAddress);
+                }else{
+                    CheckIfRedistributeNeeded();
+                }
             }
             else // Found, update lastHeartBeat timestamp
             {
@@ -111,10 +117,7 @@ namespace NameNode
                 {
                     // Grab the list of ips that are connected to this BlockID
                     currentBlock = Program.Database.GetIPsFromBlock(blockID);
-                    if (!currentBlock.Contains(currentNodeIP)) 
-                    {
-                        currentBlock.Add(currentNodeIP);
-                    }
+                    currentBlock.Add(currentNodeIP);
                     //if (CheckIfRedistributeNeeded(currentBlock))
                         //returnRequests.Add(Redistribute(currentBlock, currentNodeIP, blockID));
 
@@ -157,47 +160,92 @@ namespace NameNode
         /// <param name="currentNodeIP">The DataNode's IP Address</param>
         /// <param name="blockID">Unique ID of block</param>
         /// <returns>Command for the DataNode to run</returns>
-        public DataNodeProto.BlockCommand Redistribute(List<string> currentBlock, string currentNodeIP, Guid blockID)
+        public void Redistribute(List<string> currentBlock, string currentNodeIP, Guid blockID)
         {
-            string ipAddress = NodeList[RoundRobinDistributionIndex++ % NodeList.Count].IpAddress;
-            // While it isn't a node that contains this block, choose the next in the node list
-            while (ipAddress == currentNodeIP || currentBlock.Contains(ipAddress))
+            List<DataNodeProto.DataNode> nodes = new List<DataNodeProto.DataNode>();
+            for (int i = 0; i < Constants.ReplicationFactor - currentBlock.Count; i++)
             {
-                ipAddress = GrabNextDataNode().IpAddress;
+                string ipAddress = NodeList[RoundRobinDistributionIndex++ % NodeList.Count].IpAddress;
+                // While it isn't a node that contains this block, choose the next in the node list
+                while (ipAddress == currentNodeIP || currentBlock.Contains(ipAddress))
+                {
+                    ipAddress = GrabNextDataNode().IpAddress;
+                }
+
+                nodes.Add(
+                    new DataNodeProto.DataNode
+                    {
+                        IpAddress = ipAddress
+                    });
             }
 
-            List<DataNodeProto.DataNode> nodes = new List<DataNodeProto.DataNode>
+                DataNodeProto.DataBlock dataBlock = new DataNodeProto.DataBlock
+                {
+                    BlockId = new DataNodeProto.UUID { Value = blockID.ToString() },
+                    DataNodes = { nodes }
+                };
+
+                // Tell the node where to send a copy of the current block
+                DataNodeProto.BlockCommand blockCommand = new DataNodeProto.BlockCommand
+                {
+                    Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
+                    DataBlock = { dataBlock }
+                };
+                AddRequestToNode(currentNodeIP, blockCommand);
+        }
+
+        public void BelowReplicationFactorNewDataNodeRedistribute(string newDataNodeIP)
+        {
+            List<DataNodeProto.DataNode> destinationNode = new List<DataNodeProto.DataNode>
             {
-                new DataNodeProto.DataNode {
-                    IpAddress = ipAddress
+                new DataNodeProto.DataNode
+                {
+                    IpAddress = 1
                 }
             };
 
-            DataNodeProto.DataBlock dataBlock = new DataNodeProto.DataBlock
+            Dictionary<string, List<DataNodeProto.DataBlock>> commands = new Dictionary<string, List<DataNodeProto.DataBlock>>();
+            foreach(KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
             {
-                BlockId = new DataNodeProto.UUID { Value = blockID.ToString() },
-                DataNodes = { nodes }
-            };
-
-            // Tell the node where to send a copy of the current block
-            DataNodeProto.BlockCommand blockCommand = new DataNodeProto.BlockCommand
+                if(!commands.ContainsKey(entry.Value[0]))
+                {
+                    commands.Add(entry.Value[0], new List<DataNodeProto.DataBlock>());
+                }
+                commands[entry.Value[0]].Add(
+                    new DataNodeProto.DataBlock
+                    {
+                        BlockId = entry.Key,
+                        DataNodes = { destinationNode }
+                    });
+            }
+            foreach(KeyValuePair<string, List<DataNodeProto.DataBlock>> entry in commands)
             {
-                Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
-                DataBlock = { dataBlock }
-            };
-
-            return blockCommand;
+                AddRequestToNode(entry.Key,
+                                 new DataNodeProto.BlockCommand
+                                 {
+                                    Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
+                                    DataBlock = { entry.Value }
+                                 });
+            }
         }
 
         /// <summary>
-        /// Checks if block redistribution is needed based on replication factor
+        /// Checks if block redistribution is needed based on replication factor.
+        /// If needed, will queue redistribution.
         /// </summary>
-        /// <param name="currentBlock">Addresses the block the stored on</param>
         /// <returns>True if redistribution is needed</returns>
-        public bool CheckIfRedistributeNeeded(List<string> currentBlock)
+        public void CheckIfRedistributeNeeded()
         {
             // If the Block is not above the minimum ReplicationFactor
-            return currentBlock.Count < Constants.ReplicationFactor;
+            foreach (KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
+            {
+                if(entry.Value.Count < Constants.ReplicationFactor)
+                {
+                    if(entry.Value.Count != 0)
+                        Redistribute(entry.Value, entry.Value[0], entry.Key);
+                    
+                }
+            }
         }
 
         /// <summary>
@@ -233,10 +281,12 @@ namespace NameNode
                 // Too much time has passed
                 if (span.Minutes >= 10)
                 {
+                    Program.Database.RemoveIPToBlockReferences(node.IpAddress);
                     NodeList.Remove(node);
                 }
-
             }
+            if(NodeList.Count >= Constants.ReplicationFactor)
+                CheckIfRedistributeNeeded();
         }
 
         /// <summary>

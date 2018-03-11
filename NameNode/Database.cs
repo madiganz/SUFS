@@ -79,7 +79,8 @@ namespace NameNode
 
                 // stores blockID and adds it to the file.
                 Guid id = Guid.Parse(addedBlock.BlockId.Value);
-                file.data.Add(id);
+                if(!file.data.Contains(id))
+                    file.data.Add(id);
 
                 List<string> ipAddresses = DataNodeManager.Instance.GetDataNodesForReplication();
 
@@ -340,6 +341,10 @@ namespace NameNode
 
         public List<string> GetIPsFromBlock(Guid blockId)
         {
+            if(!BlockID_To_ip.ContainsKey(blockId))
+            {
+                BlockID_To_ip.TryAdd(blockId, new List<string>());    
+            }
             return BlockID_To_ip[blockId];
         }
 
