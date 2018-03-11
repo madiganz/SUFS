@@ -38,7 +38,6 @@ namespace DataNode
             {
                 DataNodeProto.BlockReportRequest blockReport = CreateBlockReport();
                 DataNodeProto.StatusResponse response = client.SendBlockReport(blockReport);
-                Console.WriteLine(response.Type.ToString());
             }
             catch (RpcException e)
             {

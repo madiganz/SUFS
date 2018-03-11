@@ -77,7 +77,6 @@ namespace NameNode
         //?
         public override Task<ClientProto.StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            
             return Task.FromResult(Program.Database.CreateDirectory(path));
         }
 

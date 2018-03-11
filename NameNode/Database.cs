@@ -117,6 +117,12 @@ namespace NameNode
                     //cross references those against the list of ids to ips
                     //choose ips for each block of the file
                     ipAddresses = BlockID_To_ip[blockID];
+                    foreach(var a in ipAddresses)
+                    {
+                        Console.Write("block: " + blockID + ", ");
+                        Console.Write("ip: " + a);
+                    }
+                    Console.WriteLine();
                     blockInfos.Add(new ClientProto.BlockInfo { BlockId = new ClientProto.UUID { Value = blockID.ToString() }, BlockSize = Constants.MaxBlockSize, IpAddress = { ipAddresses } });
                 }
 

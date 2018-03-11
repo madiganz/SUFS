@@ -32,7 +32,6 @@ namespace DataNode
                 try
                 {
                     DataNodeProto.HeartBeatResponse response = client.SendHeartBeat(heartBeatRequest);
-                    Console.WriteLine(response);
 
 
                     List<DataNodeProto.BlockCommand> nameNodeCommands = response.Commands.ToList();
