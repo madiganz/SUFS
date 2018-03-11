@@ -250,7 +250,7 @@ namespace NameNode
                 Folder directory = CurrentDirectory;
                 foreach (Folder folder in directory.subfolders.Values)
                 {
-                    returnList.Add(folder.name);
+                    returnList.Add(folder.name + "/");
                 }
 
                 foreach (FileSystem.File file in directory.files.Values)
