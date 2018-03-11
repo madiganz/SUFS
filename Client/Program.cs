@@ -71,7 +71,7 @@ namespace Client
             {
                 var localPath = Directory.GetCurrentDirectory();
 
-                // FileReader.ReadFile(client, path);
+                // FileReader.ReadFile(client, path, localPath);
             }
 
             else if (action == "MoveFile")
