@@ -13,7 +13,6 @@ namespace NameNode
         public Database()
         {
             InitializeFileDirectory();
-
         }
 
         private static Folder Root = null;
@@ -274,7 +273,7 @@ namespace NameNode
                 {
                     Console.WriteLine("Folder does not exist.");
                     return new ClientProto.ListOfContents { Type = ClientProto.ListOfContents.Types.StatusType.DirectoryDoesNotExist,
-                        FileName = { new List<string>() } };;
+                        FileName = { new List<string>() } };
                 }
             }
             catch (Exception e)
@@ -388,7 +387,7 @@ namespace NameNode
         {
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
-            System.IO.File.WriteAllText($"{Directory.GetCurrentDirectory()}/data/testDirecotry.yml", yaml);
+            System.IO.File.WriteAllText($"{Directory.GetCurrentDirectory()}/data/fileSystem.yml", yaml);
 
 #if DEBUG
             Console.WriteLine(yaml);
@@ -402,7 +401,7 @@ namespace NameNode
             {
                 try
                 {
-                    string yaml = System.IO.File.ReadAllText($"{Directory.GetCurrentDirectory()}/data/testDirecotry.yml");
+                    string yaml = System.IO.File.ReadAllText($"{Directory.GetCurrentDirectory()}/data/fileSystem.yml");
                     var input = new StringReader(yaml);
 
                     var deserializer = new DeserializerBuilder()
@@ -411,9 +410,9 @@ namespace NameNode
 
                     Root = deserializer.Deserialize<Folder>(input);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Console.Error.WriteLine(e.ToString());
+                    Console.Error.WriteLine("Filesystem does not exist");
                     Console.Error.WriteLine("Creating new filesystem . . .");
                     Directory.CreateDirectory("data");
                     Root = new Folder();

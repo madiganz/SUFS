@@ -17,17 +17,7 @@ namespace DataNode
         {
             while (true)
             {
-                DataNodeProto.HeartBeatRequest heartBeatRequest = new DataNodeProto.HeartBeatRequest
-                {
-                    NodeInfo = new DataNodeProto.DataNodeInfo
-                    {
-                        DataNode = new DataNodeProto.DataNode
-                        {
-                            IpAddress = Program.ipAddress
-                        },
-                        DiskSpace = BlockStorage.Instance.GetFreeDiskSpace()
-                    }
-                };
+                DataNodeProto.HeartBeatRequest heartBeatRequest = CreateHeartBeatRequest();
 
                 try
                 {
@@ -71,6 +61,25 @@ namespace DataNode
                 }
                 await Task.Delay(Constants.HeartBeatInterval); // This is an HDFS default
             }
+        }
+
+        /// <summary>
+        /// Creates a heartbeat
+        /// </summary>
+        /// <returns>Heart beat request message</returns>
+        public static DataNodeProto.HeartBeatRequest CreateHeartBeatRequest()
+        {
+            return new DataNodeProto.HeartBeatRequest
+            {
+                NodeInfo = new DataNodeProto.DataNodeInfo
+                {
+                    DataNode = new DataNodeProto.DataNode
+                    {
+                        IpAddress = Program.ipAddress
+                    },
+                    DiskSpace = BlockStorage.Instance.GetFreeDiskSpace()
+                }
+            };
         }
 
         /// <summary>

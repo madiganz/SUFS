@@ -44,6 +44,10 @@ namespace DataNode
             ConnectionManager.Instance.NameNodeConnection = channel;
             var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
 
+            // Send initial heartbeat to initialize datanode in namenode
+            var response = client.SendHeartBeat(HeartBeat.CreateHeartBeatRequest(), new CallOptions().WithWaitForReady(true));
+            Console.WriteLine("Successfully connected to namenode");
+
             // Initialize blockstorage
             BlockStorage mBlockStorage = BlockStorage.Instance;
 

@@ -15,12 +15,12 @@ namespace NameNode
 {
     class Program
     {
-        //public static List<DataNode> nodeList = new List<DataNode>();
-        public static Database Database = new Database();
+        public static Database Database;
         static void Main(string[] args)
         {
-
             Console.WriteLine("Initializing NameNode");
+            Database = new Database();
+            DataNodeManager nodeManager = DataNodeManager.Instance;
             // Use ec2 instance manager to get the private ip address of this name node
             EC2InstanceManager.InstanceManager instanceManager = EC2InstanceManager.InstanceManager.Instance;
             string ipAddress = instanceManager.GetPrivateIpAddress();
@@ -47,16 +47,12 @@ namespace NameNode
 
             server.Start();
 
-            DataNodeManager nodeManager = DataNodeManager.Instance;
             //Check for dead datanodes
             Task nodeCheckTask = nodeManager.RunNodeCheck();
 
             Console.WriteLine("Greeter server listening on ip address " + ipAddress + ", port " + Constants.Port);
             Console.WriteLine("Press any key to stop the server...");
             Console.ReadKey();
-
-            //TestSavingFileSystem();
-            //TestLoadingFileSystem();
 
             server.ShutdownAsync().Wait();
         }

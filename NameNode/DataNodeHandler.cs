@@ -31,7 +31,8 @@ namespace NameNode
                 Commands = { blockCommands }
             };
 
-            blockCommands.Clear();
+            // Clear requests from datanode manager
+            DataNodeManager.Instance.ClearRequests(request.NodeInfo.DataNode.IpAddress);
 
             return Task.FromResult(response);
         }

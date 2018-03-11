@@ -53,16 +53,17 @@ namespace NameNode
         {
             // Update list of datanodes
             int index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
-
             // Not found -> add to list
             if (index < 0)
             {
                 DataNode node = new DataNode(nodeInfo.DataNode.IpAddress, nodeInfo.DiskSpace, DateTime.UtcNow);
                 NodeList.Add(node);
-                if(NodeList.Count <= Constants.ReplicationFactor)
+                index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
+                if (NodeList.Count <= Constants.ReplicationFactor)
                 {
                     BelowReplicationFactorNewDataNodeRedistribute(node.IpAddress);
-                }else{
+                }
+                else{
                     CheckIfRedistributeNeeded();
                 }
             }
@@ -71,14 +72,7 @@ namespace NameNode
                 NodeList[index].DiskSpace = nodeInfo.DiskSpace;
                 NodeList[index].LastHeartBeat = DateTime.UtcNow;
             }
-#if DEBUG
-            //Console.WriteLine("DataNodes:");
-            //foreach(var node in NodeList)
-            //{
-            //    Console.WriteLine(node.IpAddress + " " + node.LastHeartBeat);
-            //}
-            //Console.WriteLine();
-#endif
+
             return NodeList[index].Requests;
         }
 
@@ -308,6 +302,16 @@ namespace NameNode
         public int FindNodeIndexFromIP(string ipAddress)
         {
             return NodeList.FindIndex(node => node.IpAddress == ipAddress);
+        }
+
+        /// <summary>
+        /// Clears the list of requests to be sent to DataNode
+        /// </summary>
+        /// <param name="ipAddress">IP Address of DataNode</param>
+        public void ClearRequests(string ipAddress)
+        {
+            var index = FindNodeIndexFromIP(ipAddress);
+            NodeList[index].Requests.Clear();
         }
     }
 }
