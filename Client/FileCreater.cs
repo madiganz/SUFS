@@ -18,10 +18,12 @@ namespace Client
     {
         private static string filePath;
         private static string localPath;
+        private static long TotalBytesWrittenFromFile;
         private static ClientProto.ClientProto.ClientProtoClient client;
         public FileCreater(ClientProto.ClientProto.ClientProtoClient nameNodeClient)
         {
             client = nameNodeClient;
+            TotalBytesWrittenFromFile = 0;
         }
 
         /// <summary>
@@ -33,12 +35,9 @@ namespace Client
             filePath = path;
             localPath = lPath;
             var response = client.CreateFile(new ClientProto.Path { FullPath = filePath });
-            Console.WriteLine(response);
-
+           
             if (response.Type == ClientProto.StatusResponse.Types.StatusType.Ok)
             {
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
                 if (location.ToLower() == "s3")
                 {
                     ReadFileFromS3();
@@ -47,8 +46,8 @@ namespace Client
                 {
                     ReadFileFromDisk(lPath);
                 }
-                watch.Stop();
-                Console.WriteLine("Total to create file: " + watch.Elapsed);
+                Console.WriteLine();
+                Console.WriteLine("Done writing file");
             }
             else
             {
@@ -120,8 +119,6 @@ namespace Client
             {
                 try
                 {
-                    Stopwatch watch = new Stopwatch();
-                    watch.Start();
                     int bytesRead = 0;
 
                     // Read until block size or until all the file has been read
@@ -132,9 +129,6 @@ namespace Client
                         bytesRead += n;
                         totalBytesRead += n;
                     }
-
-                    watch.Stop();
-                    Console.WriteLine("Total time to Read data from stream: " + watch.Elapsed);
 
                     ClientProto.BlockInfo blockInfo = new ClientProto.BlockInfo
                     {
@@ -153,7 +147,7 @@ namespace Client
                         {
                             // Need to reassign because classes are passed by reference and we are removing nodes
                             ClientProto.BlockInfo info = blockInfo;
-                            if (CreatePipelineAndWrite(info, block))
+                            if (CreatePipelineAndWrite(info, block, contentLength))
                             {
                                 writeSuccess = true;
                                 break;
@@ -188,7 +182,7 @@ namespace Client
         /// <param name="blockInfo">Info of the block. Contains blockid, blocksize, and ipaddresses for pipeline creation</param>
         /// <param name="block">data of block</param>
         /// <returns>Returns true if streaming of data through newly created pipeline was successful</returns>
-        private bool CreatePipelineAndWrite(ClientProto.BlockInfo blockInfo, byte[] block)
+        private bool CreatePipelineAndWrite(ClientProto.BlockInfo blockInfo, byte[] block, long contentLength)
         {
             // Create pipeline from list
             if (GetPipeLineReady(blockInfo, out ClientProto.ClientProto.ClientProtoClient writeClient))
@@ -198,7 +192,7 @@ namespace Client
                     try
                     {
                         // Send block through pipeline
-                        WriteBlock(writeClient, blockInfo, block).Wait();
+                        WriteBlock(writeClient, blockInfo, block, contentLength).Wait();
                         return true;
                     }
                     catch (Exception e)
@@ -223,20 +217,12 @@ namespace Client
             try
             {
                 Channel channel = new Channel(blockInfo.IpAddress[0] + ":" + "50051", ChannelCredentials.Insecure);
-                // TODO: Remove debugging code
-                //Channel channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
-                //channel = new Channel("127.0.0.1" + ":" + "50052", ChannelCredentials.Insecure);
 
                 blockInfo.IpAddress.RemoveAt(0);
                 client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
                 readyResponse = client.GetReady(blockInfo);
 
-                // Mainly for debugging
-                if (readyResponse.Message != null || readyResponse.Message != "")
-                {
-                    Console.WriteLine(readyResponse.Message);
-                }
                 return true;
             }
             catch (RpcException e)
@@ -255,7 +241,7 @@ namespace Client
         /// <param name="blockInfo">Info of the block. Contains blockid, blocksize, and ipaddresses for pipeline creation</param>
         /// <param name="block">Data of block</param>
         /// <returns>Task of the write or Exception on fail</returns>
-        private async Task WriteBlock(ClientProto.ClientProto.ClientProtoClient client, ClientProto.BlockInfo blockInfo, byte[] block)
+        private async Task WriteBlock(ClientProto.ClientProto.ClientProtoClient client, ClientProto.BlockInfo blockInfo, byte[] block, long contentLength)
         {
             Metadata metaData = new Metadata {
                 new Metadata.Entry("blockid", blockInfo.BlockId.Value),
@@ -278,10 +264,13 @@ namespace Client
                     Buffer.BlockCopy(block, totalBytesRead, chunk, 0, length);
 
                     totalBytesRead += length;
+                    TotalBytesWrittenFromFile += length;
 
                     try
                     {
                         await call.RequestStream.WriteAsync(new ClientProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(chunk) });
+                        // Casts are very necessary here!
+                        Console.Write("\rWriting File {0}", (((double)TotalBytesWrittenFromFile / (double)contentLength)).ToString("0.00%"));
                     }
                     catch (RpcException e)
                     {
@@ -297,7 +286,6 @@ namespace Client
                     await call.RequestStream.CompleteAsync();
                     resp = await call.ResponseAsync;
                 }
-                Console.WriteLine(resp.Type.ToString());
                 if (resp.Type == ClientProto.StatusResponse.Types.StatusType.Fail)
                 {
                     throw new Exception("Writing block failed");

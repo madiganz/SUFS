@@ -104,8 +104,6 @@ namespace DataNode
             using (var call = client.WriteBlock(context.RequestHeaders))
             {
                 bool dataNodeFailed = false;
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
 
                 using (var stream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 131072, FileOptions.WriteThrough)) // 128KB
                 {
@@ -155,9 +153,6 @@ namespace DataNode
                     ConnectionManager.Instance.ShutDownChannel(blockId, channel);
                 }
 
-                watch.Stop();
-                Console.WriteLine("Total time to write: " + watch.Elapsed);
-
                 // If write was successful and block size is correct, return success
                 // Otherwise return the response sent down through pipe
                 return (success && BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize)) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success } : resp;
@@ -173,8 +168,6 @@ namespace DataNode
         /// <returns>Status of writing the block</returns>
         public async Task<ClientProto.StatusResponse> WriteBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, string filePath, Guid blockId, int blockSize)
         {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
             using (var stream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 131072, FileOptions.WriteThrough)) // 128KB
             {
                 while (await requestStream.MoveNext())
@@ -194,8 +187,6 @@ namespace DataNode
                     }
                 }
 
-                watch.Stop();
-                Console.WriteLine("Total time to write: " + watch.Elapsed);
                 stream.Flush();
             }
 

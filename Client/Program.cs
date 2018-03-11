@@ -132,6 +132,7 @@ namespace Client
                     string path = lineData[1];
                     var localPath = Directory.GetCurrentDirectory();
                     FileReader.ReadFile(client, path, localPath);
+                    Console.WriteLine();
                     Console.WriteLine("Done reading file");
                 }
 

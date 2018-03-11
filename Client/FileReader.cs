@@ -13,6 +13,9 @@ namespace Client
     /// </summary>
     static class FileReader
     {
+        private static long FileSize;
+        private static long BytesReadFromFile;
+
         /// <summary>
         /// Read a file from SUFS
         /// </summary>
@@ -22,6 +25,8 @@ namespace Client
         public static void ReadFile(ClientProto.ClientProto.ClientProtoClient nameNodeClient, string remotePath, string localPath)
         {
             var blockMessage = nameNodeClient.ReadFile(new ClientProto.Path { FullPath = remotePath });
+            FileSize = blockMessage.FileSize;
+            BytesReadFromFile = 0;
 
             var fileName = GetFileName(remotePath);
 
@@ -107,6 +112,9 @@ namespace Client
         /// <param name="writerStream">File Stream to store byte array</param>
         private static void WriteToFile(byte[] blockData, FileStream writerStream)
         {
+            BytesReadFromFile += blockData.Length;
+            // Casts are very necessary here!
+            Console.Write("\rDownloading {0}", (((double)BytesReadFromFile / (double)FileSize)).ToString("0.00%"));
             writerStream.Write(blockData, 0, blockData.Length);
         }
     }
