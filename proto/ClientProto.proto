@@ -67,6 +67,11 @@ message DataNode {
 message BlockMessage {
     repeated BlockInfo blockInfo = 1;
     int64 fileSize = 2;
+    enum StatusType {
+		Success = 0;
+		Fail = 1;
+	}
+	StatusType type = 3;
 }
 
 message BlockInfo {
