@@ -143,7 +143,6 @@ namespace NameNode
             {
                 string path = wrappedPath.FullPath;
                 string name = TraverseFileSystem(path);
-                if(CurrentDirectory.files.ContainsKey)
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
 
                 //queue up requests for each of the datanodes that have blocks
