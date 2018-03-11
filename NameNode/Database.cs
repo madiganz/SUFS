@@ -127,7 +127,7 @@ namespace NameNode
                 }
 
                 //send back to client the ips and what to search for on the datanode
-                return new ClientProto.BlockMessage { BlockInfo = { blockInfos } };
+                return new ClientProto.BlockMessage { BlockInfo = { blockInfos } , FileSize = toBeRead.fileSize };
             }
             catch (Exception e)
             {
