@@ -24,10 +24,10 @@ namespace Client
 
             var fileName = GetFileName(remotePath);
 
-            if (localPath.EndsWith('\\'))
-            {
-                localPath += fileName;
-            }
+            localPath += "/";
+
+            localPath += fileName;
+            
 
             var writerStream = new FileStream(localPath, FileMode.Append, FileAccess.Write);
 
