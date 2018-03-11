@@ -28,7 +28,7 @@ service ClientProto {
 	// Create a new file in SUFS
 	rpc CreateFile(Path) returns (StatusResponse){}
 	
-	// rpc QueryBlockDestination(BlockList) returns (BlockList) {} 
+	// Client asks NameNode where to store data blocks
 	rpc QueryBlockDestination(BlockInfo) returns (BlockInfo) {} 
 	
 	// List the contents of a directory
@@ -66,10 +66,7 @@ message DataNode {
 
 message BlockMessage {
     repeated BlockInfo blockInfo = 1;
-}
-
-message BlockList {
-	repeated BlockInfo blockInfo = 1;
+    int64 fileSize = 2;
 }
 
 message BlockInfo {
