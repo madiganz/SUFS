@@ -13,16 +13,11 @@ service ClientProto {
 	// Delete a file
 	rpc DeleteFile(Path) returns (StatusResponse) {}
 	
-	// Create a directory (add or create?)
+	// Create a directory 
 	rpc CreateDirectory(Path) returns (StatusResponse) {}
 
 	// Delete a directory 
 	rpc DeleteDirectory (Path) returns (StatusResponse) {}
-
-	// Create a directory 
-	rpc AddDirectory(Path) returns (StatusResponse) {}
-	
-
 
 	// List the DataNodes that store replicas of each block of a file
 	rpc ListNodes(Path) returns (ListOfNodesList) {}
