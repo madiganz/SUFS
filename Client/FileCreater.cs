@@ -17,6 +17,7 @@ namespace Client
     class FileCreater
     {
         private static string filePath;
+        private static string localPath;
         private static ClientProto.ClientProto.ClientProtoClient client;
         public FileCreater(ClientProto.ClientProto.ClientProtoClient nameNodeClient)
         {
@@ -27,9 +28,10 @@ namespace Client
         /// Creates a file in SUFS
         /// </summary>
         /// <param name="location">Location of file. Defaults to local disk</param>
-        public void CreateFile(string path, string location = "local")
+        public void CreateFile(string path, string lPath, string location = "local")
         {
             filePath = path;
+            localPath = lPath;
             var response = client.CreateFile(new ClientProto.Path { FullPath = filePath });
             Console.WriteLine(response);
 
@@ -43,7 +45,7 @@ namespace Client
                 }
                 else
                 {
-                    ReadFileFromDisk();
+                    ReadFileFromDisk(lPath);
                 }
                 watch.Stop();
                 Console.WriteLine("Total to create file: " + watch.Elapsed);

@@ -47,7 +47,7 @@ namespace Client
                     return;
                 }
 
-                if (line == "help")
+                else if (line == "help")
                 {
                     Console.WriteLine("Possible Actions: ");
                     Console.WriteLine("Create a file: createfile <full path of file to be created> <location of file> <local/s3>");
@@ -90,7 +90,7 @@ namespace Client
 
                 else if (action.ToLower() == "createfile")
                 {
-                    if (lineData.Length != 3)
+                    if (lineData.Length != 4)
                     {
                         Console.WriteLine("Invalid arguments, input must be 'CreateFile <full path of file to be created> <location of file> <local/s3>'");
                         Console.WriteLine();
@@ -100,7 +100,7 @@ namespace Client
                     {
                         string path = lineData[1];
                         FileCreater fileCreater = new FileCreater(client);
-                        fileCreater.CreateFile(path, lineData[3]);
+                        fileCreater.CreateFile(path, lineData[2], lineData[3]);
                     }
                     catch (Exception e)
                     {
@@ -178,6 +178,11 @@ namespace Client
                         Console.WriteLine(s);
                     }
                     Console.WriteLine();
+                }
+                
+                else
+                {
+                    Console.WriteLine("Not a valid action.");
                 }
             }
         }
