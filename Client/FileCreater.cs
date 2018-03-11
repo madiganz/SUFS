@@ -80,6 +80,7 @@ namespace Client
                 }
                 catch (AmazonS3Exception e)
                 {
+                    client.DeleteFile(new ClientProto.Path { FullPath = filePath });
                     Console.WriteLine("Amazon S3 failed: " + e.Message);
                 }
             }
@@ -101,6 +102,7 @@ namespace Client
             }
             catch (Exception e)
             {
+                client.DeleteFile(new ClientProto.Path { FullPath = filePath });
                 Console.WriteLine("Reading from disk failed: " + e.Message);
             }
         }

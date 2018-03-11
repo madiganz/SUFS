@@ -15,7 +15,7 @@ namespace Client
         public static void Main(string[] args)
         {
 
-            if(args.Length < 1)
+            if (args.Length < 1)
             {
                 System.Console.WriteLine("Usage: Client <namenode ip>");
                 return;
@@ -27,7 +27,8 @@ namespace Client
             Channel channel = new Channel(ip + ":50051", ChannelCredentials.Insecure);
             var client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
-            while (true) {
+            while (true)
+            {
                 // Ask user to enter action to perform
                 Console.WriteLine("Enter an action to perform (help for more information, quit to end)?");
                 var line = Console.ReadLine();
@@ -41,7 +42,7 @@ namespace Client
                 string action = lineData[0];
 
                 // Quit
-                if(line == "quit")
+                if (line == "quit")
                 {
                     channel.ShutdownAsync().Wait();
                     return;
@@ -62,7 +63,7 @@ namespace Client
                     Console.WriteLine();
                 }
 
-                if (action.ToLower() == "deletedirectory")
+                else if (action.ToLower() == "deletedirectory")
                 {
                     if (lineData.Length != 2)
                     {
@@ -174,13 +175,13 @@ namespace Client
                     string path = lineData[1];
                     var reply = client.ListContents(new ClientProto.Path { FullPath = path });
                     Console.WriteLine("List of directory contents:");
-                    foreach(var s in reply.FileName)
+                    foreach (var s in reply.FileName)
                     {
                         Console.WriteLine(s);
                     }
                     Console.WriteLine();
                 }
-                
+
                 else
                 {
                     Console.WriteLine("Not a valid action.");
@@ -191,9 +192,11 @@ namespace Client
         public static void PrettyPrintNodeList(ClientProto.ListOfNodesList listOfNodesList)
         {
             Console.WriteLine("List of block replicas for the file are:");
-            foreach (var block in listOfNodesList.ListOfNodes) {
+            foreach (var block in listOfNodesList.ListOfNodes)
+            {
                 Console.WriteLine("BlockID: " + block.BlockId);
-                foreach (var node in block.NodeId) {
+                foreach (var node in block.NodeId)
+                {
                     Console.WriteLine("\tDataNode: " + node);
                 }
             }
