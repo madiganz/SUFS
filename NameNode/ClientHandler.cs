@@ -40,47 +40,16 @@ namespace NameNode
             return Task.FromResult(Program.Database.MoveFile(path));
         }
 
-        //public override Task<ClientProto.Test> TestFile(ClientProto.Path path, ServerCallContext context)
-        //{
-        //	Console.WriteLine(path);
-        //	return Task.FromResult(new ClientProto.Test { Test_ = { "1", "@" } });
-        //}
-
         public override Task<ClientProto.BlockMessage> ReadFile(ClientProto.Path path, ServerCallContext context)
         {
-            //Console.WriteLine(path);
-            //List<ClientProto.BlockInfo> blockMessage = new List<ClientProto.BlockInfo>();
-            //ClientProto.UUID id = new ClientProto.UUID { Value = Guid.NewGuid().ToString() };
-            //List<string> ip = new List<string>();
-            //ip.Add("1");
-            //ip.Add("2");
-
-            //ClientProto.BlockInfo blockInfo = new ClientProto.BlockInfo { BlockId = id, IpAddress = { "1", "2" } };
-
-
-            //blockMessage.Add(blockInfo);
-            //blockMessage.Add(blockInfo);
-
-            //foreach (ClientProto.BlockInfo block in blockMessage)
-                //Console.WriteLine(block);
-
             return Task.FromResult(Program.Database.ReadFile(path));
         }
 
         /* Below are original part */
-
         public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
             return Task.FromResult(Program.Database.DeleteDirectory(path));
         }
-
-        //?
-        public override Task<ClientProto.StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
-        {
-            
-            return Task.FromResult(Program.Database.CreateDirectory(path));
-        }
-
 
         public override Task<ClientProto.ListOfNodesList> ListNodes(ClientProto.Path path, ServerCallContext context)
         {
