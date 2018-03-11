@@ -51,7 +51,7 @@ namespace Client
                 {
                     Console.WriteLine("Possible Actions: ");
                     Console.WriteLine("Create a file: createfile <full path of file to be created> <location of file> <local/s3>");
-                    Console.WriteLine("Read a file: readfile <file path on SUFS> <full path of file to save locally>");
+                    Console.WriteLine("Read a file: readfile <file path on SUFS>");
                     Console.WriteLine("Delete a file: deletefile <full path of file on SUFS>");
                     Console.WriteLine("Create a directory: createdirectory <full path of directory on SUFS>");
                     Console.WriteLine("Delete a directory: deletedirectory <full path of directory on SUFS>");
@@ -123,9 +123,9 @@ namespace Client
 
                 else if (action.ToLower() == "readfile")
                 {
-                    if (lineData.Length != 3)
+                    if (lineData.Length != 2)
                     {
-                        Console.WriteLine("Invalid arguments, input must be 'ReadFile <file path on SUFS> <full path of file to save locally>'");
+                        Console.WriteLine("Invalid arguments, input must be 'ReadFile <file path on SUFS>'");
                         Console.WriteLine();
                         continue;
                     }
