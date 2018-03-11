@@ -39,10 +39,10 @@ namespace DataNode
 
                     foreach (var command in nameNodeCommands)
                     {
-                        switch (command.Command.Action)
+                        switch (command.Action)
                         {
                             case DataNodeProto.BlockCommand.Types.Action.Transfer:
-                                foreach (var block in command.Command.DataBlock.ToList())
+                                foreach (var block in command.DataBlock.ToList())
                                 {
                                     // Get block data
                                     byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(block.BlockId.Value));
@@ -61,7 +61,7 @@ namespace DataNode
                                 }
                                 break;
                             case DataNodeProto.BlockCommand.Types.Action.Delete:
-                                InvalidateBlocks(command.Command.BlockList);
+                                InvalidateBlocks(command.BlockList);
                                 break;
                         }
                     }

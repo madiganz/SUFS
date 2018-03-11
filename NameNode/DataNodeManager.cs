@@ -200,7 +200,7 @@ namespace NameNode
             {
                 new DataNodeProto.DataNode
                 {
-                    IpAddress = 1
+                    IpAddress = newDataNodeIP
                 }
             };
 
@@ -214,7 +214,7 @@ namespace NameNode
                 commands[entry.Value[0]].Add(
                     new DataNodeProto.DataBlock
                     {
-                        BlockId = entry.Key,
+                        BlockId = new DataNodeProto.UUID { Value = entry.Key.ToString() },
                         DataNodes = { destinationNode }
                     });
             }
