@@ -50,6 +50,7 @@ namespace NameNode
                 // Creates the file
                 FileSystem.File file = new FileSystem.File();
                 file.name = TraverseFileSystem(fullPath.FullPath);
+                file.path = fullPath.FullPath;
 
                 // Saves to file system
                 CurrentDirectory.files.Add(file.name, file);
@@ -258,18 +259,23 @@ namespace NameNode
                         returnList.Add(file.name);
                     }
 
-                    return new ClientProto.ListOfContents { FileName = { returnList } };
+                    return new ClientProto.ListOfContents { Type = ClientProto.ListOfContents.Types.StatusType.Success, FileName = { returnList } };
                 }
                 else
                 {
                     Console.WriteLine("Folder does not exist.");
-                    return null;
+                    return new ClientProto.ListOfContents { Type = ClientProto.ListOfContents.Types.StatusType.DirectoryDoesNotExist,
+                        FileName = { new List<string>() } };;
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return null;
+                return new ClientProto.ListOfContents
+                {
+                    Type = ClientProto.ListOfContents.Types.StatusType.DirectoryDoesNotExist,
+                    FileName = { new List<string>() }
+                }; ;
             }
         }
 
@@ -298,12 +304,13 @@ namespace NameNode
                     }
                     responseList.Add(new ClientProto.ListOfNodes { BlockId = blockID.ToString(), NodeId = { ips } });
                 }
-                return new ClientProto.ListOfNodesList { ListOfNodes = { responseList } };
+                return new ClientProto.ListOfNodesList { ListOfNodes = { responseList } , Type = ClientProto.ListOfNodesList.Types.StatusType.Success };
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return null;
+                return new ClientProto.ListOfNodesList { ListOfNodes = { new List<ClientProto.ListOfNodes>() } ,
+                    Type = ClientProto.ListOfNodesList.Types.StatusType.FileDoesNotExist, Message = "Specified File Not Found."};
             }
         }
 

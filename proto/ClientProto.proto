@@ -102,6 +102,12 @@ message StatusResponse {
 
 message ListOfNodesList {
 	repeated ListOfNodes listOfNodes = 1;
+	enum StatusType {
+		Success = 0;
+		FileDoesNotExist = 1;
+	}
+	StatusType type = 2;
+	string message = 3;
 }
 
 message ListOfNodes  {
@@ -110,7 +116,12 @@ message ListOfNodes  {
 }
 
 message ListOfContents {
-	repeated string fileName = 1;
+	enum StatusType {
+		Success = 0;
+		DirectoryDoesNotExist = 1;
+	}
+	StatusType type = 1;
+	repeated string fileName = 2;
 }
 
 
