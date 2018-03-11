@@ -76,11 +76,23 @@ namespace Client
 
             else if (action == "MoveFile")
             {
-                string newpath = args[2];
+                string newpath = args[3];
                 var reply = client.MoveFile(new ClientProto.DoublePath { Fullpath = path, Newpath = newpath });
                 Console.WriteLine("Move file action: " + reply);
             }
-
+            
+            else if(action == "ListNodes")
+            {
+                var reply = client.ListNodes(new ClientProto.Path { FullPath = path });
+                Console.WriteLine("List of block replicass for the file are: " + reply);
+            }
+            
+            else if(action == "ListContents")
+            {
+                var reply = client.ListContents(new ClientProto.Path { FullPath = path });
+                Console.WriteLine("List of directory contents are: " + reply);
+            }
+            
             channel.ShutdownAsync().Wait();
 
             Console.WriteLine("Press any key to exit...");
