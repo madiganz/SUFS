@@ -59,6 +59,40 @@ namespace Client
         /// </summary>
         /// <param name="blockInfo">The list of blocks to be read</param>
         /// <param name="writerStream">The fileStream to store the read data</param>
+//         private static void WriteToFile(BlockInfo blockInfo, FileStream writerStream)
+//         {
+//             bool success = false;
+
+//             foreach (var dataNodeIp in blockInfo.IpAddress)
+//             {
+//                 try
+//                 {
+//                     var channel = new Channel(dataNodeIp + ":50051", ChannelCredentials.Insecure);
+//                     var dataNodeClient = new ClientProto.ClientProto.ClientProtoClient(channel);
+
+//                     var bytesString = dataNodeClient.ReadBlock(blockInfo.BlockId);
+//                     var bytes = bytesString.ToByteArray();
+//                     WriteToFile(bytes, writerStream);
+
+//                     success = true;
+
+//                     break;
+//                 }
+//                 catch (Exception exception)
+//                 {
+//                     Console.WriteLine($"Error when connecting to data node: {dataNodeIp}. Exception: {exception.Message}. Trying next.");
+//                 }
+//             }
+
+//             if (!success)
+//             {
+//                 throw new Exception($"Cannot get block {blockInfo.BlockId.Value}");
+//             }
+//         }
+        
+        /// <summary>
+        /// Stream version write to file
+        /// </summary>
         private static void WriteToFile(BlockInfo blockInfo, FileStream writerStream)
         {
             bool success = false;
@@ -69,11 +103,17 @@ namespace Client
                 {
                     var channel = new Channel(dataNodeIp + ":50051", ChannelCredentials.Insecure);
                     var dataNodeClient = new ClientProto.ClientProto.ClientProtoClient(channel);
-
-                    var bytesString = dataNodeClient.ReadBlock(blockInfo.BlockId);
-                    var bytes = bytesString.ToByteArray();
-                    WriteToFile(bytes, writerStream);
-
+                   
+                    using (var bytesString = dataNodeClient.ReadBlock(blockInfo.BlockId))
+                    {
+                        var responseStream =  bytesString.ResponseStream;
+                       
+                        while (await responseStream.MoveNext())
+                        {
+                            var bytes = responseStream.Current.ToByteArray();
+                            WriteToFile(bytes, writerStream);
+                        }
+                    }
                     success = true;
 
                     break;
