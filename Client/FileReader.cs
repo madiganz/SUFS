@@ -75,7 +75,7 @@ namespace Client
 
                         while (call.ResponseStream.MoveNext().Result)
                         {
-                            var bytes = call.ResponseStream.Current.ToByteArray();
+                            var bytes = call.ResponseStream.Current.Data.ToByteArray();
                             WriteToFile(bytes, writerStream);
 
                             copiedLength += bytes.Length;
