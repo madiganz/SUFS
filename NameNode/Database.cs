@@ -124,16 +124,26 @@ namespace NameNode
                         Console.Write("ip: " + a);
                     }
                     Console.WriteLine();
-                    blockInfos.Add(new ClientProto.BlockInfo { BlockId = new ClientProto.UUID { Value = blockID.ToString() }, BlockSize = Constants.MaxBlockSize, IpAddress = { ipAddresses } });
+                    blockInfos.Add(new ClientProto.BlockInfo { 
+                        BlockId = new ClientProto.UUID { Value = blockID.ToString() },
+                        BlockSize = Constants.MaxBlockSize,
+                        IpAddress = { ipAddresses } });
                 }
 
                 //send back to client the ips and what to search for on the datanode
-                return new ClientProto.BlockMessage { BlockInfo = { blockInfos } , FileSize = toBeRead.fileSize };
+                return new ClientProto.BlockMessage { 
+                    BlockInfo = { blockInfos } , 
+                    FileSize = toBeRead.fileSize,
+                    Type = ClientProto.BlockMessage.Types.StatusType.Success
+                };
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return null;
+                return new ClientProto.BlockMessage { 
+                    BlockInfo = { new List<ClientProto.BlockInfo>() }, 
+                    FileSize = 0, 
+                    Type = ClientProto.BlockMessage.Types.StatusType.Fail };
             }
         }
 
