@@ -258,16 +258,26 @@ namespace DataNode
         public override async Task ReadBlock(UUID id, IServerStreamWriter<BlockData> responseStream,ServerCallContext context)
         {
             byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));
-            
-            string[] buffer;
-            int i;
 
-            for(i = 0; i < source.Length; i+=100)
+            if (blockData != null)
             {
-                buffer = new string[100];
-                Array.Copy(source, i, buffer, 0, 100);
-                // process array
-                await responseStream.WriteAsync(buffer);
+                int remaining = blockData.Length;
+
+                while (remaining > 0)
+                {
+                    var copyLength = Math.Min(Constants.StreamChunkSize, remaining);
+                    byte[] streamBuffer = new byte[copyLength];
+
+                    Buffer.BlockCopy(
+                        blockData,
+                        blockData.Length - remaining,
+                        streamBuffer, 0,
+                        copyLength);
+
+                    await responseStream.WriteAsync(new BlockData { Data = Google.Protobuf.ByteString.CopyFrom(streamBuffer) });
+
+                    remaining -= copyLength;
+                }
             }
         }
     }

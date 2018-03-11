@@ -294,7 +294,7 @@ namespace DataNode
             string[] paths = Directory.GetFiles(root, "*", SearchOption.AllDirectories);
             foreach(var p in paths)
             {
-                blockStorageMap.Add(Guid.Parse(Path.GetFileNameWithoutExtension(p)), p);
+                blockStorageMap.Add(Guid.Parse(System.IO.Path.GetFileNameWithoutExtension(p)), p);
             }
         }
 
