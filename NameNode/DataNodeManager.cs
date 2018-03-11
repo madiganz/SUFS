@@ -66,12 +66,12 @@ namespace NameNode
                 NodeList[index].LastHeartBeat = DateTime.UtcNow;
             }
 #if DEBUG
-            Console.WriteLine("DataNodes:");
-            foreach(var node in NodeList)
-            {
-                Console.WriteLine(node.IpAddress + " " + node.LastHeartBeat);
-            }
-            Console.WriteLine();
+            //Console.WriteLine("DataNodes:");
+            //foreach(var node in NodeList)
+            //{
+            //    Console.WriteLine(node.IpAddress + " " + node.LastHeartBeat);
+            //}
+            //Console.WriteLine();
 #endif
             return NodeList[index].Requests;
         }

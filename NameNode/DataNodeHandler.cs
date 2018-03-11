@@ -12,16 +12,12 @@ namespace NameNode
         // Server side handler of the SendBlockReportRequest RPC
         public override Task<DataNodeProto.StatusResponse> SendBlockReport(DataNodeProto.BlockReportRequest request, ServerCallContext context)
         {
-            Console.WriteLine(request);
             return Task.FromResult(new DataNodeProto.StatusResponse { Type = DataNodeProto.StatusResponse.Types.StatusType.Success });
         }
 
         // Server side handler of the SendHeartBeat RPC
         public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
-        {
-            Console.WriteLine(request);
-
-            List<DataNodeProto.BlockCommand> blockCommands = DataNodeManager.Instance.UpdateDataNodes(request.NodeInfo);
+        {            List<DataNodeProto.BlockCommand> blockCommands = DataNodeManager.Instance.UpdateDataNodes(request.NodeInfo);
 
             // TODO: Use the redistribution logic
             // Create fake list of blocks to invalidate

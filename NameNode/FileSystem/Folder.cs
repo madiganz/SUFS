@@ -17,7 +17,7 @@ namespace NameNode.FileSystem
         {
             subfolders = new Dictionary<string, Folder>(); 
             files = new Dictionary<string, File>();
-            this.path = path + "/" + name;
+            this.path = path;
             this.name = name;
         }
 

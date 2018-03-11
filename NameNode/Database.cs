@@ -51,7 +51,6 @@ namespace NameNode
                 FileSystem.File file = new FileSystem.File();
                 file.name = TraverseFileSystem(fullPath.FullPath);
 
-
                 // Saves to file system
                 CurrentDirectory.files.Add(file.name, file);
                 SaveFileDirectory();
@@ -85,7 +84,7 @@ namespace NameNode
                 List<string> ipAddresses = DataNodeManager.Instance.GetDataNodesForReplication();
 
                 // add it to the BlockID to DataNode Dictionary
-                BlockID_To_ip.Add(id, new List<string>());
+                BlockID_To_ip.TryAdd(id, new List<string>());
                 SaveFileDirectory();
                 return new ClientProto.BlockInfo { BlockId = new ClientProto.UUID { Value = id.ToString() }, FullPath = path, BlockSize = addedBlock.BlockSize, IpAddress = { ipAddresses } };
             }
@@ -357,7 +356,10 @@ namespace NameNode
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(Root);
             System.IO.File.WriteAllText($"{Directory.GetCurrentDirectory()}/data/testDirecotry.yml", yaml);
+
+#if DEBUG
             Console.WriteLine(yaml);
+#endif
         }
 
         //Loads the directory from file.
@@ -434,8 +436,12 @@ namespace NameNode
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length - 1; i++)
             {
+                Console.WriteLine(paths[i]);
                 if (firstFile)
+                {
                     currentPath += paths[i];
+                    firstFile = false;
+                }
                 else
                     currentPath += "/" + paths[i];
                 if (!CurrentDirectory.subfolders.ContainsKey(paths[i]))
@@ -446,6 +452,7 @@ namespace NameNode
                 }
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
+
             return CurrentDirectory;
         }
 
