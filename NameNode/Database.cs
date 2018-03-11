@@ -60,7 +60,7 @@ namespace NameNode
             catch (Exception e)
             {
                 // Logs the error to console
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             }
         }
@@ -91,7 +91,7 @@ namespace NameNode
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return null;
             }
         }
@@ -131,7 +131,7 @@ namespace NameNode
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return null;
             }
         }
@@ -142,7 +142,7 @@ namespace NameNode
             {
                 string path = wrappedPath.FullPath;
                 string name = TraverseFileSystem(path);
-
+                if(CurrentDirectory.files.ContainsKey)
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
 
                 //queue up requests for each of the datanodes that have blocks
@@ -168,7 +168,7 @@ namespace NameNode
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             }
         }
@@ -188,7 +188,7 @@ namespace NameNode
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             }
         }
@@ -208,15 +208,15 @@ namespace NameNode
                     foreach (string key in folderToDelete.subfolders.Keys)
                     {
                         DeleteDirectory(new ClientProto.Path { FullPath = folderToDelete.subfolders[key].path });
-                        folderToDelete.subfolders.Remove(key);
+                        //folderToDelete.subfolders.Remove(key);
                     }
 
                     //loop call delete files
                     foreach (string key in folderToDelete.files.Keys)
                     {
                         DeleteFile(new ClientProto.Path { FullPath = folderToDelete.files[key].path });
-                        folderToDelete.files.Remove(key);
                     }
+                    folderToDelete.files.Clear();
 
                     //delete directory
                     parentFolder.subfolders.Remove(name);
@@ -225,13 +225,13 @@ namespace NameNode
                 }
                 else
                 {
-                    Console.WriteLine("Cannot delete Root. Root has been emptied");
-                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root. Root has been emptied." };
+                    Console.WriteLine("Cannot delete Root.");
+                    return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root." };
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
             }
 
@@ -244,25 +244,31 @@ namespace NameNode
                 string path = wrappedPath.FullPath;
                 //return a list of all subdirectories and files for current file
                 string[] paths = ExtractPath(path);
-                GrabDirectory(path);
-
-                List<string> returnList = new List<string>();
-                Folder directory = CurrentDirectory;
-                foreach (Folder folder in directory.subfolders.Values)
+                if (GrabDirectory(path) != null)
                 {
-                    returnList.Add(folder.name + "/");
-                }
+                    List<string> returnList = new List<string>();
+                    Folder directory = CurrentDirectory;
+                    foreach (Folder folder in directory.subfolders.Values)
+                    {
+                        returnList.Add(folder.name + "/");
+                    }
 
-                foreach (FileSystem.File file in directory.files.Values)
+                    foreach (FileSystem.File file in directory.files.Values)
+                    {
+                        returnList.Add(file.name);
+                    }
+
+                    return new ClientProto.ListOfContents { FileName = { returnList } };
+                }
+                else
                 {
-                    returnList.Add(file.name);
+                    Console.WriteLine("Folder does not exist.");
+                    return null;
                 }
-
-                return new ClientProto.ListOfContents { FileName = { returnList } };
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return null;
             }
         }
@@ -296,7 +302,7 @@ namespace NameNode
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return null;
             }
         }
@@ -309,7 +315,7 @@ namespace NameNode
 
         //    }catch (Exception e)
         //    {
-        //        Console.WriteLine(e);
+        //        Console.WriteLine(e.Message);
         //        return false;
         //    }
 
@@ -339,7 +345,7 @@ namespace NameNode
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Internal Server Failure" };
             }
 
@@ -417,21 +423,12 @@ namespace NameNode
         private Folder GrabDirectory(string path)
         {
             string[] paths = ExtractPath(path);
-            string currentPath = "";
-            bool firstFile = true;
-            Folder currentFolder;
             CurrentDirectory = Root;
             for (int i = 0; i < paths.Length; i++)
             {
-                if (firstFile)
-                    currentPath += paths[i];
-                else
-                    currentPath += "/" + paths[i];
                 if(!CurrentDirectory.subfolders.ContainsKey(paths[i]))
                 {
-                    currentFolder = CurrentDirectory;
-                    CreateDirectory(new ClientProto.Path { FullPath = currentPath });
-                    CurrentDirectory = currentFolder;
+                    return null;
                 }
                 CurrentDirectory = CurrentDirectory.subfolders[paths[i]];
             }
