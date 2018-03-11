@@ -286,3 +286,8 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+ClientProto/Clientproto.cs
+ClientProto/ClientprotoGrpc.cs
+DataNodeProto/Datanodeproto.cs
+DataNodeProto/DatanodeprotoGrpc.cs

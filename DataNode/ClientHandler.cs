@@ -248,11 +248,37 @@ namespace DataNode
         /// </summary>
         /// <param name="id">UUID</param>
         /// <returns>BlockData</returns>
-        public override Task<BlockData> ReadBlock(UUID id, ServerCallContext context)
+//         public override Task<BlockData> ReadBlock(UUID id, ServerCallContext context)
+//         {
+//             byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));
+
+//             return Task.FromResult(new BlockData { Data = Google.Protobuf.ByteString.CopyFrom(blockData) });
+//         }
+        
+        public override async Task ReadBlock(UUID id, IServerStreamWriter<BlockData> responseStream,ServerCallContext context)
         {
             byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));
 
-            return Task.FromResult(new BlockData { Data = Google.Protobuf.ByteString.CopyFrom(blockData) });
+            if (blockData != null)
+            {
+                int remaining = blockData.Length;
+
+                while (remaining > 0)
+                {
+                    var copyLength = Math.Min(Constants.StreamChunkSize, remaining);
+                    byte[] streamBuffer = new byte[copyLength];
+
+                    Buffer.BlockCopy(
+                        blockData,
+                        blockData.Length - remaining,
+                        streamBuffer, 0,
+                        copyLength);
+
+                    await responseStream.WriteAsync(new BlockData { Data = Google.Protobuf.ByteString.CopyFrom(streamBuffer) });
+
+                    remaining -= copyLength;
+                }
+            }
         }
     }
 }

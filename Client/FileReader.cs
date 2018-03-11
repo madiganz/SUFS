@@ -2,6 +2,7 @@ using ClientProto;
 using Google.Protobuf;
 using Grpc.Core;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -55,10 +56,8 @@ namespace Client
         }
         
         /// <summary>
-        /// Read a file from SUFS and write to a local file
+        /// Stream version write to file
         /// </summary>
-        /// <param name="blockInfo">The list of blocks to be read</param>
-        /// <param name="writerStream">The fileStream to store the read data</param>
         private static void WriteToFile(BlockInfo blockInfo, FileStream writerStream)
         {
             bool success = false;
@@ -69,14 +68,25 @@ namespace Client
                 {
                     var channel = new Channel(dataNodeIp + ":50051", ChannelCredentials.Insecure);
                     var dataNodeClient = new ClientProto.ClientProto.ClientProtoClient(channel);
+                   
+                    using (var call = dataNodeClient.ReadBlock(blockInfo.BlockId))
+                    {
+                        int copiedLength = 0;
 
-                    var bytesString = dataNodeClient.ReadBlock(blockInfo.BlockId);
-                    var bytes = bytesString.ToByteArray();
-                    WriteToFile(bytes, writerStream);
+                        while (call.ResponseStream.MoveNext().Result)
+                        {
+                            var bytes = call.ResponseStream.Current.ToByteArray();
+                            WriteToFile(bytes, writerStream);
 
-                    success = true;
+                            copiedLength += bytes.Length;
+                        }
 
-                    break;
+                        if (copiedLength > 0)
+                        {
+                            success = true;
+                            break;
+                        }
+                    }
                 }
                 catch (Exception exception)
                 {

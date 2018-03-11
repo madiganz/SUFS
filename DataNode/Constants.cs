@@ -12,5 +12,6 @@ namespace DataNode
         public const int BlockReportInterval = 21600000; // Default hdfs
         public const int HeartBeatInterval = 3000; // Default hdfs
         public const int BlockSize = 134217728; // 128MB Default hdfs
+        public const int StreamChunkSize = 2097152; // 2MB Default size for GRPC streaming
     }
 }
