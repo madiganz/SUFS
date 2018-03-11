@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq; 
 using NameNode.FileSystem;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -215,18 +216,18 @@ namespace NameNode
                     Folder folderToDelete = CurrentDirectory.subfolders[name];
 
                     //loop call to subdirectories
-                    foreach (string key in folderToDelete.subfolders.Keys)
+                    while(folderToDelete.subfolders.Count > 0)
                     {
+                        string key = folderToDelete.subfolders.Keys.First();
                         DeleteDirectory(new ClientProto.Path { FullPath = folderToDelete.subfolders[key].path });
-                        //folderToDelete.subfolders.Remove(key);
                     }
 
                     //loop call delete files
-                    foreach (string key in folderToDelete.files.Keys)
+                    while(folderToDelete.files.Count > 0)
                     {
+                        string key = folderToDelete.files.Keys.First();
                         DeleteFile(new ClientProto.Path { FullPath = folderToDelete.files[key].path });
                     }
-                    folderToDelete.files.Clear();
 
                     //delete directory
                     parentFolder.subfolders.Remove(name);
