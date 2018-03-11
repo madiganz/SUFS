@@ -215,8 +215,8 @@ namespace NameNode
                     foreach (string key in folderToDelete.files.Keys)
                     {
                         DeleteFile(new ClientProto.Path { FullPath = folderToDelete.files[key].path });
-                        folderToDelete.files.Remove(key);
                     }
+                    folderToDelete.files.Clear();
 
                     //delete directory
                     parentFolder.subfolders.Remove(name);
