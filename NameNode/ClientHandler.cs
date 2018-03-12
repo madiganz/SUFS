@@ -14,29 +14,21 @@ namespace NameNode
 
         public override Task<ClientProto.StatusResponse> CreateDirectory(ClientProto.Path path, ServerCallContext context)
         {
-            Console.WriteLine(path);
             return Task.FromResult(Program.Database.CreateDirectory(path));
         }
 
         public override Task<ClientProto.StatusResponse> CreateFile(ClientProto.Path file, ServerCallContext context)
         {
-            //var response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Ok };
-            //if (Program.Database.FileExists(file.FullPath))
-            //{
-            //    response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.FileExists };
-            //}
             return Task.FromResult(Program.Database.CreateFile(file));
         }
 
         public override Task<ClientProto.StatusResponse> DeleteFile(ClientProto.Path path, ServerCallContext context)
         {
-            Console.WriteLine(path);
             return Task.FromResult(Program.Database.DeleteFile(path));
         }
 
         public override Task<ClientProto.StatusResponse> MoveFile(ClientProto.DoublePath path, ServerCallContext context)
         {
-            Console.WriteLine(path);
             return Task.FromResult(Program.Database.MoveFile(path));
         }
 
@@ -45,17 +37,9 @@ namespace NameNode
             return Task.FromResult(Program.Database.ReadFile(path));
         }
 
-        /* Below are original part */
         public override Task<ClientProto.StatusResponse> DeleteDirectory(ClientProto.Path path, ServerCallContext context)
         {
             return Task.FromResult(Program.Database.DeleteDirectory(path));
-        }
-
-        //?
-        //?
-        public override Task<ClientProto.StatusResponse> AddDirectory(ClientProto.Path path, ServerCallContext context)
-        {
-            return Task.FromResult(Program.Database.CreateDirectory(path));
         }
 
         public override Task<ClientProto.ListOfNodesList> ListNodes(ClientProto.Path path, ServerCallContext context)

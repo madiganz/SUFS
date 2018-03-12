@@ -31,6 +31,7 @@ namespace Client
             if(FileSize == 0)
             {
                 Console.WriteLine("Reading Failed: file size 0. File may not exist." );
+                return;
             }
 
             var fileName = GetFileName(remotePath);

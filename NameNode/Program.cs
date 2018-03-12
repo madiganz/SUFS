@@ -56,52 +56,5 @@ namespace NameNode
 
             server.ShutdownAsync().Wait();
         }
-
-        private static void TestSavingFileSystem()
-        {
-            var Root = new Folder("root", null);
-            Root.subfolders.Add("user", new Folder("user", "root"));
-            Folder currentLocation = Root.subfolders["user"];
-            currentLocation.subfolders.Add("other folder", new Folder("other folder", currentLocation.path));
-            currentLocation.files.Add("File",  new FileSystem.File("File", currentLocation.path));
-            FileSystem.File selectedFile = currentLocation.files["File"];
-
-            var guid = Guid.NewGuid();
-            selectedFile.fileSize = 88;
-            List<string> ips = new List<string>();
-            selectedFile.data.Add(guid);
-
-            guid = Guid.NewGuid();
-            selectedFile.data.Add(guid);
-
-            var serializer = new SerializerBuilder().Build();
-            var yaml = serializer.Serialize(Root);
-            System.IO.File.WriteAllText(@"C:/data/testDirecotry.yml", yaml);
-            Console.WriteLine(yaml);
-        }
-
-        private static void TestLoadingFileSystem()
-        {
-            string yaml = System.IO.File.ReadAllText(@"C:/data/testDirecotry.yml");
-            var input = new StringReader(yaml);
-
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(new CamelCaseNamingConvention())
-                .Build();
-
-            var Root = deserializer.Deserialize<Folder>(input);
-
-            Console.WriteLine(Root.name);
-
-            Folder currentLocation = Root.subfolders["user"];
-            Console.WriteLine(currentLocation.name);
-            Folder subLocation = currentLocation.subfolders["other folder"];
-            Console.WriteLine(subLocation.name);
-            FileSystem.File selectedFile = currentLocation.files["File"];
-            Console.WriteLine(selectedFile.name);
-
-            Console.WriteLine(selectedFile.data.Count());
-
-        }
     }
 }

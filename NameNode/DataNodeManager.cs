@@ -63,7 +63,8 @@ namespace NameNode
                 {
                     BelowReplicationFactorNewDataNodeRedistribute(node.IpAddress);
                 }
-                else{
+                else
+                {
                     CheckIfRedistributeNeeded();
                 }
             }
@@ -113,7 +114,7 @@ namespace NameNode
                     currentBlock = Program.Database.GetIPsFromBlock(blockID);
                     currentBlock.Add(currentNodeIP);
                     //if (CheckIfRedistributeNeeded(currentBlock))
-                        //returnRequests.Add(Redistribute(currentBlock, currentNodeIP, blockID));
+                    //returnRequests.Add(Redistribute(currentBlock, currentNodeIP, blockID));
 
                 }
 
@@ -131,7 +132,7 @@ namespace NameNode
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new DataNodeProto.StatusResponse {Type = DataNodeProto.StatusResponse.Types.StatusType.Fail};
+                return new DataNodeProto.StatusResponse { Type = DataNodeProto.StatusResponse.Types.StatusType.Fail };
             }
         }
 
@@ -173,19 +174,19 @@ namespace NameNode
                     });
             }
 
-                DataNodeProto.DataBlock dataBlock = new DataNodeProto.DataBlock
-                {
-                    BlockId = new DataNodeProto.UUID { Value = blockID.ToString() },
-                    DataNodes = { nodes }
-                };
+            DataNodeProto.DataBlock dataBlock = new DataNodeProto.DataBlock
+            {
+                BlockId = new DataNodeProto.UUID { Value = blockID.ToString() },
+                DataNodes = { nodes }
+            };
 
-                // Tell the node where to send a copy of the current block
-                DataNodeProto.BlockCommand blockCommand = new DataNodeProto.BlockCommand
-                {
-                    Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
-                    DataBlock = { dataBlock }
-                };
-                AddRequestToNode(currentNodeIP, blockCommand);
+            // Tell the node where to send a copy of the current block
+            DataNodeProto.BlockCommand blockCommand = new DataNodeProto.BlockCommand
+            {
+                Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
+                DataBlock = { dataBlock }
+            };
+            AddRequestToNode(currentNodeIP, blockCommand);
         }
 
         public void BelowReplicationFactorNewDataNodeRedistribute(string newDataNodeIP)
@@ -199,9 +200,9 @@ namespace NameNode
             };
 
             Dictionary<string, List<DataNodeProto.DataBlock>> commands = new Dictionary<string, List<DataNodeProto.DataBlock>>();
-            foreach(KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
+            foreach (KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
             {
-                if(!commands.ContainsKey(entry.Value[0]))
+                if (!commands.ContainsKey(entry.Value[0]))
                 {
                     commands.Add(entry.Value[0], new List<DataNodeProto.DataBlock>());
                 }
@@ -212,14 +213,14 @@ namespace NameNode
                         DataNodes = { destinationNode }
                     });
             }
-            foreach(KeyValuePair<string, List<DataNodeProto.DataBlock>> entry in commands)
+            foreach (KeyValuePair<string, List<DataNodeProto.DataBlock>> entry in commands)
             {
                 AddRequestToNode(entry.Key,
-                                 new DataNodeProto.BlockCommand
-                                 {
-                                    Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
-                                    DataBlock = { entry.Value }
-                                 });
+                    new DataNodeProto.BlockCommand
+                    {
+                        Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
+                        DataBlock = { entry.Value }
+                    });
             }
         }
 
@@ -233,11 +234,11 @@ namespace NameNode
             // If the Block is not above the minimum ReplicationFactor
             foreach (KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
             {
-                if(entry.Value.Count < Constants.ReplicationFactor)
+                if (entry.Value.Count < Constants.ReplicationFactor)
                 {
-                    if(entry.Value.Count != 0)
+                    if (entry.Value.Count != 0)
                         Redistribute(entry.Value, entry.Value[0], entry.Key);
-                    
+
                 }
             }
         }
@@ -279,7 +280,7 @@ namespace NameNode
                     NodeList.Remove(node);
                 }
             }
-            if(NodeList.Count >= Constants.ReplicationFactor)
+            if (NodeList.Count >= Constants.ReplicationFactor)
                 CheckIfRedistributeNeeded();
         }
 
