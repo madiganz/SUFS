@@ -24,35 +24,31 @@ namespace DataNode
                     DataNodeProto.HeartBeatResponse response = client.SendHeartBeat(heartBeatRequest);
 
 
-                    List<DataNodeProto.BlockCommand> nameNodeCommands = response.Commands.ToList();
-
-                    foreach (var command in nameNodeCommands)
+                    DataNodeProto.BlockCommand nameNodeCommands = response.Commands;
+                    switch (nameNodeCommands.Action)
                     {
-                        switch (command.Action)
-                        {
-                            case DataNodeProto.BlockCommand.Types.Action.Transfer:
-                                foreach (var block in command.DataBlock.ToList())
+                        case DataNodeProto.BlockCommand.Types.Action.Transfer:
+                            foreach (var block in nameNodeCommands.DataBlock.ToList())
+                            {
+                                // Get block data
+                                byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(block.BlockId.Value));
+
+                                // Convert byte[] to ByteString
+                                block.Data = Google.Protobuf.ByteString.CopyFrom(blockData);
+
+                                // Send data to each block
+                                foreach (var dataNode in block.DataNodes)
                                 {
-                                    // Get block data
-                                    byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(block.BlockId.Value));
-
-                                    // Convert byte[] to ByteString
-                                    block.Data = Google.Protobuf.ByteString.CopyFrom(blockData);
-
-                                    // Send data to each block
-                                    foreach (var dataNode in block.DataNodes)
-                                    {
-                                        Channel channel = new Channel(dataNode.IpAddress + ":" + Constants.Port, ChannelCredentials.Insecure);
-                                        var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
-                                        await nodeClient.WriteDataBlockAsync(block);
-                                        await channel.ShutdownAsync();
-                                    }
+                                    Channel channel = new Channel(dataNode.IpAddress + ":" + Constants.Port, ChannelCredentials.Insecure);
+                                    var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
+                                    await nodeClient.WriteDataBlockAsync(block);
+                                    await channel.ShutdownAsync();
                                 }
-                                break;
-                            case DataNodeProto.BlockCommand.Types.Action.Delete:
-                                InvalidateBlocks(command.BlockList);
-                                break;
-                        }
+                            }
+                            break;
+                        case DataNodeProto.BlockCommand.Types.Action.Delete:
+                            InvalidateBlocks(nameNodeCommands.BlockList);
+                            break;
                     }
                 }
                 catch (RpcException e)
