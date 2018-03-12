@@ -14,6 +14,7 @@ namespace NameNode
         public Database()
         {
             InitializeFileDirectory();
+
         }
 
         private static Folder Root = null;
@@ -118,7 +119,7 @@ namespace NameNode
                     //cross references those against the list of ids to ips
                     //choose ips for each block of the file
                     ipAddresses = BlockID_To_ip[blockID];
- 
+
                     blockInfos.Add(new ClientProto.BlockInfo { 
                         BlockId = new ClientProto.UUID { Value = blockID.ToString() },
                         BlockSize = Constants.MaxBlockSize,
@@ -167,6 +168,7 @@ namespace NameNode
                             }
                         });
                     }
+                    BlockID_To_ip.Remove(blockID);
                 }
                 //remove file from directory system
                 CurrentDirectory.files.Remove(name);
@@ -397,7 +399,7 @@ namespace NameNode
 
                     Root = deserializer.Deserialize<Folder>(input);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     Console.Error.WriteLine("Filesystem does not exist");
                     Console.Error.WriteLine("Creating new filesystem . . .");
