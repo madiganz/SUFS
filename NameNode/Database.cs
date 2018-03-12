@@ -357,19 +357,25 @@ namespace NameNode
             {
                 BlockID_To_ip.TryAdd(blockId, new List<string>());    
             }
-            Console.WriteLine("Ips from block: " + BlockID_To_ip[blockId].ToString());
             return BlockID_To_ip[blockId];
         }
 
         public void RemoveIPToBlockReferences(string ipAddress){
-            Console.WriteLine("Removing ip to block");
 
             foreach (List<string> ipAddresses in BlockID_To_ip.Values)
             {
-                Console.WriteLine("Removing ip to block for: " + ipAddress.ToList());
                 if (ipAddresses.Contains(ipAddress))
+                {
+                    Console.WriteLine("Removing address from block");
                     ipAddresses.Remove(ipAddress);
+                }
+                Console.WriteLine("Addresses after removal");
+                foreach (var a in ipAddresses)
+                {
+                    Console.WriteLine(a);
+                }
             }
+            Console.WriteLine("Dont remving address from block");
         }
 
         private void SaveFileDirectory()
@@ -474,6 +480,11 @@ namespace NameNode
 
         public Dictionary<Guid,List<string>> GrabBlockToIpDictionary()
         {
+            Console.WriteLine("GrabBlockToIpDictionary");
+            foreach(var blah in BlockID_To_ip.Keys)
+            {
+                Console.WriteLine("Key: " + blah.ToString());
+            }
             return BlockID_To_ip;
         }
 

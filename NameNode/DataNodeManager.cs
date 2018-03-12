@@ -53,14 +53,12 @@ namespace NameNode
         {
             // Update list of datanodes
             int index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
-            Console.WriteLine("Updating datanodes, index = " + index + "for ip address = " + nodeInfo.DataNode.IpAddress);
             // Not found -> add to list
             if (index < 0)
             {
                 DataNode node = new DataNode(nodeInfo.DataNode.IpAddress, nodeInfo.DiskSpace, DateTime.UtcNow);
                 NodeList.Add(node);
                 index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
-                Console.WriteLine("New index after being added to list: " + index);
                 if (NodeList.Count <= Constants.ReplicationFactor)
                 {
                     Console.WriteLine("Below replication factor with nodelist count = " + NodeList.Count);
@@ -74,7 +72,6 @@ namespace NameNode
             }
             else // Found, update lastHeartBeat timestamp
             {
-                Console.WriteLine("Just updating datanode");
                 NodeList[index].DiskSpace = nodeInfo.DiskSpace;
                 NodeList[index].LastHeartBeat = DateTime.UtcNow;
             }
@@ -96,10 +93,8 @@ namespace NameNode
         /// <returns>List of the next 3 DataNodes in list</returns>
         public List<string> GetDataNodesForReplication()
         {
-            Console.WriteLine("Getting datanode for replication");
             List<string> ipAddresses = new List<string>();
             int factor = Math.Min(NodeList.Count, Constants.ReplicationFactor);
-            Console.WriteLine("factor = " + factor);
             for (int i = 0; i < factor; i++)
                 ipAddresses.Add(GrabNextDataNode().IpAddress);
             return ipAddresses;
@@ -258,6 +253,7 @@ namespace NameNode
             // If the Block is not above the minimum ReplicationFactor
             foreach (KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
             {
+                Console.WriteLine("Block: " + entry.Key.ToString() + " has " + entry.Value.Count);
                 if (entry.Value.Count < Constants.ReplicationFactor)
                 {
                     Console.WriteLine("redistribution is needed for " + entry.Key + ", number of replications = " + entry.Value.Count);
@@ -269,21 +265,24 @@ namespace NameNode
         }
 
         /// <summary>
-        /// Run a node check every 6 minutes
+        /// Run a node check every minute
         /// </summary>
         /// <param name="token">Cancellation token for task</param>
         /// <returns>Task</returns>
-        public async Task RunNodeCheck(CancellationToken token = default(CancellationToken))
+        public async Task RunNodeCheck()
         {
-            while (!token.IsCancellationRequested)
+            while (true)
             {
                 CheckDeadNodes();
                 try
                 {
-                    await Task.Delay(60000, token);
+                    //TODO: Change this back
+                    //await Task.Delay(60000, token);
+                    await Task.Delay(30000);
                 }
-                catch (TaskCanceledException)
+                catch (Exception)
                 {
+                    Console.WriteLine("Node check failed...");
                     break;
                 }
             }
@@ -295,19 +294,28 @@ namespace NameNode
         /// </summary>
         private void CheckDeadNodes()
         {
-            foreach (var node in NodeList)
+            Console.WriteLine("checking dead nodes... Count is " + NodeList.Count);
+            for(var i = 0; i < NodeList.Count; i++)
             {
-                TimeSpan span = DateTime.UtcNow.Subtract(node.LastHeartBeat);
+                Console.WriteLine("currently checking " + NodeList[i].IpAddress);
+                TimeSpan span = DateTime.UtcNow.Subtract(NodeList[i].LastHeartBeat);
                 // Too much time has passed
                 // TODO: Change back to 10
                 if (span.Minutes >= 1)
                 {
-                    Program.Database.RemoveIPToBlockReferences(node.IpAddress);
-                    NodeList.Remove(node);
+                    Console.WriteLine("Node is dead, deleting ip to block references");
+                    Program.Database.RemoveIPToBlockReferences(NodeList[i].IpAddress);
+                    Console.WriteLine("Finished removing ip form block references...Now removing node from list");
+                    NodeList.RemoveAt(FindNodeIndexFromIP(NodeList[i].IpAddress));
+                    Console.WriteLine("Count after removal of node = " + NodeList.Count);
                 }
             }
+            Console.WriteLine("checking dead node: node count is " + NodeList.Count);
             if (NodeList.Count >= Constants.ReplicationFactor)
+            {
+                Console.WriteLine("Checking dead nodes, check if redist is needed");
                 CheckIfRedistributeNeeded();
+            }
         }
 
         /// <summary>
