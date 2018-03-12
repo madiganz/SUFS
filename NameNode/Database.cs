@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq; 
+using System.Linq;
 using NameNode.FileSystem;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -120,15 +120,15 @@ namespace NameNode
                     //choose ips for each block of the file
                     ipAddresses = BlockID_To_ip[blockID];
 
-                    blockInfos.Add(new ClientProto.BlockInfo { 
+                    blockInfos.Add(new ClientProto.BlockInfo {
                         BlockId = new ClientProto.UUID { Value = blockID.ToString() },
                         BlockSize = Constants.MaxBlockSize,
                         IpAddress = { ipAddresses } });
                 }
 
                 //send back to client the ips and what to search for on the datanode
-                return new ClientProto.BlockMessage { 
-                    BlockInfo = { blockInfos } , 
+                return new ClientProto.BlockMessage {
+                    BlockInfo = { blockInfos } ,
                     FileSize = toBeRead.fileSize,
                     Type = ClientProto.BlockMessage.Types.StatusType.Success
                 };
@@ -136,9 +136,9 @@ namespace NameNode
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return new ClientProto.BlockMessage { 
-                    BlockInfo = { new List<ClientProto.BlockInfo>() }, 
-                    FileSize = 0, 
+                return new ClientProto.BlockMessage {
+                    BlockInfo = { new List<ClientProto.BlockInfo>() },
+                    FileSize = 0,
                     Type = ClientProto.BlockMessage.Types.StatusType.Fail };
             }
         }
@@ -368,7 +368,7 @@ namespace NameNode
         {
             if(!BlockID_To_ip.ContainsKey(blockId))
             {
-                BlockID_To_ip.TryAdd(blockId, new List<string>());    
+                return new List<string>{"Delete it"};
             }
             return BlockID_To_ip[blockId];
         }
