@@ -88,6 +88,9 @@ namespace Client
                         {
                             var bytes = call.ResponseStream.Current.Data.ToByteArray();
                             WriteToFile(bytes, writerStream);
+                            BytesReadFromFile += bytes.Length;
+                            // Casts are very necessary here!
+                            Console.Write("\rDownloading {0}", (((double)BytesReadFromFile / (double)FileSize)).ToString("0.00%"));
 
                             copiedLength += bytes.Length;
                         }
@@ -118,9 +121,6 @@ namespace Client
         /// <param name="writerStream">File Stream to store byte array</param>
         private static void WriteToFile(byte[] blockData, FileStream writerStream)
         {
-            BytesReadFromFile += blockData.Length;
-            // Casts are very necessary here!
-            Console.Write("\rDownloading {0}", (((double)BytesReadFromFile / (double)FileSize)).ToString("0.00%"));
             writerStream.Write(blockData, 0, blockData.Length);
         }
     }
