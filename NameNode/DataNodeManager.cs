@@ -265,8 +265,6 @@ namespace NameNode
                 CheckDeadNodes();
                 try
                 {
-                    //TODO: Change this back
-                    //await Task.Delay(60000, token);
                     await Task.Delay(30000);
                 }
                 catch (Exception)
@@ -279,7 +277,6 @@ namespace NameNode
 
         /// <summary>
         /// Checks whether or not the Node is dead. If it is, it removes it from the list.
-        /// TODO: When a node is dead, remove blocks and redistribute if needed
         /// </summary>
         private void CheckDeadNodes()
         {
@@ -287,8 +284,6 @@ namespace NameNode
             for(var i = 0; i < NodeList.Count; i++)
             {
                 TimeSpan span = DateTime.UtcNow.Subtract(NodeList[i].LastHeartBeat);
-                // Too much time has passed
-                // TODO: Change back to 10
                 if (span.Minutes >= 1)
                 {
                     Console.WriteLine("DataNode died: " + NodeList[i].IpAddress);
