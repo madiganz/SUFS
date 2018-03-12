@@ -59,8 +59,8 @@ namespace DataNode
             List<Metadata.Entry> metaData = context.RequestHeaders.ToList();
 
             // Get blockID
-            Guid blockId = GetBlockID(metaData);
-            int blockSize = GetBlockSize(metaData);
+            Guid blockId = Util.GetBlockID(metaData);
+            int blockSize = Util.GetBlockSize(metaData);
 
             string filePath = BlockStorage.Instance.CreateFile(blockId);
             Console.WriteLine("Created file: " + filePath);
@@ -200,46 +200,6 @@ namespace DataNode
 
             // If write was successful, make sure block size is correct
             return !BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Block size is not correct" } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
-        }
-
-        /// <summary>
-        /// Gets blockID from list of metadata
-        /// </summary>
-        /// <param name="metaData">List of metadata</param>
-        /// <returns>BlockID</returns>
-        public Guid GetBlockID(List<Metadata.Entry> metaData)
-        {
-            Guid id = new Guid();
-            try
-            {
-                Metadata.Entry blckId = metaData.Find(m => { return m.Key == "blockid"; });
-                id = Guid.Parse(blckId.Value);
-                return id;
-            }
-            catch
-            {
-                return id;
-            }
-        }
-
-        /// <summary>
-        /// Gets block size from list of metadata
-        /// </summary>
-        /// <param name="metaData">List of metadata</param>
-        /// <returns>Size of block</returns>
-        public int GetBlockSize(List<Metadata.Entry> metaData)
-        {
-            int blockSize = 0;
-            try
-            {
-                Metadata.Entry size = metaData.Find(m => { return m.Key == "blocksize"; });
-                blockSize = Convert.ToInt32(size.Value);
-                return blockSize;
-            }
-            catch
-            {
-                return blockSize;
-            }
         }
         
         /// <summary>
