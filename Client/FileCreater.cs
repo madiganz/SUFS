@@ -35,7 +35,7 @@ namespace Client
             filePath = path;
             localPath = lPath;
             var response = client.CreateFile(new ClientProto.Path { FullPath = filePath });
-           
+
             if (response.Type == ClientProto.StatusResponse.Types.StatusType.Ok)
             {
                 if (location.ToLower() == "s3")
@@ -160,7 +160,7 @@ namespace Client
                                 FullPath = blockInfo.FullPath,
                             };
                             info.IpAddress.AddRange(blockInfo.IpAddress);
-                            
+
                             if (CreatePipelineAndWrite(info, block, contentLength))
                             {
                                 writeSuccess = true;
@@ -186,11 +186,13 @@ namespace Client
                 {
                     // Stop reading
                     totalBytesRead = contentLength;
-                    Console.WriteLine("Query for block destination failed: " + e.Message);
+                    Console.WriteLine("Failed to write file: " + e.Message);
                 }
                 catch (Exception e)
                 {
+#if Debug
                     Console.WriteLine(e.Message);
+#endif
                 }
             }
         }
@@ -216,7 +218,9 @@ namespace Client
                     }
                     catch (Exception e)
                     {
+#if Debug
                         Console.WriteLine(e.Message);
+#endif
                         return false;
                     }
                 }
@@ -246,7 +250,9 @@ namespace Client
             }
             catch (Exception e)
             {
+#if Debug
                 Console.WriteLine("Get ready failed: " + e.Message);
+#endif
                 client = null;
                 return false;
             }
@@ -294,7 +300,9 @@ namespace Client
                     {
                         dataNodeFailed = true;
                         totalBytesRead = blockInfo.BlockSize; // Stop reading
+#if Debug
                         throw new Exception("Writing block failed", e);
+#endif
                     }
                 }
 
