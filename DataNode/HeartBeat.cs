@@ -44,33 +44,7 @@ namespace DataNode
                                     // Send data to each block
                                     foreach (var dataNode in block.DataNodes)
                                     {
-                                        Console.WriteLine("Fowarding block to " + dataNode.IpAddress);
-                                        Channel channel = new Channel(dataNode.IpAddress + ":" + Constants.Port, ChannelCredentials.Insecure);
-                                        var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
-
-                                        using (var call = nodeClient.WriteDataBlock(metaData))
-                                        {
-                                            int remaining = blockData.Length;
-
-                                            while (remaining > 0)
-                                            {
-                                                var copyLength = Math.Min(Constants.StreamChunkSize, remaining);
-                                                byte[] streamBuffer = new byte[copyLength];
-
-                                                Buffer.BlockCopy(
-                                                    blockData,
-                                                    blockData.Length - remaining,
-                                                    streamBuffer, 0,
-                                                    copyLength);
-
-                                                await call.RequestStream.WriteAsync(new DataNodeProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(streamBuffer) });
-
-                                                remaining -= copyLength;
-                                            }
-
-                                            await call.RequestStream.CompleteAsync();
-                                            var resp = await call.ResponseAsync;
-                                        }
+                                        Task task = ForwardBlock(dataNode, blockData, metaData);
                                     }
                                 }
                             }
@@ -118,6 +92,44 @@ namespace DataNode
             foreach (var id in blockIds)
             {
                 BlockStorage.Instance.DeleteBlock(Guid.Parse(id.Value));
+            }
+        }
+
+        public static async Task ForwardBlock(DataNodeProto.DataNode dataNode, byte[] blockData, Metadata metadata)
+        {
+            try
+            {
+                Console.WriteLine("Fowarding block to " + dataNode.IpAddress);
+                Channel channel = new Channel(dataNode.IpAddress + ":" + Constants.Port, ChannelCredentials.Insecure);
+                var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
+
+                using (var call = nodeClient.WriteDataBlock(metadata))
+                {
+                    int remaining = blockData.Length;
+
+                    while (remaining > 0)
+                    {
+                        var copyLength = Math.Min(Constants.StreamChunkSize, remaining);
+                        byte[] streamBuffer = new byte[copyLength];
+
+                        Buffer.BlockCopy(
+                            blockData,
+                            blockData.Length - remaining,
+                            streamBuffer, 0,
+                            copyLength);
+
+                        await call.RequestStream.WriteAsync(new DataNodeProto.BlockData { Data = Google.Protobuf.ByteString.CopyFrom(streamBuffer) });
+
+                        remaining -= copyLength;
+                    }
+
+                    await call.RequestStream.CompleteAsync();
+                    var resp = await call.ResponseAsync;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Problem forwarding block to node," + e);
             }
         }
     }

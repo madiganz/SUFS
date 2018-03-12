@@ -29,21 +29,28 @@ namespace DataNode
 
             bool writeSuccess = true;
 
-            // Write block to file system
-            using (var writerStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+            try
             {
-                while (await requestStream.MoveNext())
+                // Write block to file system
+                using (var writerStream = new FileStream(filePath, FileMode.Append, FileAccess.Write))
                 {
-                    try
+                    while (await requestStream.MoveNext())
                     {
-                        var bytes = requestStream.Current.Data.ToByteArray();
-                        writerStream.Write(bytes, 0, bytes.Length);
-                    }
-                    catch
-                    {
-                        writeSuccess = false;
+                        try
+                        {
+                            var bytes = requestStream.Current.Data.ToByteArray();
+                            writerStream.Write(bytes, 0, bytes.Length);
+                        }
+                        catch
+                        {
+                            writeSuccess = false;
+                        }
                     }
                 }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Writing block that was forwarded failed: " + e.Message);
             }
 
             if (BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize) && writeSuccess)
