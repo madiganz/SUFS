@@ -102,8 +102,6 @@ namespace NameNode
             Console.WriteLine("factor = " + factor);
             for (int i = 0; i < factor; i++)
                 ipAddresses.Add(GrabNextDataNode().IpAddress);
-
-            Console.WriteLine("Ip addresses for replication: " + ipAddresses.ToString());
             return ipAddresses;
         }
 
@@ -163,7 +161,7 @@ namespace NameNode
             if (RoundRobinDistributionIndex % NodeList.Count == 0)
                 RoundRobinDistributionIndex = 0;
             Console.WriteLine("round robin index = " + RoundRobinDistributionIndex);
-            Console.WriteLine("Datanode chosen = " + NodeList[RoundRobinDistributionIndex++ % NodeList.Count].IpAddress);
+            Console.WriteLine("Datanode chosen = " + NodeList[RoundRobinDistributionIndex % NodeList.Count].IpAddress);
             return NodeList[RoundRobinDistributionIndex++ % NodeList.Count];
 
         }
@@ -301,7 +299,8 @@ namespace NameNode
             {
                 TimeSpan span = DateTime.UtcNow.Subtract(node.LastHeartBeat);
                 // Too much time has passed
-                if (span.Minutes >= 10)
+                // TODO: Change back to 10
+                if (span.Minutes >= 1)
                 {
                     Program.Database.RemoveIPToBlockReferences(node.IpAddress);
                     NodeList.Remove(node);
