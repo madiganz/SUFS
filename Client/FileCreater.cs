@@ -40,7 +40,7 @@ namespace Client
             {
                 if (location.ToLower() == "s3")
                 {
-                    ReadFileFromS3(lPath);
+                    ReadFileFromS3(lPath).Wait();
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace Client
         /// <summary>
         /// Writes a file to SUFS using a file from S3
         /// </summary>
-        private async void ReadFileFromS3(string key = "CC-MAIN-20180116070444-20180116090444-00000.warc.gz", string bucketName = "wordcount-madiganz")
+        private async Task ReadFileFromS3(string key = "CC-MAIN-20180116070444-20180116090444-00000.warc.gz", string bucketName = "wordcount-madiganz")
         {
             IAmazonS3 s3Cient;
             using (s3Cient = new AmazonS3Client(Amazon.RegionEndpoint.USWest2))
@@ -145,10 +145,22 @@ namespace Client
                         // Keep asking NameNode for new DataNodes if all fail
                         // Get DataNode locations to store block
                         blockInfo = client.QueryBlockDestination(blockInfo);
+                        if (blockInfo.IpAddress.Count() == 0)
+                        {
+                            Console.WriteLine("SUFS is unavailable");
+                            Environment.Exit(1);
+                        }
                         for (int i = 0; i < blockInfo.IpAddress.Count(); i++)
                         {
                             // Need to reassign because classes are passed by reference and we are removing nodes
-                            ClientProto.BlockInfo info = blockInfo;
+                            ClientProto.BlockInfo info = new ClientProto.BlockInfo
+                            {
+                                BlockId = blockInfo.BlockId,
+                                BlockSize = blockInfo.BlockSize,
+                                FullPath = blockInfo.FullPath,
+                            };
+                            info.IpAddress.AddRange(blockInfo.IpAddress);
+                            
                             if (CreatePipelineAndWrite(info, block, contentLength))
                             {
                                 writeSuccess = true;
@@ -156,11 +168,16 @@ namespace Client
                             }
                             else
                             {
+                                if (blockInfo.IpAddress.Count() <= 1)
+                                {
+                                    Console.WriteLine("SUFS is unavailable");
+                                    Environment.Exit(1);
+                                }
                                 // Try a different datanode first.
                                 // This has a chance because this flow only fails if the first datanode fails to connect or somehow they all fail.
-                                // Not sure if this is the best way to handle it, but it works
+                                var tempAddresses = blockInfo.IpAddress.Shift();
                                 blockInfo.IpAddress.Clear();
-                                blockInfo.IpAddress.AddRange(blockInfo.IpAddress.Shift());
+                                blockInfo.IpAddress.AddRange(tempAddresses);
                             }
                         }
                     }
@@ -227,9 +244,8 @@ namespace Client
 
                 return true;
             }
-            catch (RpcException e)
+            catch (Exception e)
             {
-                // Can't connect to first node -> Need to contact namenode or try other datanode
                 Console.WriteLine("Get ready failed: " + e.Message);
                 client = null;
                 return false;
@@ -274,7 +290,7 @@ namespace Client
                         // Casts are very necessary here!
                         Console.Write("\rWriting File {0}", (((double)TotalBytesWrittenFromFile / (double)contentLength)).ToString("0.00%"));
                     }
-                    catch (RpcException e)
+                    catch (Exception e)
                     {
                         dataNodeFailed = true;
                         totalBytesRead = blockInfo.BlockSize; // Stop reading

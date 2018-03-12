@@ -28,6 +28,11 @@ namespace Client
             FileSize = blockMessage.FileSize;
             BytesReadFromFile = 0;
 
+            if(FileSize == 0)
+            {
+                Console.WriteLine("Reading Failed: file size 0. File may not exist." );
+            }
+
             var fileName = GetFileName(remotePath);
 
             localPath += "/";

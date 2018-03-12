@@ -24,6 +24,7 @@ namespace Client
                 else
                     newList.Add(oldList[0]);
             }
+            Console.WriteLine(newList.ToString());
             return newList;
         }
     }
