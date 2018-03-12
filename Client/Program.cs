@@ -73,7 +73,7 @@ namespace Client
                     }
                     string path = lineData[1];
                     var reply = client.DeleteDirectory(new ClientProto.Path { FullPath = path });
-                    Console.WriteLine("Delete directory: " + reply.Type.ToString());
+                    Console.WriteLine("Delete directory: " + reply.Type.ToString() + " " + reply.Message);
                 }
 
                 else if (action.ToLower() == "createdirectory")
@@ -119,7 +119,7 @@ namespace Client
                     }
                     string path = lineData[1];
                     var reply = client.DeleteFile(new ClientProto.Path { FullPath = path });
-                    Console.WriteLine("Delete file action: " + reply.Type.ToString());
+                    Console.WriteLine("Delete file action: " + reply.Type.ToString() + " " + reply.Message);
                 }
 
                 else if (action.ToLower() == "readfile")
@@ -161,7 +161,14 @@ namespace Client
                     }
                     string path = lineData[1];
                     var reply = client.ListNodes(new ClientProto.Path { FullPath = path });
-                    PrettyPrintNodeList(reply);
+                    if (reply.Type == ClientProto.ListOfNodesList.Types.StatusType.FileDoesNotExist)
+                    {
+                        Console.WriteLine("File does not exist.");
+                    }
+                    else
+                    {
+                        PrettyPrintNodeList(reply);
+                    }
                 }
 
                 else if (action.ToLower() == "listcontents")
@@ -174,12 +181,19 @@ namespace Client
                     }
                     string path = lineData[1];
                     var reply = client.ListContents(new ClientProto.Path { FullPath = path });
-                    Console.WriteLine("List of directory contents:");
-                    foreach (var s in reply.FileName)
+                    if (reply.Type == ClientProto.ListOfContents.Types.StatusType.DirectoryDoesNotExist)
                     {
-                        Console.WriteLine(s);
+                        Console.WriteLine("Directory does not exist.");
                     }
-                    Console.WriteLine();
+                    else
+                    {
+                        Console.WriteLine("List of directory contents:");
+                        foreach (var s in reply.FileName)
+                        {
+                            Console.WriteLine(s);
+                        }
+                        Console.WriteLine();
+                    }
                 }
 
                 else

@@ -201,6 +201,7 @@ namespace NameNode
 
         public ClientProto.StatusResponse DeleteDirectory(ClientProto.Path wrappedPath)
         {
+            string message = "";
             try
             {
                 string path = wrappedPath.FullPath;
@@ -231,14 +232,16 @@ namespace NameNode
                 }
                 else
                 {
-                    Console.WriteLine("Cannot delete Root.");
+                    message = "Cannot delete Root.";
+                    Console.WriteLine(message);
                     return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root." };
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                message = e.Message;
+                Console.WriteLine(message);
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = message };
             }
 
         }
