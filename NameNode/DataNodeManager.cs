@@ -49,7 +49,7 @@ namespace NameNode
         /// Updates the list of Datanodes
         /// </summary>
         /// <param name="nodeInfo">A single DataNodes info</param>
-        public List<DataNodeProto.BlockCommand> UpdateDataNodes(DataNodeProto.DataNodeInfo nodeInfo)
+        public DataNodeProto.BlockCommand UpdateDataNodes(DataNodeProto.DataNodeInfo nodeInfo)
         {
             // Update list of datanodes
             int index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
@@ -73,8 +73,14 @@ namespace NameNode
                 NodeList[index].DiskSpace = nodeInfo.DiskSpace;
                 NodeList[index].LastHeartBeat = DateTime.UtcNow;
             }
-
-            return NodeList[index].Requests;
+            DataNodeProto.BlockCommand returnCommand;
+            if (NodeList[index].Requests.Count > 0){
+                returnCommand = NodeList[index].Requests[0];
+                NodeList[index].Requests.Remove(returnCommand);
+            }else
+                returnCommand = new DataNodeProto.BlockCommand();
+            
+            return returnCommand;
         }
 
         /// <summary>
@@ -160,7 +166,7 @@ namespace NameNode
             List<DataNodeProto.DataNode> nodes = new List<DataNodeProto.DataNode>();
             for (int i = 0; i < Constants.ReplicationFactor - currentBlock.Count; i++)
             {
-                string ipAddress = NodeList[RoundRobinDistributionIndex++ % NodeList.Count].IpAddress;
+                string ipAddress = GrabNextDataNode().IpAddress;
                 // While it isn't a node that contains this block, choose the next in the node list
                 while (ipAddress == currentNodeIP || currentBlock.Contains(ipAddress))
                 {

@@ -24,15 +24,13 @@ namespace NameNode
         // Server side handler of the SendHeartBeat RPC
         public override Task<DataNodeProto.HeartBeatResponse> SendHeartBeat(DataNodeProto.HeartBeatRequest request, ServerCallContext context)
         {
-            List<DataNodeProto.BlockCommand> blockCommands = DataNodeManager.Instance.UpdateDataNodes(request.NodeInfo);
+            DataNodeProto.BlockCommand blockCommands = DataNodeManager.Instance.UpdateDataNodes(request.NodeInfo);
 
             DataNodeProto.HeartBeatResponse response = new DataNodeProto.HeartBeatResponse
             {
-                Commands = { blockCommands }
+                Commands = blockCommands
             };
 
-            // Clear requests from datanode manager
-            DataNodeManager.Instance.ClearRequests(request.NodeInfo.DataNode.IpAddress);
             return Task.FromResult(response);
         }
     }

@@ -12,7 +12,7 @@ message HeartBeatRequest {
 }
 
 message HeartBeatResponse {
-	repeated BlockCommand commands = 1; // Returned commands can be null
+	BlockCommand commands = 1; // Returned commands can be null
 }
 
 message BlockReportRequest {
