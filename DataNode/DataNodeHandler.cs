@@ -17,7 +17,8 @@ namespace DataNode
         /// <returns>Status of task</returns>
         public override Task<DataNodeProto.StatusResponse> WriteDataBlock(DataNodeProto.DataBlock blockContainer, ServerCallContext context)
         {
-            Console.WriteLine(Encoding.Default.GetString(blockContainer.Data.ToByteArray()));
+            Console.WriteLine("Writing block data sent from datanode");
+            Console.WriteLine("BlockID = " + blockContainer.BlockId.Value);
 
             string filePath = BlockStorage.Instance.CreateFile(Guid.Parse(blockContainer.BlockId.Value));
 

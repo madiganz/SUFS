@@ -149,13 +149,15 @@ namespace NameNode
                 string path = wrappedPath.FullPath;
                 string name = TraverseFileSystem(path);
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
-
+                Console.WriteLine("toBeDeleted: " + toBeDeleted.ToString());
                 //queue up requests for each of the datanodes that have blocks
                 //      to delete as soon as they send in heartbeat/block report
                 foreach (Guid blockID in toBeDeleted.data)
                 {
+                    Console.WriteLine(blockID + "to be deleted");
                     foreach (string ipAddress in BlockID_To_ip[blockID])
                     {
+                        Console.WriteLine("ipaddress to add request for: " + ipAddress);
                         DataNodeManager.Instance.AddRequestToNode(ipAddress, new DataNodeProto.BlockCommand
                         {
                             Action = DataNodeProto.BlockCommand.Types.Action.Delete,
@@ -318,21 +320,6 @@ namespace NameNode
             }
         }
 
-        // Will be done through MoveFile
-        //public bool RenameFile(string path, string newName)
-        //{
-        //    try
-        //    {
-
-        //    }catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //        return false;
-        //    }
-
-        //}
-
-
         public ClientProto.StatusResponse MoveFile(ClientProto.DoublePath doublePath)
         {
             try
@@ -368,12 +355,16 @@ namespace NameNode
             {
                 BlockID_To_ip.TryAdd(blockId, new List<string>());    
             }
+            Console.WriteLine("Ips from block: " + BlockID_To_ip[blockId].ToString());
             return BlockID_To_ip[blockId];
         }
 
         public void RemoveIPToBlockReferences(string ipAddress){
-            foreach(List<string> ipAddresses in BlockID_To_ip.Values)
+            Console.WriteLine("Removing ip to block");
+
+            foreach (List<string> ipAddresses in BlockID_To_ip.Values)
             {
+                Console.WriteLine("Removing ip to block for: " + ipAddress.ToList());
                 if (ipAddresses.Contains(ipAddress))
                     ipAddresses.Remove(ipAddress);
             }

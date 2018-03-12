@@ -53,29 +53,36 @@ namespace NameNode
         {
             // Update list of datanodes
             int index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
+            Console.WriteLine("Updating datanodes, index = " + index + "for ip address = " + nodeInfo.DataNode.IpAddress);
             // Not found -> add to list
             if (index < 0)
             {
                 DataNode node = new DataNode(nodeInfo.DataNode.IpAddress, nodeInfo.DiskSpace, DateTime.UtcNow);
                 NodeList.Add(node);
                 index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
+                Console.WriteLine("New index after being added to list: " + index);
                 if (NodeList.Count <= Constants.ReplicationFactor)
                 {
+                    Console.WriteLine("Below replication factor with nodelist count = " + NodeList.Count);
                     BelowReplicationFactorNewDataNodeRedistribute(node.IpAddress);
                 }
                 else
                 {
+                    Console.WriteLine("Checking if redistribution is needed");
                     CheckIfRedistributeNeeded();
                 }
             }
             else // Found, update lastHeartBeat timestamp
             {
+                Console.WriteLine("Just updating datanode");
                 NodeList[index].DiskSpace = nodeInfo.DiskSpace;
                 NodeList[index].LastHeartBeat = DateTime.UtcNow;
             }
             DataNodeProto.BlockCommand returnCommand;
             if (NodeList[index].Requests.Count > 0){
+                Console.WriteLine("returning command back to datanode");
                 returnCommand = NodeList[index].Requests[0];
+                Console.WriteLine("return command = " + returnCommand.ToString());
                 NodeList[index].Requests.Remove(returnCommand);
             }else
                 returnCommand = new DataNodeProto.BlockCommand();
@@ -89,10 +96,14 @@ namespace NameNode
         /// <returns>List of the next 3 DataNodes in list</returns>
         public List<string> GetDataNodesForReplication()
         {
+            Console.WriteLine("Getting datanode for replication");
             List<string> ipAddresses = new List<string>();
             int factor = Math.Min(NodeList.Count, Constants.ReplicationFactor);
+            Console.WriteLine("factor = " + factor);
             for (int i = 0; i < factor; i++)
                 ipAddresses.Add(GrabNextDataNode().IpAddress);
+
+            Console.WriteLine("Ip addresses for replication: " + ipAddresses.ToString());
             return ipAddresses;
         }
 
@@ -150,6 +161,8 @@ namespace NameNode
         {
             if (RoundRobinDistributionIndex % NodeList.Count == 0)
                 RoundRobinDistributionIndex = 0;
+            Console.WriteLine("round robin index = " + RoundRobinDistributionIndex);
+            Console.WriteLine("Datanode chosen = " + NodeList[RoundRobinDistributionIndex++ % NodeList.Count]);
             return NodeList[RoundRobinDistributionIndex++ % NodeList.Count];
 
         }
@@ -172,6 +185,7 @@ namespace NameNode
                 {
                     ipAddress = GrabNextDataNode().IpAddress;
                 }
+                Console.WriteLine("Node to be added for redistribution: " + ipAddress);
 
                 nodes.Add(
                     new DataNodeProto.DataNode
@@ -192,11 +206,13 @@ namespace NameNode
                 Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
                 DataBlock = { dataBlock }
             };
+            Console.WriteLine("transfer block command: " + blockCommand.ToString());
             AddRequestToNode(currentNodeIP, blockCommand);
         }
 
         public void BelowReplicationFactorNewDataNodeRedistribute(string newDataNodeIP)
         {
+            Console.WriteLine("Below replication factor, new node - " + newDataNodeIP);
             List<DataNodeProto.DataNode> destinationNode = new List<DataNodeProto.DataNode>
             {
                 new DataNodeProto.DataNode
@@ -218,9 +234,11 @@ namespace NameNode
                         BlockId = new DataNodeProto.UUID { Value = entry.Key.ToString() },
                         DataNodes = { destinationNode }
                     });
+                Console.WriteLine("Sending block " + entry.Key.ToString() + " to " + newDataNodeIP);
             }
             foreach (KeyValuePair<string, List<DataNodeProto.DataBlock>> entry in commands)
             {
+                Console.WriteLine("Adding request for transfer to " + entry.Key);
                 AddRequestToNode(entry.Key,
                     new DataNodeProto.BlockCommand
                     {
@@ -237,11 +255,13 @@ namespace NameNode
         /// <returns>True if redistribution is needed</returns>
         public void CheckIfRedistributeNeeded()
         {
+            Console.WriteLine("checking if redistribution is needed");
             // If the Block is not above the minimum ReplicationFactor
             foreach (KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
             {
                 if (entry.Value.Count < Constants.ReplicationFactor)
                 {
+                    Console.WriteLine("redistribution is needed for " + entry.Key);
                     if (entry.Value.Count != 0)
                         Redistribute(entry.Value, entry.Value[0], entry.Key);
 
@@ -298,6 +318,7 @@ namespace NameNode
         public void AddRequestToNode(string ipAddress, DataNodeProto.BlockCommand blockCommand)
         {
             int index = FindNodeIndexFromIP(ipAddress);
+            Console.WriteLine("Adding request for " + ipAddress + " to " + blockCommand.ToString());
             NodeList[index].Requests.Add(blockCommand);
         }
 

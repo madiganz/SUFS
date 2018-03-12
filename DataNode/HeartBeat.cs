@@ -23,11 +23,12 @@ namespace DataNode
                 {
                     DataNodeProto.HeartBeatResponse response = client.SendHeartBeat(heartBeatRequest);
 
-
+                    Console.WriteLine("heart beat response: " + response.ToString());
                     DataNodeProto.BlockCommand nameNodeCommands = response.Commands;
                     switch (nameNodeCommands.Action)
                     {
                         case DataNodeProto.BlockCommand.Types.Action.Transfer:
+                            Console.WriteLine("Transfer action!!!");
                             foreach (var block in nameNodeCommands.DataBlock.ToList())
                             {
                                 // Get block data
@@ -39,14 +40,17 @@ namespace DataNode
                                 // Send data to each block
                                 foreach (var dataNode in block.DataNodes)
                                 {
+                                    Console.WriteLine("Fowarding block to " + dataNode.IpAddress);
                                     Channel channel = new Channel(dataNode.IpAddress + ":" + Constants.Port, ChannelCredentials.Insecure);
                                     var nodeClient = new DataNodeProto.DataNodeProto.DataNodeProtoClient(channel);
+                                    // TODO: FIX THIS WITH A STREAM
                                     await nodeClient.WriteDataBlockAsync(block);
                                     await channel.ShutdownAsync();
                                 }
                             }
                             break;
                         case DataNodeProto.BlockCommand.Types.Action.Delete:
+                            Console.WriteLine("Delete action");
                             InvalidateBlocks(nameNodeCommands.BlockList);
                             break;
                     }
