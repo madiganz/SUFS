@@ -61,12 +61,10 @@ namespace NameNode
                 index = FindNodeIndexFromIP(nodeInfo.DataNode.IpAddress);
                 if (NodeList.Count <= Constants.ReplicationFactor)
                 {
-                    Console.WriteLine("Below replication factor with nodelist count = " + NodeList.Count);
                     BelowReplicationFactorNewDataNodeRedistribute(node.IpAddress);
                 }
                 else
                 {
-                    Console.WriteLine("Checking if redistribution is needed");
                     CheckIfRedistributeNeeded();
                 }
             }
@@ -77,9 +75,7 @@ namespace NameNode
             }
             DataNodeProto.BlockCommand returnCommand;
             if (NodeList[index].Requests.Count > 0){
-                Console.WriteLine("returning command back to datanode");
                 returnCommand = NodeList[index].Requests[0];
-                Console.WriteLine("return command = " + returnCommand.ToString());
                 NodeList[index].Requests.Remove(returnCommand);
             }else
                 returnCommand = new DataNodeProto.BlockCommand();
@@ -124,7 +120,7 @@ namespace NameNode
                     currentBlock = Program.Database.GetIPsFromBlock(blockID);
                     if(currentBlock.Contains("Delete it"))
                     {
-                        DataNodeManager.Instance.AddRequestToNode(currentNodeIP, new DataNodeProto.BlockCommand
+                        AddRequestToNode(currentNodeIP, new DataNodeProto.BlockCommand
                         {
                             Action = DataNodeProto.BlockCommand.Types.Action.Delete,
                             BlockList = new DataNodeProto.BlockList
@@ -137,13 +133,6 @@ namespace NameNode
                     }   
 
                 }
-
-                //Loops through to see if there are any more requests to send to this node
-                //foreach (DataNodeProto.BlockCommand request in currentDataNode.Requests)
-                //{
-                //    returnRequests.Add(request);
-                //}
-                //currentDataNode.Requests.Clear();
 
 
                 //either send empty list back or send queued commands to the specific datanode
@@ -162,11 +151,8 @@ namespace NameNode
         /// <returns>DataNode</returns>
         public DataNode GrabNextDataNode()
         {
-            Console.WriteLine("Grabbing next data node, nodelist count = " + NodeList.Count);
             if (RoundRobinDistributionIndex % NodeList.Count == 0)
                 RoundRobinDistributionIndex = 0;
-            Console.WriteLine("round robin index = " + RoundRobinDistributionIndex);
-            Console.WriteLine("Datanode chosen = " + NodeList[RoundRobinDistributionIndex % NodeList.Count].IpAddress);
             return NodeList[RoundRobinDistributionIndex++ % NodeList.Count];
 
         }
@@ -189,7 +175,7 @@ namespace NameNode
                 {
                     ipAddress = GrabNextDataNode().IpAddress;
                 }
-                Console.WriteLine("Node to be added for redistribution: " + ipAddress);
+                Console.WriteLine("Node to be added for redistribution: " + ipAddress + " for blockid = " + blockID.ToString());
 
                 nodes.Add(
                     new DataNodeProto.DataNode
@@ -210,13 +196,12 @@ namespace NameNode
                 Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
                 DataBlock = { dataBlock }
             };
-            Console.WriteLine("transfer block command: " + blockCommand.ToString());
+
             AddRequestToNode(currentNodeIP, blockCommand);
         }
 
         public void BelowReplicationFactorNewDataNodeRedistribute(string newDataNodeIP)
         {
-            Console.WriteLine("Below replication factor, new node - " + newDataNodeIP);
             List<DataNodeProto.DataNode> destinationNode = new List<DataNodeProto.DataNode>
             {
                 new DataNodeProto.DataNode
@@ -238,11 +223,9 @@ namespace NameNode
                         BlockId = new DataNodeProto.UUID { Value = entry.Key.ToString() },
                         DataNodes = { destinationNode }
                     });
-                Console.WriteLine("Sending block " + entry.Key.ToString() + " to " + newDataNodeIP);
             }
             foreach (KeyValuePair<string, List<DataNodeProto.DataBlock>> entry in commands)
             {
-                Console.WriteLine("Adding request for transfer to " + entry.Key);
                 AddRequestToNode(entry.Key,
                     new DataNodeProto.BlockCommand
                     {
@@ -259,17 +242,13 @@ namespace NameNode
         /// <returns>True if redistribution is needed</returns>
         public void CheckIfRedistributeNeeded()
         {
-            Console.WriteLine("checking if redistribution is needed");
             // If the Block is not above the minimum ReplicationFactor
             foreach (KeyValuePair<Guid, List<string>> entry in Program.Database.GrabBlockToIpDictionary())
             {
-                Console.WriteLine("Block: " + entry.Key.ToString() + " has " + entry.Value.Count);
                 if (entry.Value.Count < Constants.ReplicationFactor)
                 {
-                    Console.WriteLine("redistribution is needed for " + entry.Key + ", number of replications = " + entry.Value.Count);
                     if (entry.Value.Count != 0)
                         Redistribute(entry.Value, entry.Value[0], entry.Key);
-
                 }
             }
         }
@@ -304,26 +283,21 @@ namespace NameNode
         /// </summary>
         private void CheckDeadNodes()
         {
-            Console.WriteLine("checking dead nodes... Count is " + NodeList.Count);
+            Console.WriteLine("Checking for dead DataNodes...");
             for(var i = 0; i < NodeList.Count; i++)
             {
-                Console.WriteLine("currently checking " + NodeList[i].IpAddress);
                 TimeSpan span = DateTime.UtcNow.Subtract(NodeList[i].LastHeartBeat);
                 // Too much time has passed
                 // TODO: Change back to 10
                 if (span.Minutes >= 1)
                 {
-                    Console.WriteLine("Node is dead, deleting ip to block references");
+                    Console.WriteLine("DataNode died: " + NodeList[i].IpAddress);
                     Program.Database.RemoveIPToBlockReferences(NodeList[i].IpAddress);
-                    Console.WriteLine("Finished removing ip form block references...Now removing node from list");
-                    NodeList.RemoveAt(FindNodeIndexFromIP(NodeList[i].IpAddress));
-                    Console.WriteLine("Count after removal of node = " + NodeList.Count);
+                    NodeList.RemoveAt(i);
                 }
             }
-            Console.WriteLine("checking dead node: node count is " + NodeList.Count);
             if (NodeList.Count >= Constants.ReplicationFactor)
             {
-                Console.WriteLine("Checking dead nodes, check if redist is needed");
                 CheckIfRedistributeNeeded();
             }
         }
@@ -336,7 +310,6 @@ namespace NameNode
         public void AddRequestToNode(string ipAddress, DataNodeProto.BlockCommand blockCommand)
         {
             int index = FindNodeIndexFromIP(ipAddress);
-            Console.WriteLine("Adding request for " + ipAddress + " to " + blockCommand.ToString());
             NodeList[index].Requests.Add(blockCommand);
         }
 

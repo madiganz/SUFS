@@ -22,9 +22,6 @@ namespace DataNode
             Guid blockId = Util.GetBlockID(metaData);
             int blockSize = Util.GetBlockSize(metaData);
 
-            Console.WriteLine("Writing block data sent from datanode");
-            Console.WriteLine("BlockID = " + blockId);
-
             string filePath = BlockStorage.Instance.CreateFile(blockId);
 
             bool writeSuccess = true;
@@ -57,7 +54,6 @@ namespace DataNode
             {
                 // Send block report to NameNode
                 var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(ConnectionManager.Instance.NameNodeConnection);
-                Console.WriteLine("Write success from a forward! sending single block report!");
                 BlockReport.SendSingleBlockReport(client);
                 return new DataNodeProto.StatusResponse { Type = DataNodeProto.StatusResponse.Types.StatusType.Success };
             }

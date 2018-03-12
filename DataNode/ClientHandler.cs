@@ -17,7 +17,6 @@ namespace DataNode
             ClientProto.StatusResponse response = new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
             if (blockInfo.IpAddress.Count() == 0)
             {
-                Console.WriteLine("Last node in list -> ready!");
                 response.Type = ClientProto.StatusResponse.Types.StatusType.Ready;
                 return Task.FromResult(response);
             }
@@ -30,8 +29,6 @@ namespace DataNode
                 {
                     ipAddress = blockInfo.IpAddress[0];
                     blockInfo.IpAddress.RemoveAt(0);
-                    Console.WriteLine("Getting ready: remaining nodes - " + blockInfo.IpAddress);
-                    Console.WriteLine("Next address in pipe = " + ipAddress);
                     channel = ConnectionManager.Instance.CreateChannel(blockId, ipAddress, Constants.Port.ToString());
                     var client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
@@ -63,7 +60,6 @@ namespace DataNode
             int blockSize = Util.GetBlockSize(metaData);
 
             string filePath = BlockStorage.Instance.CreateFile(blockId);
-            Console.WriteLine("Created file: " + filePath);
 
             Channel channel = ConnectionManager.Instance.GetChannel(blockId);
 
@@ -71,20 +67,18 @@ namespace DataNode
             // No channel found means last datanode in pipe
             if (channel != null)
             {
-                Console.WriteLine("I am writing and forwarding " + blockId);
                 response = await WriteAndForwardBlock(requestStream, context, channel, filePath, blockId, blockSize);
             }
             else // Just write to file
             {
-                Console.WriteLine("I am just writing " + blockId + " - last node in pipe");
                 response = await WriteBlock(requestStream, filePath, blockId, blockSize);
             }
 
             if(response.Type == ClientProto.StatusResponse.Types.StatusType.Success)
             {
+                Console.WriteLine("Done writing block: " + blockId.ToString());
                 // Send block report to NameNode
                 var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(ConnectionManager.Instance.NameNodeConnection);
-                Console.WriteLine("Write success! sending single block report!");
                 BlockReport.SendSingleBlockReport(client);
             }
 
@@ -131,7 +125,6 @@ namespace DataNode
                                 }
                                 catch(RpcException e)
                                 {
-                                    Console.WriteLine("FAILED TO WRITE in WriteBlockAndForward");
                                     dataNodeFailed = true;
                                     Console.WriteLine("Writing block failed: " + e.Message);
                                     message = e.Message;
@@ -140,7 +133,6 @@ namespace DataNode
                         }
                         catch (IOException e)
                         {
-                            Console.WriteLine("FAILED TO WRITE in WriteBlockAndForward");
                             dataNodeFailed = true;
                             message = e.Message;
                             success = false;
@@ -189,7 +181,6 @@ namespace DataNode
                     }
                     catch (IOException e)
                     {
-                        Console.WriteLine("FAILED TO WRITE in WriteBlock");
                         BlockStorage.Instance.DeleteBlock(blockId);
                         return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = e.Message };
                     }

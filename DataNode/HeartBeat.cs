@@ -22,13 +22,10 @@ namespace DataNode
                 try
                 {
                     DataNodeProto.HeartBeatResponse response = client.SendHeartBeat(heartBeatRequest);
-
-                    Console.WriteLine("heart beat response: " + response.ToString());
                     DataNodeProto.BlockCommand nameNodeCommands = response.Commands;
                     switch (nameNodeCommands.Action)
                     {
                         case DataNodeProto.BlockCommand.Types.Action.Transfer:
-                            Console.WriteLine("Transfer action!!!");
                             foreach (var block in nameNodeCommands.DataBlock.ToList())
                             {
                                 // Get block data
@@ -50,7 +47,6 @@ namespace DataNode
                             }
                             break;
                         case DataNodeProto.BlockCommand.Types.Action.Delete:
-                            Console.WriteLine("Delete action");
                             InvalidateBlocks(nameNodeCommands.BlockList);
                             break;
                     }

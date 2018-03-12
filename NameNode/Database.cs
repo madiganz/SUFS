@@ -150,15 +150,12 @@ namespace NameNode
                 string path = wrappedPath.FullPath;
                 string name = TraverseFileSystem(path);
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
-                Console.WriteLine("toBeDeleted: " + toBeDeleted.ToString());
                 //queue up requests for each of the datanodes that have blocks
                 //      to delete as soon as they send in heartbeat/block report
                 foreach (Guid blockID in toBeDeleted.data)
                 {
-                    Console.WriteLine(blockID + "to be deleted");
                     foreach (string ipAddress in BlockID_To_ip[blockID])
                     {
-                        Console.WriteLine("ipaddress to add request for: " + ipAddress);
                         DataNodeManager.Instance.AddRequestToNode(ipAddress, new DataNodeProto.BlockCommand
                         {
                             Action = DataNodeProto.BlockCommand.Types.Action.Delete,
@@ -366,16 +363,9 @@ namespace NameNode
             {
                 if (ipAddresses.Contains(ipAddress))
                 {
-                    Console.WriteLine("Removing address from block");
                     ipAddresses.Remove(ipAddress);
                 }
-                Console.WriteLine("Addresses after removal");
-                foreach (var a in ipAddresses)
-                {
-                    Console.WriteLine(a);
-                }
             }
-            Console.WriteLine("Dont remving address from block");
         }
 
         private void SaveFileDirectory()
@@ -480,11 +470,6 @@ namespace NameNode
 
         public Dictionary<Guid,List<string>> GrabBlockToIpDictionary()
         {
-            Console.WriteLine("GrabBlockToIpDictionary");
-            foreach(var blah in BlockID_To_ip.Keys)
-            {
-                Console.WriteLine("Key: " + blah.ToString());
-            }
             return BlockID_To_ip;
         }
 
