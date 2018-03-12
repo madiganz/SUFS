@@ -122,9 +122,19 @@ namespace NameNode
                 {
                     // Grab the list of ips that are connected to this BlockID
                     currentBlock = Program.Database.GetIPsFromBlock(blockID);
-                    currentBlock.Add(currentNodeIP);
-                    //if (CheckIfRedistributeNeeded(currentBlock))
-                    //returnRequests.Add(Redistribute(currentBlock, currentNodeIP, blockID));
+                    if(currentBlock.Contains("Delete it"))
+                    {
+                        DataNodeManager.Instance.AddRequestToNode(currentNodeIP, new DataNodeProto.BlockCommand
+                        {
+                            Action = DataNodeProto.BlockCommand.Types.Action.Delete,
+                            BlockList = new DataNodeProto.BlockList
+                            {
+                                BlockId = { new DataNodeProto.UUID { Value = blockID.ToString() } }
+                            }
+                        });
+                    }else{
+                        currentBlock.Add(currentNodeIP);
+                    }   
 
                 }
 
