@@ -159,10 +159,11 @@ namespace NameNode
         /// <returns>DataNode</returns>
         public DataNode GrabNextDataNode()
         {
+            Console.WriteLine("Grabbing next data node, nodelist count = " + NodeList.Count);
             if (RoundRobinDistributionIndex % NodeList.Count == 0)
                 RoundRobinDistributionIndex = 0;
             Console.WriteLine("round robin index = " + RoundRobinDistributionIndex);
-            Console.WriteLine("Datanode chosen = " + NodeList[RoundRobinDistributionIndex++ % NodeList.Count]);
+            Console.WriteLine("Datanode chosen = " + NodeList[RoundRobinDistributionIndex++ % NodeList.Count].IpAddress);
             return NodeList[RoundRobinDistributionIndex++ % NodeList.Count];
 
         }
@@ -261,7 +262,7 @@ namespace NameNode
             {
                 if (entry.Value.Count < Constants.ReplicationFactor)
                 {
-                    Console.WriteLine("redistribution is needed for " + entry.Key);
+                    Console.WriteLine("redistribution is needed for " + entry.Key + ", number of replications = " + entry.Value.Count);
                     if (entry.Value.Count != 0)
                         Redistribute(entry.Value, entry.Value[0], entry.Key);
 

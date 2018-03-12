@@ -16,7 +16,7 @@ namespace DataNode
         /// <param name="requestStream">Data of block</param>
         /// <param name="context">Call Context</param>
         /// <returns>Status of task</returns>
-        public async Task<DataNodeProto.StatusResponse> WriteDataBlock(Grpc.Core.IAsyncStreamReader<ClientProto.BlockData> requestStream, ServerCallContext context)
+        public override async Task<DataNodeProto.StatusResponse> WriteDataBlock(Grpc.Core.IAsyncStreamReader<DataNodeProto.BlockData> requestStream, ServerCallContext context)
         {
             List<Metadata.Entry> metaData = context.RequestHeaders.ToList();
             Guid blockId = Util.GetBlockID(metaData);
