@@ -34,13 +34,11 @@ namespace Client
                 return;
             }
 
-            var fileName = GetFileName(remotePath);
-
             localPath += "/";
 
-            localPath += fileName;
-            
+            localPath += remotePath;
 
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(localPath));
             var writerStream = new FileStream(localPath, FileMode.Append, FileAccess.Write);
 
             foreach (var blockInfo in blockMessage.BlockInfo)
