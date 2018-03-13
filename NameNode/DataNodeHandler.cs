@@ -18,6 +18,7 @@ namespace NameNode
             {
                 blockList[i] = Guid.Parse(request.BlockList.BlockId[i].Value);
             }
+
             return Task.FromResult(DataNodeManager.Instance.ProcessBlockReport(blockList, request.DataNode.IpAddress));
         }
 

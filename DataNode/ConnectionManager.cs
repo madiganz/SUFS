@@ -48,7 +48,6 @@ namespace DataNode
         public Channel CreateChannel(Guid blockId, string ipAddress, string port)
         {
             Channel channel = new Channel(ipAddress + ":" + port, ChannelCredentials.Insecure);
-            //Console.WriteLine(channel.State.ToString());
             channelMap.Add(blockId, channel);
             return channel;
         }

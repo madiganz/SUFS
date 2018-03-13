@@ -29,8 +29,6 @@ namespace DataNode
                 {
                     ipAddress = blockInfo.IpAddress[0];
                     blockInfo.IpAddress.RemoveAt(0);
-                    //TODO: Remove the debugging code
-                    //channel = ConnectionManager.Instance.CreateChannel(blockId, "127.0.0.1", "50052");
                     channel = ConnectionManager.Instance.CreateChannel(blockId, ipAddress, Constants.Port.ToString());
                     var client = new ClientProto.ClientProto.ClientProtoClient(channel);
 
@@ -58,11 +56,10 @@ namespace DataNode
             List<Metadata.Entry> metaData = context.RequestHeaders.ToList();
 
             // Get blockID
-            Guid blockId = GetBlockID(metaData);
-            int blockSize = GetBlockSize(metaData);
+            Guid blockId = Util.GetBlockID(metaData);
+            int blockSize = Util.GetBlockSize(metaData);
 
             string filePath = BlockStorage.Instance.CreateFile(blockId);
-            Console.WriteLine("Created file: " + filePath);
 
             Channel channel = ConnectionManager.Instance.GetChannel(blockId);
 
@@ -79,6 +76,7 @@ namespace DataNode
 
             if(response.Type == ClientProto.StatusResponse.Types.StatusType.Success)
             {
+                Console.WriteLine("Done writing block: " + blockId.ToString());
                 // Send block report to NameNode
                 var client = new DataNodeProto.DataNodeProto.DataNodeProtoClient(ConnectionManager.Instance.NameNodeConnection);
                 BlockReport.SendSingleBlockReport(client);
@@ -135,6 +133,7 @@ namespace DataNode
                         }
                         catch (IOException e)
                         {
+                            dataNodeFailed = true;
                             message = e.Message;
                             success = false;
                         }
@@ -193,59 +192,12 @@ namespace DataNode
             // If write was successful, make sure block size is correct
             return !BlockStorage.Instance.ValidateBlock(blockId, filePath, blockSize) ? new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Block size is not correct" } : new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Success };
         }
-
-        /// <summary>
-        /// Gets blockID from list of metadata
-        /// </summary>
-        /// <param name="metaData">List of metadata</param>
-        /// <returns>BlockID</returns>
-        public Guid GetBlockID(List<Metadata.Entry> metaData)
-        {
-            Guid id = new Guid();
-            try
-            {
-                Metadata.Entry blckId = metaData.Find(m => { return m.Key == "blockid"; });
-                id = Guid.Parse(blckId.Value);
-                return id;
-            }
-            catch
-            {
-                return id;
-            }
-        }
-
-        /// <summary>
-        /// Gets block size from list of metadata
-        /// </summary>
-        /// <param name="metaData">List of metadata</param>
-        /// <returns>Size of block</returns>
-        public int GetBlockSize(List<Metadata.Entry> metaData)
-        {
-            int blockSize = 0;
-            try
-            {
-                Metadata.Entry size = metaData.Find(m => { return m.Key == "blocksize"; });
-                blockSize = Convert.ToInt32(size.Value);
-                return blockSize;
-            }
-            catch
-            {
-                return blockSize;
-            }
-        }
         
         /// <summary>
         /// Read block from disk
         /// </summary>
         /// <param name="id">UUID</param>
-        /// <returns>BlockData</returns>
-//         public override Task<BlockData> ReadBlock(UUID id, ServerCallContext context)
-//         {
-//             byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));
-
-//             return Task.FromResult(new BlockData { Data = Google.Protobuf.ByteString.CopyFrom(blockData) });
-//         }
-        
+        /// <returns>BlockData</returns>        
         public override async Task ReadBlock(UUID id, IServerStreamWriter<BlockData> responseStream,ServerCallContext context)
         {
             byte[] blockData = BlockStorage.Instance.ReadBlock(Guid.Parse(id.Value));

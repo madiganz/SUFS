@@ -4,7 +4,7 @@ package DataNodeProto;
 service DataNodeProto {
     rpc SendHeartBeat (HeartBeatRequest) returns (HeartBeatResponse) {}
 	rpc SendBlockReport (BlockReportRequest) returns (StatusResponse) {}
-	rpc WriteDataBlock (DataBlock) returns (StatusResponse) {}
+	rpc WriteDataBlock (stream BlockData) returns (StatusResponse) {}
 }
 
 message HeartBeatRequest {
@@ -48,6 +48,10 @@ message BlockCommand {
 
 message BlockList {
 	repeated UUID blockId = 1; // Blocks stored on datanode
+}
+
+message BlockData {
+	bytes data = 1;
 }
 
 message StatusResponse {

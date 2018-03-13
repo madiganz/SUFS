@@ -118,18 +118,21 @@ namespace NameNode
                 {
                     // Grab the list of ips that are connected to this BlockID
                     currentBlock = Program.Database.GetIPsFromBlock(blockID);
-                    currentBlock.Add(currentNodeIP);
-                    //if (CheckIfRedistributeNeeded(currentBlock))
-                    //returnRequests.Add(Redistribute(currentBlock, currentNodeIP, blockID));
+                    if(currentBlock.Contains("Delete it"))
+                    {
+                        AddRequestToNode(currentNodeIP, new DataNodeProto.BlockCommand
+                        {
+                            Action = DataNodeProto.BlockCommand.Types.Action.Delete,
+                            BlockList = new DataNodeProto.BlockList
+                            {
+                                BlockId = { new DataNodeProto.UUID { Value = blockID.ToString() } }
+                            }
+                        });
+                    }else{
+                        currentBlock.Add(currentNodeIP);
+                    }   
 
                 }
-
-                //Loops through to see if there are any more requests to send to this node
-                //foreach (DataNodeProto.BlockCommand request in currentDataNode.Requests)
-                //{
-                //    returnRequests.Add(request);
-                //}
-                //currentDataNode.Requests.Clear();
 
 
                 //either send empty list back or send queued commands to the specific datanode
@@ -172,6 +175,7 @@ namespace NameNode
                 {
                     ipAddress = GrabNextDataNode().IpAddress;
                 }
+                Console.WriteLine("Node to be added for redistribution: " + ipAddress + " for blockid = " + blockID.ToString());
 
                 nodes.Add(
                     new DataNodeProto.DataNode
@@ -192,6 +196,7 @@ namespace NameNode
                 Action = DataNodeProto.BlockCommand.Types.Action.Transfer,
                 DataBlock = { dataBlock }
             };
+
             AddRequestToNode(currentNodeIP, blockCommand);
         }
 
@@ -244,27 +249,27 @@ namespace NameNode
                 {
                     if (entry.Value.Count != 0)
                         Redistribute(entry.Value, entry.Value[0], entry.Key);
-
                 }
             }
         }
 
         /// <summary>
-        /// Run a node check every 6 minutes
+        /// Run a node check every minute
         /// </summary>
         /// <param name="token">Cancellation token for task</param>
         /// <returns>Task</returns>
-        public async Task RunNodeCheck(CancellationToken token = default(CancellationToken))
+        public async Task RunNodeCheck()
         {
-            while (!token.IsCancellationRequested)
+            while (true)
             {
                 CheckDeadNodes();
                 try
                 {
-                    await Task.Delay(60000, token);
+                    await Task.Delay(30000);
                 }
-                catch (TaskCanceledException)
+                catch (Exception)
                 {
+                    Console.WriteLine("Node check failed...");
                     break;
                 }
             }
@@ -272,22 +277,24 @@ namespace NameNode
 
         /// <summary>
         /// Checks whether or not the Node is dead. If it is, it removes it from the list.
-        /// TODO: When a node is dead, remove blocks and redistribute if needed
         /// </summary>
         private void CheckDeadNodes()
         {
-            foreach (var node in NodeList)
+            Console.WriteLine("Checking for dead DataNodes...");
+            for(var i = 0; i < NodeList.Count; i++)
             {
-                TimeSpan span = DateTime.UtcNow.Subtract(node.LastHeartBeat);
-                // Too much time has passed
-                if (span.Minutes >= 10)
+                TimeSpan span = DateTime.UtcNow.Subtract(NodeList[i].LastHeartBeat);
+                if (span.Minutes >= 1)
                 {
-                    Program.Database.RemoveIPToBlockReferences(node.IpAddress);
-                    NodeList.Remove(node);
+                    Console.WriteLine("DataNode died: " + NodeList[i].IpAddress);
+                    Program.Database.RemoveIPToBlockReferences(NodeList[i].IpAddress);
+                    NodeList.RemoveAt(i);
                 }
             }
             if (NodeList.Count >= Constants.ReplicationFactor)
+            {
                 CheckIfRedistributeNeeded();
+            }
         }
 
         /// <summary>

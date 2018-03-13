@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq; 
+using System.Linq;
 using NameNode.FileSystem;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -14,6 +14,7 @@ namespace NameNode
         public Database()
         {
             InitializeFileDirectory();
+
         }
 
         private static Folder Root = null;
@@ -118,16 +119,16 @@ namespace NameNode
                     //cross references those against the list of ids to ips
                     //choose ips for each block of the file
                     ipAddresses = BlockID_To_ip[blockID];
- 
-                    blockInfos.Add(new ClientProto.BlockInfo { 
+
+                    blockInfos.Add(new ClientProto.BlockInfo {
                         BlockId = new ClientProto.UUID { Value = blockID.ToString() },
                         BlockSize = Constants.MaxBlockSize,
                         IpAddress = { ipAddresses } });
                 }
 
                 //send back to client the ips and what to search for on the datanode
-                return new ClientProto.BlockMessage { 
-                    BlockInfo = { blockInfos } , 
+                return new ClientProto.BlockMessage {
+                    BlockInfo = { blockInfos } ,
                     FileSize = toBeRead.fileSize,
                     Type = ClientProto.BlockMessage.Types.StatusType.Success
                 };
@@ -135,9 +136,9 @@ namespace NameNode
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return new ClientProto.BlockMessage { 
-                    BlockInfo = { new List<ClientProto.BlockInfo>() }, 
-                    FileSize = 0, 
+                return new ClientProto.BlockMessage {
+                    BlockInfo = { new List<ClientProto.BlockInfo>() },
+                    FileSize = 0,
                     Type = ClientProto.BlockMessage.Types.StatusType.Fail };
             }
         }
@@ -149,7 +150,6 @@ namespace NameNode
                 string path = wrappedPath.FullPath;
                 string name = TraverseFileSystem(path);
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
-
                 //queue up requests for each of the datanodes that have blocks
                 //      to delete as soon as they send in heartbeat/block report
                 foreach (Guid blockID in toBeDeleted.data)
@@ -165,6 +165,7 @@ namespace NameNode
                             }
                         });
                     }
+                    BlockID_To_ip.Remove(blockID);
                 }
                 //remove file from directory system
                 CurrentDirectory.files.Remove(name);
@@ -200,6 +201,7 @@ namespace NameNode
 
         public ClientProto.StatusResponse DeleteDirectory(ClientProto.Path wrappedPath)
         {
+            string message = "";
             try
             {
                 string path = wrappedPath.FullPath;
@@ -230,14 +232,16 @@ namespace NameNode
                 }
                 else
                 {
-                    Console.WriteLine("Cannot delete Root.");
+                    message = "Cannot delete Root.";
+                    Console.WriteLine(message);
                     return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root." };
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                message = e.Message;
+                Console.WriteLine(message);
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = message };
             }
 
         }
@@ -318,21 +322,6 @@ namespace NameNode
             }
         }
 
-        // Will be done through MoveFile
-        //public bool RenameFile(string path, string newName)
-        //{
-        //    try
-        //    {
-
-        //    }catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //        return false;
-        //    }
-
-        //}
-
-
         public ClientProto.StatusResponse MoveFile(ClientProto.DoublePath doublePath)
         {
             try
@@ -366,16 +355,19 @@ namespace NameNode
         {
             if(!BlockID_To_ip.ContainsKey(blockId))
             {
-                BlockID_To_ip.TryAdd(blockId, new List<string>());    
+                return new List<string>{"Delete it"};
             }
             return BlockID_To_ip[blockId];
         }
 
         public void RemoveIPToBlockReferences(string ipAddress){
-            foreach(List<string> ipAddresses in BlockID_To_ip.Values)
+
+            foreach (List<string> ipAddresses in BlockID_To_ip.Values)
             {
                 if (ipAddresses.Contains(ipAddress))
+                {
                     ipAddresses.Remove(ipAddress);
+                }
             }
         }
 
@@ -406,7 +398,7 @@ namespace NameNode
 
                     Root = deserializer.Deserialize<Folder>(input);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     Console.Error.WriteLine("Filesystem does not exist");
                     Console.Error.WriteLine("Creating new filesystem . . .");

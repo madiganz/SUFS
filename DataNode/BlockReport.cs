@@ -18,13 +18,8 @@ namespace DataNode
             while (true)
             {
                 SendSingleBlockReport(client);
-#if (!DEBUG)
-                await Task.Delay(Constants.BlockReportInterval);
-#endif
 
-#if DEBUG
-                await Task.Delay(20000);
-#endif
+                await Task.Delay(Constants.BlockReportInterval);
             }
         }
 
