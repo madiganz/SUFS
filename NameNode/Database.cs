@@ -150,7 +150,6 @@ namespace NameNode
                 string path = wrappedPath.FullPath;
                 string name = TraverseFileSystem(path);
                 FileSystem.File toBeDeleted = CurrentDirectory.files[name];
-
                 //queue up requests for each of the datanodes that have blocks
                 //      to delete as soon as they send in heartbeat/block report
                 foreach (Guid blockID in toBeDeleted.data)
@@ -202,6 +201,7 @@ namespace NameNode
 
         public ClientProto.StatusResponse DeleteDirectory(ClientProto.Path wrappedPath)
         {
+            string message = "";
             try
             {
                 string path = wrappedPath.FullPath;
@@ -232,14 +232,16 @@ namespace NameNode
                 }
                 else
                 {
-                    Console.WriteLine("Cannot delete Root.");
+                    message = "Cannot delete Root.";
+                    Console.WriteLine(message);
                     return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = "Cannot delete Root." };
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail };
+                message = e.Message;
+                Console.WriteLine(message);
+                return new ClientProto.StatusResponse { Type = ClientProto.StatusResponse.Types.StatusType.Fail, Message = message };
             }
 
         }
@@ -320,21 +322,6 @@ namespace NameNode
             }
         }
 
-        // Will be done through MoveFile
-        //public bool RenameFile(string path, string newName)
-        //{
-        //    try
-        //    {
-
-        //    }catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //        return false;
-        //    }
-
-        //}
-
-
         public ClientProto.StatusResponse MoveFile(ClientProto.DoublePath doublePath)
         {
             try
@@ -374,10 +361,13 @@ namespace NameNode
         }
 
         public void RemoveIPToBlockReferences(string ipAddress){
-            foreach(List<string> ipAddresses in BlockID_To_ip.Values)
+
+            foreach (List<string> ipAddresses in BlockID_To_ip.Values)
             {
                 if (ipAddresses.Contains(ipAddress))
+                {
                     ipAddresses.Remove(ipAddress);
+                }
             }
         }
 

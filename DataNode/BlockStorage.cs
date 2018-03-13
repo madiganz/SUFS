@@ -102,7 +102,6 @@ namespace DataNode
         {
             try
             {
-                Console.WriteLine("Writing Block to " + path);
                 using (var stream = new FileStream(path, FileMode.Append))
                 {
                     stream.Write(data, 0, data.Length);
@@ -150,6 +149,7 @@ namespace DataNode
 
                     // Remove from dictionary
                     blockStorageMap.Remove(blockUUID);
+                    Console.WriteLine("Deleted block: " + blockUUID.ToString());
                     return true;
                 }
                 catch
