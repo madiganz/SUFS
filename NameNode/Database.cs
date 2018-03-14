@@ -397,6 +397,7 @@ namespace NameNode
                         .Build();
 
                     Root = deserializer.Deserialize<Folder>(input);
+                    PopulateBlockToIp(Root);
                 }
                 catch (Exception e)
                 {
@@ -474,6 +475,15 @@ namespace NameNode
         public Dictionary<Guid,List<string>> GrabBlockToIpDictionary()
         {
             return BlockID_To_ip;
+        }
+
+        private void PopulateBlockToIp(Folder baseFolder)
+        {
+            foreach (Folder subFolder in baseFolder.subfolders.Values)
+                PopulateBlockToIp(subFolder);
+            foreach (FileSystem.File savedFile in baseFolder.files.Values)
+                foreach (Guid blockID in savedFile.data)
+                    BlockID_To_ip.Add(blockID, new List<string>());
         }
 
     }
